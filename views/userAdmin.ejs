@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>Admin</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="./assets/index.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+            <div class="form-word">
+                <form method="POST" action='/userAdmin' enctype="multipart/form-data" >
+                    <input type="file" name="photos" required multiple />
+                    <input type="text" name="header" placeholder="Title..." required> 
+                    <textarea type="text" name="item"  required></textarea>
+                    <button id="additem" type="submit">Add post</button>
+                </form>
+            </div>
+                <% var counter=0; %>
+                <% for(let i=0;i < data.length;i++) { %>
+                    <%var postId=function(){return 'unique-' + counter++ }%>
+                    <% var hello=postId()%>
+                    <div class="accordionAdmin">
+                            <li id="<%=hello%>" ><%= data[i].header%></li>
+                    </div>
+                    <% } %>            
+                    <script src="./assets/index.js"></script>
+    </body>
+</html>

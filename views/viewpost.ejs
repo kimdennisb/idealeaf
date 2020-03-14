@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+        <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta charset="utf-8">
+                <meta description="view the post">
+                <link href="./assets/index.css" rel="stylesheet" type="text/css">
+                <link rel="icon" type="image/png" href="./assets/1391017.png"/>
+                <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+                <title>whatsdood</title>
+        </head>
+    <body>
+        <div class="viewpostBar">
+        </div>
+        <div id="viewpost">
+         <div id="postheader">
+          <%for (let l=0;l< data.length;l++) { %>
+              <p> <%= data[l].header %></p>
+            <% } %>
+        </div>
+        <div class="showImages">
+            <%for (let l=0;l < data.length;l++) { %>
+              <!--<img src="<%= data[l].path %>" />-->
+             <% for(let m=0;m < data[l].photos.split(',').length;m++){ %>
+        <img src="<%= data[l].photos.split(',')[m] %>" />
+          <%}%>
+          <% } %>
+        </div>
+        <div class="accordionpostItem">
+        <div id="postitem">
+       <% for(let l=0;l< data.length;l++) { %>
+           <p><%= data[l].item %></p>
+           </div>
+           </div>
+            <% } %> 
+        </div>
+    </body>
+</html> 

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="US">
+    <head>
+        <title>whatsdood</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta name="description" content="blog site:shows all the posts about us and ideas around us.
+        Content is curated for everybody;tech reviews,how to guides">
+        <link href="./assets/index.css" rel="stylesheet" type="text/css">
+        <link rel="icon" type="image/png" href="./assets/1391017.png"/>
+        <script src="./assets/index.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <body>
+        <!--Full sidebar nav bar-->
+        <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="overlay-content">
+              <a href="/">#</a>
+              <a href="/Login">Login</a>
+            </div>
+          </div>
+
+<div class="top-toolbar">
+    <div class="menu-icon" onclick="openNav()">&#9776;</div>
+      <div>
+          <h1 id="blog-icon">whatsdood</h1>
+      </div>
+</div>
+
+      <div class="blog-center">
+             <% for(let i=0;i < data.length;i++) { %>
+                <div class="blogContent">
+                    <div class="blogImages">
+                        <% if(data[i].photos.split(',').length > 1) { %>
+                                <img id="image" src="<%= data[i].photos.split(',')[i] %>" />
+                        <% }else{ %>
+                            <img id="image" src="<%= data[i].photos.split(',')[0] %>" />
+                            <% }  %>
+                     </div>
+                        
+                     <div class="blogTitle">
+                        <a href="/<%= data[i].header%>" target="_self"><%= data[i].header%> </a>
+                     </div>
+                </div>
+               
+             <% } %>
+      </div>
+
+    </body>
+</html>
