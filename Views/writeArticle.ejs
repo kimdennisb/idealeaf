@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title>Admin</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="./assets/pell.css">
+        <link rel="stylesheet" type="text/css" href="./assets/index.css">  
+    </head>
+    <body>
+           <div class="content">
+             <input type="text" id="title" placeholder="(Title)" required />
+            <div id="editor" class="pell"></div>
+            <div id="progress">
+              <progress id="progressBar" value="0"></progress>
+              <span id="percentile"></span>
+            </div>
+            
+            <button id="pell-push" >Publish</button>
+            <button class="done">Done</button>
+           <div  style="margin-top: 20px;display: none;">
+              <h3>HTML output:</h3>
+              <pre id="html-output"></pre>
+            </div>
+          </div>
+      
+          <script src="./assets/pell.js"></script>
+          <script>
+            var editor = window.pell.init({
+              element: document.getElementById('editor'),
+              defaultParagraphSeparator: 'p',
+              onChange: function (html) {
+                document.getElementById('html-output').textContent = html
+              },
+              upload : {
+                  api : 'photos'
+              }
+            });
+
+            //get content and push to database
+            var button = document.getElementById('pell-push'),
+                progressBar = document.getElementById('progressBar'),
+                percentile = document.getElementById('percentile');
+
+            var xhr = new XMLHttpRequest();
+
+            button.addEventListener('click',()=>{
+            
+              //we open xhr here so that it can be used anytime on `click` event
+
+            xhr.open('POST','/article',true);
+            xhr.setRequestHeader('Accept','application/json');
+            xhr.setRequestHeader('Content-type','application/json');
+
+            var _articleBody = document.querySelector('pre').textContent;
+                _articleTitle = document.getElementById('title').value;
+
+            var data = {
+              'title' : _articleTitle,
+              'body' : _articleBody
+                      }
+
+            var content =JSON.stringify(data);
+            xhr.send(content);
+            });
+
+            xhr.onloadstart = function(){
+            //console.log(`Loaded ${xhr.status} ${xhr.response}`);
+            progressBar.value = 0
+            percentile.innerText = '0%';
+            }
+
+            xhr.onloadend = function(e){
+              progressBar.value = e.loaded;
+              percentile.innerText = 'Published!'
+            }
+
+            xhr.onprogress = function(e){
+              //console.log(`Received ${e.loaded} of ${e.total}`);
+               if (e.lengthComputable) {
+                 progressBar.max = e.total;
+                 progressBar.value = e.loaded;
+                 percentile.innerText = Math.floor((e.loaded / e.total) * 100) + '%';
+               }
+            }
+            
+            xhr.onerror = function(e){
+              console.log(e)
+            }
+             var _returntoDashboard = document.querySelector('.done');
+             _returntoDashboard.onclick = function(){ window.location.href = '/admin' }
+          </script>
+    </body>
+</html>

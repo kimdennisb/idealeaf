@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="US">
+    <head>
+        <title>whatsdood</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta name="description" content="blog site:shows all the posts about us and ideas around us.
+        Content is curated for everybody;tech reviews,how to guides">
+        <link href="./assets/index.css" rel="stylesheet" type="text/css">
+        <link rel="icon" type="image/png" href="./assets/1391017.png"/>
+        <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+        
+    </head>
+    <body>
+      <header>
+        <!--sidebar nav-bar-->
+        <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="overlay-content">
+              <a href="/">#</a>
+              <a href="/signin">Login</a>
+            </div> 
+        </div>
+
+       <div class="toolbar">
+         <div class="open_icon" onclick="openNav()">&#9776;</div>
+         <span class="blog_icon">whatsdood</span>
+       </div>
+</header>
+        
+
+      <section>
+        <% for(let i=0;i < data.length;i++) { %>
+          <div>
+           <% if(data[i]._imageFromSearch == 'noImageFound') { %>
+            <div class="article_title onlytext">
+              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+            </div>
+            <% } else { %>
+            <div class="article_image">
+              <img class="image" src="<%= data[i]._imageFromSearch %>"  alt=""/>
+            </div>
+                  
+            <div class="article_title">
+              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+            </div>
+              <% } %>
+          </div>
+         
+       <% } %>
+      </section>
+
+      <div class="bottom-toolbar">
+      </div>
+    </body>
+   <script src="./assets/sidebarhelper.js"></script>
+</html>

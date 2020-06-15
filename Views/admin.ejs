@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./assets/index.css" rel="stylesheet" type="text/css">
+    <title>Manage posts</title>
+</head>
+
+<header>
+  <!--sidebar nav-bar-->
+  <div id="myNav" class="overlay">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <div class="overlay-content">
+        <a href="/admin">#</a>
+        <a href="/new">Write Post</a>
+      </div>
+  </div>
+
+ <div class="toolbar">
+   <div class="open_icon" onclick="openNav()">&#9776;</div>
+   <span class="blog_icon">whatsdood</span>
+ </div>
+</header>
+<body>
+    <div class="_allposts">  
+        <div class="control-section">
+                <label for="search" class="label-search">Search</label>
+                <input class="search"  type="search" />
+                <span class="edit" >&#10001</span>
+                <span class="remove">&#9987</span>  
+                <button class="new">New</button>
+        </div>
+        <% for( var i = 0;i < data.length;i++) { %>
+            <div class="_post">
+              
+                <input type="checkbox" class="checkbox" id="select-<%=i%>"/>
+                <span><%= data[i].header %></span> 
+        </div>
+        <% } %>
+        
+    </div>
+</body>
+<script src="./assets/sidebarhelper.js"></script>
+<script src="./assets/update-deletehelper.js"></script>
+</html>

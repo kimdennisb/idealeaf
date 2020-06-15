@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 600px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#html-output {
+  white-space: pre-wrap;
+}
+.pell {
+  border: 1px solid rgba(10, 10, 10, 0.1);
+  box-sizing: border-box; }
+
+.pell-content {
+  box-sizing: border-box;
+  height: 350px;
+  outline: 0;
+  overflow-y: auto;
+  padding: 10px; 
+}
+
+.pell-content img {
+  max-height: 1200px;
+  max-width: 350px;
+}
+.pell-actionbar {
+  background-color: #FFF;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.1); 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+    justify-content: center;
+}
+
+.pell-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  height: 30px;
+  outline: 0;
+  width: 30px;
+  vertical-align: bottom; }
+
+.pell-button-selected {
+  background-color: #F0F0F0; }
+
+#pell-push {
+  outline: none;
+  border: 1px solid #333;
+border-radius: 3px;
+margin-top: 20px;
+}
+
+#title {
+width: 100%;
+border-width: 0 0 1px 0;
+outline: none;
+margin-bottom: 10px;
+}
+
+::placeholder {
+color: green;
+font-size: 18px;
+text-align: center;
+}
+
+#progress {
+    margin-top: 10px;
+}

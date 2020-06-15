@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Login</title>
+    <link href="./assets/index.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+ 
+      <div class="wrapper"> 
+          <header class="header">
+            <a href="#" class="logo">
+                <!--whatspost logo-->
+              </a>
+            <h1>Sign in to Whatspost</h1>
+          </header>
+
+        <form class="form" method="POST" action="/signin">
+            <label for="user">
+              Email address
+              <input class="field" type="text" name="email" id="user" autofocus required>
+            </label>
+            <label for="password">
+              Password <span><a href="#">Forgot password?</a></span>
+              <input class="field" type="password" name="password" id="password" required>
+            </label>
+            
+            <input class="button" type="submit" value="Sign in">
+          </form>
+        </div>
+    </div>

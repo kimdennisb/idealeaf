@@ -1,5 +1,5 @@
 
-*{
+*, *::before, *::after {
     box-sizing:border-box;
 }
 body {
@@ -7,173 +7,148 @@ body {
     overflow-x: hidden;
     font-family: karma;
     color: #333;
-    margin: 0px;
+    margin:0 auto;
 }
-
-#image {
-    height:95px;
-    width: 95px;
-}
-.blogTitle a {
+.article_title > a {
     text-decoration: none;
     font-size: 25px;
     color: #333;
 }
-.Register-form{
-    color: blueviolet;
-    position: relative;
-    left:35%;
-}
-input {
-    padding:8px 8px;
-    position: relative;
-    border-radius: 4px;
-}
-#headerposts {
-position: relative;
-left:18%;
-color: rgb(0, 128, 49)
-}
-#subheaderposts {
-position: relative;
-left: 18%;
-font-size:23px;
-}
-#fieldsmail,#fieldspassword,#fieldssubmit {
-    height:56px;
-}
-#header {
-    position: relative;
-    color:#333;
-    size: 48px;
-    left:35%;
-}
-#postheader p {
+.article_title span {
     font-size: 28px;
+    font-weight: 300;
 }
-#login {
-    background-color:#333;
-border-radius: 5px;
-color: white;
-}
-textarea {
-    position: absolute;
-    top:3%;
-    width: 55%;
-    height:150px;
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    font-size: 16px;
-    resize: none;
-}
-#additem {
-    position: relative;
-    bottom:-11em;
-    background-color: rgb(0, 128, 49);
-    border-radius: 5px;
-    left:55%;
-}
-.accordionAdmin{
-    position: relative;
-    top:9em;
-    background-color: #eee;
-    color:rgb(0, 128, 49);
-    padding: 18px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 25px;
-    transition: 0.8s;
-}
-.accordionAdmin:hover {
-    text-decoration-line: line-through;
-}
-.accordionAdmin a {
-text-decoration: none;
-}
-.active {
-    background-color: #ccc; 
-}
-#alert {
-    font-size:32px;
-    color:rgb(0, 128, 49);
-}
-.showImages img {
-  max-width:auto;
-  height: 150px;
-
-}
-.accordionpostItem {
-    background-color:#eee;
-    padding: 18px;
-    margin:18px;
-    border: none;
-    outline: none;
+.article_body {
     font-size: 23px;
 }
-#postitem p {
-    position: relative;
-    top: -1.5em;
-    left:-1em;
-    font-size: 18px;
-    white-space: pre-wrap;
+/*select and deselect non required images because the dom tree is not explicit*/
+/*img {
+    height: auto;
+    max-width:100%;
+}*/
+    .article_image > img {
+    height:95px;
+    width: 95px;
 }
-#icon {
-    position: relative;
-    left:-11em;
-    top:-5.5em;
-}
-.back > a {
-    text-decoration: none;
-    font-size: 1.5em;
-}
-#viewpost {
+.article {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.blogContent {
+.article_image {
+    margin: 25px;
+}
+.article_title.onlytext {
+    margin: 25px;
+}
+header {
+    margin-bottom: 30px;
+}
+section > div {
     display: flex;
     flex-direction: row;
     align-items: center;
     border-bottom: 1px solid #eee;
 }
-.blogImages {
-    margin: 25px;
-}
-.top-toolbar {
+
+.toolbar {
+    position: fixed;
     margin-bottom:8px;
     background-color:#333;
     height: 35px;
     width: 100%;
     top:0px;
+    z-index: 100;
+    text-align: center;
 }
-.blog-center {
-    margin-top: 30px;
-    margin-left: 58px;
+section {
+    
 }
-.menu-icon {
-    position: fixed;
-    top: 5px;
-    left: 18px;
+.open_icon {
+    position: inherit;
     font-size: 1.5em;
     cursor: pointer;
     color: white;
 }
-#blog-icon {
-    position: fixed;
-    top:-20px;
-    right:50%;
+.blog_icon {
+    font-size: x-large;
     color:white
 }
 
-/** full sided navbar styling **/
+/*
+login and sign up forms
+*/
+.wrapper {
+    margin: 0 auto;
+    padding: 32px 0 15px;
+    width: 300px;
+  }
 
+  .header {
+    text-align: center;
+  }
+  .header svg {
+    fill: #2f363c;
+  }
+  .header h1 {
+    color: #24292e;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+  }
+  .form {
+    background: #FFF;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 15px;
+  }
+  .form label {
+    color: #24292e;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .form label[for="password"] span {
+    color: #0366d6;
+    float: right;
+  }
+  .form input {
+    border-radius: 2px;
+    margin: 10px 0;
+    padding: 9px 7px;
+    width: 100%;
+  }
+  .form .field {
+    border: 1px solid #ddd;
+  }
+  .form .field:focus {
+    border: 1px solid #0366D9;
+    outline-color: rgba(37, 149, 255, 0.2);
+    outline-style: solid;
+    outline-width: 3px;
+  }
+  .form .button {
+    background: #2DB84C;
+    border: 1px solid #28a444;
+    border-radius: 2px;
+    color: #FFF;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .form .button:hover {
+    background: #28a444;
+  }
+  .create-account {
+    border: 1px solid #DDD;
+    color: #0b0b0b;
+    margin-top: 17px;
+    text-align: center;
+  }  
+
+/*
+/admin,/home side bar
+*/
 .overlay {
     height: 100%;
     width: 0;
@@ -222,4 +197,43 @@ text-decoration: none;
     top: 15px;
     right: 35px;
   }
+}
+
+/*
+manage posts
+*/
+._allposts {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;
+    align-items: center;*/
+    margin: 38px;
+}
+._post  {
+    margin: 18px;
+}
+._post span {
+   font-size: larger;
+}
+.edit , .remove {
+    font-size: x-large;
+    margin-left: auto;
+    pointer-events: none;
+    opacity: .3;
+}
+.edit , .remove , .new , .done :hover {
+cursor: pointer;
+}
+.new , .done {
+    font-size: larger;
+    border-radius: 3px;
+    margin-left: auto;
+    color: green;
+    outline: none;
+}
+.label-search {
+    font-weight: bold;
+}
+.done {
+ position: relative;  
 }
