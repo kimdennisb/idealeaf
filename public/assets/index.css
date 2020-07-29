@@ -225,7 +225,7 @@ manage posts
 cursor: pointer;
 }
 .new , .done {
-    font-size: larger;
+  font-size: medium;
     border-radius: 3px;
     margin-left: auto;
     color: green;
@@ -237,3 +237,71 @@ cursor: pointer;
 .done {
  position: relative;  
 }
+.bottom-toolbar > a {
+  text-decoration: none;
+  position: relative;
+  margin: 1em 1em 0 0;
+  float: right;
+}
+
+/* pagination elements */
+.bottom-toolbar .paginationtext-center  {
+  margin-top: 1em;
+text-align: center;
+}
+.paginationtext-center span a {
+  padding:8px 16px;
+  text-decoration: none;
+}
+.paginationtext-center span.active {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+.paginationtext-center span:hover:not(.disabled,.active) {
+background-color: #ddd;
+border-radius: 5px;
+}
+.paginationtext-center span.disabled {
+  opacity: .5;
+}
+/*
+.c-custom-checkbox {
+  position: relative;
+  cursor: pointer;
+  --checked-state-bg-color:hsl(350,95%,58%);
+  --checked-state-check-color: #fff;
+  --outline-color:var(--checked-state-bg-color)
+  --outline-offset:2px;
+}
+.c-custom-checkbox input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 1em;
+  height: 1em;
+  z-index: 80;
+}
+.c-custom-checkbox input[type="checkbox"]:focus + svg {
+  outline: 3px solid #E55360;
+  outline-offset: 2px;
+}
+
+.c-custom-checkbox input[type="checkbox"]:focus:not(:focus-visible) + svg {
+  outline: none;
+}
+.c-custom-checkbox svg {
+  width: 1em;
+  height: 1em;
+  * {
+    transition: all 0.1s linear;
+  }
+}
+.c-custom-checkbox input[type="checkbox"]:checked + svg {
+.checkbox_bg {
+  fill: var(--checked-state-bg-color);
+  stroke: var(--checked-state-bg-color);
+}
+.checkbox_checkmark {
+  stroke: var(--checked-state-checkmark-color);
+}
+}*/

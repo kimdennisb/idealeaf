@@ -52,8 +52,51 @@
       </section>
 
       <div class="bottom-toolbar">
-        <a href="/page/1">MORE &#62 &#62</a>
+        <% if (pages > 0) { %>
+          <div class="paginationtext-center">
+            <% if(current == 1) { %>
+              <span class="disabled">
+                <a>First</a>
+              </span>
+            <%} else { %>
+              <span>
+                <a href="/page/1">First</a>
+              </span>
+            <%}%>
+            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+            <% if(i !== 1){ %>
+              <span class="disabled">
+                <a>...</a>
+              </span>
+            <%}%>
+            <% for(; i <= (Number(current) + 4) && i <= pages;i++) { %>
+              <% if(i == current) { %>
+                <span class="active">
+                  <a><%= i %></a>
+                </span>
+              <%} else {%>
+                <span>
+                  <a href="/page/<%= i %>"><%= i %></a>
+                </span>
+                <%}%>
+                <% if(i == Number(current) + 4  && i < pages ) { %>
+                  <span class="disabled">
+                    <a>...</a>
+                  </span>
+                <%}%>
+            <%}%>
+            <% if(current == pages) { %> 
+              <span class="disabled">
+                <a>Last</a>
+              </span>
+            <%} else {%>
+              <span>
+                <a href="/page/<%= pages %>">Last</a>
+            </span>
+              <%}%>
+            </div>
+        <%}%>
       </div>
     </body>
-   <script src="./assets/sidebarhelper.js"></script>
+   <script src="../assets/sidebarhelper.js"></script>
 </html>

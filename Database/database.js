@@ -1,12 +1,21 @@
 var mongoose = require('mongoose'),
     MongoClient = require('mongodb').MongoClient,
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    config = require('config');
  
+    
+   //database options
+   let options = {
+    server: { socketOptions: { keepAlive: 1,connectTimeoutMS: 30000 }},
+    replset: { socketOptions: { keepAlive: 1,connectTimeoutMS: 30000 }}
+  };
+
 databaseConnection=()=>{
 //mongoose.connect('mongodb://dbklify:kimutaidn1@ds259085.mlab.com:59085/dbklify');
 
-mongoose.connect('mongodb://localhost/DKBAPP',{useNewUrlParser:true,useUnifiedTopology:true});
+//mongoose.connect(config.DBHost,{useNewUrlParser:true,useUnifiedTopology:false});
+mongoose.connect(config.DBHost,options);
 let conn = mongoose.connection;
 conn.on('error',console.error.bind(console,'connection error'));
 return conn;

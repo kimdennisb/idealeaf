@@ -79,25 +79,58 @@ router.get('/html/:header',(req,res)=>{
 })
 
 //posts get route
-router.get('/',cacheMiddleware(30),(req,res)=>{
+router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
   //console.log(req.session)
-    postmodel.find({},(err,data)=>{
+  var perPage = 1,
+      page = req.params.page || 1;
+
+  postmodel.find({})
+           .skip((perPage * page) - perPage)
+           .limit(perPage)
+           .exec(function(err,data){
+            if(err) res.send(500,err);
+             postmodel.count().exec(function(err,count){
+               if(err) return next(err);
+               res.render('pages.ejs',{
+                 data: data,
+                 current: page,
+                 pages: Math.ceil(count / perPage)
+               });
+             });
+           });
+    /*postmodel.find({},(err,data)=>{
       if(err) res.send(500,err);
        res.render('home.ejs',{data:data});
-     });
+     });*/
  });
    
+ //get first number of posts on the front page(4)
+ router.get('/',(req,res,next)=>{
+  postmodel.find({})
+           .limit(4)
+           .exec(function(err,data){
+             if(err) res.send(500,err);
+             postmodel.count().exec(function(err,count){
+               if(err) return next(err);
+               res.json(data)
+               res.render('home.ejs',{data: data})
+             })
+           })
+ });
+
  //view specific article
  router.get('/:header',cacheMiddleware(30),(req,res)=>{
    //console.log(req.params.header)
+ 
    var header = (req.params.header).split('-').join(' ');
     postmodel.find({header:header},(err,data)=>{
       if(err) res.send(500,err);
 
       //get object from array to avoid iterating in client
-      const dataObject = data[0]
-
-     res.render('viewArticle',{data:dataObject});
+      const dataObject = data[0];
+      console.log(dataObject)
+      res.json(dataObject)
+      res.render('viewArticle',{data:dataObject});
  });
  });
 

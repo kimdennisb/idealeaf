@@ -162,7 +162,7 @@ storeImage =(photo)=>{
         router.post('/article',(req,res)=>{
           //console.log(req.body)
           
-          res.send(`Sucessfully received`);
+          //res.send(`Sucessfully received`);
 
           const article = {
             header : req.body.title,
@@ -188,13 +188,16 @@ storeImage =(photo)=>{
           _imageFromSearch : _imageSearch(req.body.body)
         }
 
-          //save the article in mongodb
-        var myposts=new postmodel(refinedArticle);
-          myposts.save().then((result)=>{
-            console.log(result)
-          }).catch((err)=>{
-              if (err) throw err;
-          })
+          //creates new article
+        var myposts = new postmodel(refinedArticle);
+          /* save it into the db */
+          myposts.save((err,item)=>{
+            if(err){
+              res.send(err);
+            } else {//if no errors,send it back to client
+              res.json({message: "Article successfully added!",item });
+            }
+          });
         });
    
 module.exports = router;

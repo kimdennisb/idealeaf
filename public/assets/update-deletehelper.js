@@ -8,7 +8,7 @@ var remove = document.querySelector('.remove');
 function handler() {
     //allow sole checking
     Array.prototype.forEach.call(checkbox,(e)=>{e.checked = false});
-    this.checked = true;
+     this.checked = true
 
    if(this.checked){
      edit.style.opacity = '1';

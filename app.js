@@ -9,7 +9,17 @@ var express=require('express'),
     ObjectID = require('mongodb').ObjectID,
    bodyParser=require('body-parser'),
    path = require('path'),
+   swal = require('sweetalert'),
+   ejs = require('ejs'),
+   config = require('config'),
+   morgan = require('morgan'),
    databaseConnection = require('./Database/database');
+
+//don't show the log when it is test
+if(config.util.getEnv('NODE_ENV' !== 'test')){
+  //use morgan to log at command line
+app.use(morgan('combined'));//'combined' outputs the Apache style LOGs
+}
  
 var get = require('./Routes/get'),
     remove = require('./Routes/delete'),
@@ -47,6 +57,9 @@ app.use(session({
   })
 }));
 
+//provide acess to sweetalert functions
+app.locals.sweetAlert = swal;
+
 //use routes
 app.use('/',get);
 app.use('/',post);
@@ -70,6 +83,8 @@ app.use(function (err, req, res, next) {
 app.listen(port,()=>{
   console.log(`listening on the port ${port}`)
 });
+
+module.exports = app; //for testing
 
 /************
  * 
