@@ -7,14 +7,12 @@ var mongoose = require('mongoose'),
     
    //database options
    let options = {
-    server: { socketOptions: { keepAlive: 1,connectTimeoutMS: 30000 }},
-    replset: { socketOptions: { keepAlive: 1,connectTimeoutMS: 30000 }}
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   };
 
 databaseConnection=()=>{
-//mongoose.connect('mongodb://dbklify:kimutaidn1@ds259085.mlab.com:59085/dbklify');
 
-//mongoose.connect(config.DBHost,{useNewUrlParser:true,useUnifiedTopology:false});
 mongoose.connect(config.DBHost,options);
 let conn = mongoose.connection;
 conn.on('error',console.error.bind(console,'connection error'));

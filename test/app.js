@@ -17,56 +17,59 @@ beforeEach((done)=>{
     /*postSchemaModel.remove({},(err)=>{
         done();
     });*/
-    //console.log(`Testing started`);
+    console.log(`Testing started`);
     done();
 });
+
+let dummyArticle = { 
+    header: "Dummy title for testing",
+    item: "Tests are important",
+    _imageFromSearch: "https://www.mypostimage.com/x"
+};
 
 /**
  * Test the GET route
  */
+
   describe('/GET articles',()=>{
       it('it should get the first few number of articles',(done)=>{
         chai.request(server)
       .get('/')
       .end((err,res)=>{
           res.should.have.status(200);
-          //console.log(res.body)
           done();
       });  
     });
       
   });
+
   /**
    * Test the POST route
    */
+
   describe('/POST article',()=>{
       it('it should not post an article without some fields',(done)=>{
-          let article = {
-             title: "Example",
-             body: "Tests are important",
-             image: "Image URL"
-          }
+          let simulatedArticle = { };
           chai.request(server)
           .post('/article')
-          .send(article)
+          .send(simulatedArticle)
           .end((err,res)=>{
               res.should.have.status(200);
               res.body.should.be.a('object');
-             // res.body.should.have.property('errors')
+              res.body.errors.should.have.property('header');
+              res.body.errors.should.have.property('item');
+              res.body.errors.should.have.property('_imageFromSearch');
+              res.body.should.have.property('errors')
               done();
           });
       });
   });
   describe('/POST article',()=>{
-    it('it should post an article',(done)=>{
-        let article = {
-           title: "Example",
-           body: "Tests are important",
-           image: "Image URL"
-        }
+    it('it should post an article with all then fields',(done)=>{
+        
         chai.request(server)
         .post('/article')
-        .send(article) //dummy is sent to the post /article route
+        .send(dummyArticle) //dummy is sent to the post /article route
         .end((err,res)=>{
             res.should.have.status(200);
             res.body.should.be.a('object');
@@ -74,8 +77,7 @@ beforeEach((done)=>{
             res.body.item.should.have.property('header');
             res.body.item.should.have.property('item');
             res.body.item.should.have.property('_imageFromSearch');
-            //console.log(res.body)
-
+        
             done();
         });
     });
@@ -84,12 +86,13 @@ beforeEach((done)=>{
  * Test the /GET/:id 
  */
 describe('/:header article',()=>{
-    it('it should get the article with the given header(title)',(done)=>{
-        let article = new postSchemaModel({ header: "Example",item: "Tests are important",_imageFromSearch: "Image URL"});
+    it('it should get the article with the given properties',(done)=>{
+      
+        let article = new postSchemaModel(dummyArticle);
         article.save((err,article)=>{
             chai.request(server)
             .get('/' + article.header)
-            .send(article)
+            .send(dummyArticle)
             .end((err,res)=>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -107,7 +110,7 @@ describe('/:header article',()=>{
 /**
  * Test /DELETE/:id route
  */
-/*
+
 describe('/DELETE/ article',()=>{
     it('it should delete an article given the header(title) in fetch request',(done)=>{
         let article = new postSchemaModel({ header: "Example",item: "Tests are important",_imageFromSearch: "Image URL"});
@@ -117,9 +120,9 @@ describe('/DELETE/ article',()=>{
             .end((err,res)=>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.property('message').eql('A post was deleted');
+                res.body.should.have.property('message').eql('A post was successfully deleted');
             })
         })
     })
-})*/
+})
 });

@@ -1,4 +1,5 @@
-var express = require('express')
+var express = require('express');
+const { config } = require('chai');
     router = express.Router(),
     cacheMiddleware = require('../Cache/cache'),
     postmodel = require('../Models/postSchema'),
@@ -7,7 +8,7 @@ var express = require('express')
 
     //call database function
    let conn = databaseConnection();
-
+   
     //getting the landing page
 router.get('/signup',(req,res)=>{
     res.render('signUp.ejs'); 
@@ -81,7 +82,7 @@ router.get('/html/:header',(req,res)=>{
 //posts get route
 router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
   //console.log(req.session)
-  var perPage = 1,
+  var perPage = 4,
       page = req.params.page || 1;
 
   postmodel.find({})
@@ -112,7 +113,7 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
              if(err) res.send(500,err);
              postmodel.count().exec(function(err,count){
                if(err) return next(err);
-               res.json(data)
+              // res.json(data) -during testing
                res.render('home.ejs',{data: data})
              })
            })
@@ -129,7 +130,7 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
       //get object from array to avoid iterating in client
       const dataObject = data[0];
       console.log(dataObject)
-      res.json(dataObject)
+      //res.json(dataObject) -during testing
       res.render('viewArticle',{data:dataObject});
  });
  });

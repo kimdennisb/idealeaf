@@ -1,3 +1,3 @@
 {
-    "DBHost": "mongodb://dbklify:kimutaidn1@ds259085.mlab.com:59085/dbklify"
+    "DBHost": "mongodb+srv://mypost:mypost@mypost.5vcao.mongodb.net/mypost?retryWrites=true&w=majority"
 }

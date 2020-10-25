@@ -9,7 +9,7 @@ router.delete('/delete',(req,res)=>{
         if(err) res.send(500,err);
         result.remove((err,result1)=>{
           if(err) throw err;
-          res.send({message:'A post was deleted',result1})
+          res.send({message:'A post was successfully deleted',result1})
         });
       });
   });
