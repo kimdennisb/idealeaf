@@ -1,6 +1,6 @@
 var express = require('express');
-const { config } = require('chai');
-    router = express.Router(),
+
+   const router = express.Router(),
     cacheMiddleware = require('../Cache/cache'),
     postmodel = require('../Models/postSchema'),
     databaseConnection = require('../Database/database'),
