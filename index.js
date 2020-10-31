@@ -34,10 +34,10 @@ app.set('view engine','ejs');
 //app.set('views', path.join(__dirname,'/Views'));
  
 //serving static files
-app.use(express.static(path.join(__dirname,'Public')));
+app.use(express.static(process.cwd() + 'Public'));
 
 //making the static files available on /edit path
-app.use('/edit',express.static(path.join(__dirname,'Public')));
+app.use('/edit',express.static(process.cwd() + '/Public'));
 
 //parse data from the form
 app.use(bodyParser.urlencoded({extended:true}));
