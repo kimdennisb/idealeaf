@@ -34,7 +34,7 @@
   "scripts": {
     "testXOXO": "echo \"Error: no test specified\" && exit 1",
     "startXOXO": "nodemon app.js",
-    "start": "SET NODE_ENV=dev && node index.js",
+    "start": "node index.js",
     "test": "mocha --timeout 10000"
   },
   "author": "Dennis Kim",
