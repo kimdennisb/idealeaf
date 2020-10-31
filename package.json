@@ -32,9 +32,7 @@
     "mocha": "^8.2.0"
   },
   "scripts": {
-    "testXOXO": "echo \"Error: no test specified\" && exit 1",
-    "startXOXO": "nodemon app.js",
-    "start": "node index.js",
+    "start": "SET NODE_ENV=dev && node index.js",
     "test": "mocha --timeout 10000"
   },
   "author": "Dennis Kim",
