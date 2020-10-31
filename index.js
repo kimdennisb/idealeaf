@@ -31,7 +31,7 @@ var get = require('./Routes/get'),
 //setting the view engine
 app.set('view engine','ejs');
 
-//app.set('views',path.join(__dirname,'Views'));
+app.set('views',path.join(__dirname,'views'));
  
 //serving static files
 app.use(express.static(process.cwd() + '/public'));
