@@ -27,17 +27,17 @@ var get = require('./Routes/get'),
     remove = require('./Routes/delete'),
     post = require('./Routes/post')
     //update = require('./Routes/update');
-    
+
 //setting the view engine
 app.set('view engine','ejs');
 
 //app.set('views',path.join(__dirname,'Views'));
  
 //serving static files
-app.use(express.static(process.cwd() + '/Public'));
+app.use(express.static(process.cwd() + '/public'));
 
 //making the static files available on /edit path
-app.use('/edit',express.static(process.cwd() + '/Public'));
+app.use('/edit',express.static(process.cwd() + '/public'));
 
 //parse data from the form
 app.use(bodyParser.urlencoded({extended:true}));
