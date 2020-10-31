@@ -30,6 +30,8 @@ const port = process.env.PORT || 3000;
 
 //setting the view engine
 app.set('view engine','ejs');
+
+app.set('views', path.join(__dirname, 'views'));
  
 //serving static files
 app.use(express.static(path.join(__dirname,'Public')));
