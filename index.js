@@ -28,16 +28,15 @@ var get = require('./Routes/get'),
     post = require('./Routes/post')
     //update = require('./Routes/update');
 
-//setting the view engine
-app.set('view engine','ejs');
-
-app.set('views',path.join(__dirname,'views'));
- 
 //serving static files
-app.use(express.static(process.cwd() + '/public'));
+app.use(express.static(path.join(__dirname,'public')));
 
 //making the static files available on /edit path
-app.use('/edit',express.static(process.cwd() + '/public'));
+app.use('/edit',express.static(path.join(__dirname,'public')));
+
+//setting the view engine and for server to look at the views folder
+app.set('views',path.join(__dirname,'views'));
+app.set('view engine','ejs');
 
 //parse data from the form
 app.use(bodyParser.urlencoded({extended:true}));
