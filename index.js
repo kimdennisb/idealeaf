@@ -20,14 +20,14 @@ if(config.util.getEnv('NODE_ENV' !== 'test')){
   //use morgan to log at command line
 app.use(morgan('combined'));//'combined' outputs the Apache style LOGs
 }
+
+const port = process.env.PORT || 3000;
  
 var get = require('./Routes/get'),
     remove = require('./Routes/delete'),
     post = require('./Routes/post')
     //update = require('./Routes/update');
-
-const port = process.env.PORT || 3000;
-
+    
 //setting the view engine
 app.set('view engine','ejs');
 
