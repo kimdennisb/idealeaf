@@ -114,7 +114,7 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
              postmodel.count().exec(function(err,count){
                if(err) return next(err);
               // res.json(data) -during testing
-               res.render('home.ejs',{data: data})
+               res.render('pages/home.ejs',{data: data})
              })
            })
  });
