@@ -26,7 +26,7 @@ var get = require('./Routes/get'),
     post = require('./Routes/post')
     //update = require('./Routes/update');
 
-const port=process.env.PORT || 4000;
+const port=process.env.PORT || 3000;
 
 //setting the view engine
 app.set('view engine','ejs');
