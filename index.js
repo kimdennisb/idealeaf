@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use('/edit',express.static(path.join(__dirname,'public')));
 
 //setting the view engine and for server to look at the views folder
-app.set('views',path.join(__dirname,'views'));
+app.set('views',path.join(__dirname,'Views'));
 app.set('view engine','ejs');
 
 //parse data from the form
