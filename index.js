@@ -91,7 +91,7 @@ module.exports = app; //for testing
  * 
  * 
  * 
- * Nice of you reaching here:)
+ * :)
  * 
  *
  *
