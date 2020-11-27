@@ -14,20 +14,54 @@
       <div class="overlay-content">
         <a href="/admin">#</a>
         <a href="/new">Write Post</a>
+        <!--The button has to behave as a block element--> 
+        <div>
+           <button type="button" class="addScript">Inject code</button>
+        </div>
+        <button type="button" class="collapsible">Code</button>
+        <!--arrow bounce
+        <div class="arrow bounce">
+          <a class="fa fa-arrow-down fa-2x"></a>
+        </div>-->
+        <!--Stored scripts-->
+        <div class="_allposts">
+          <label class="custom-checkbox">
+            <input type="checkbox" id="checkbox" />
+            <span>xoxo</span>
+          </label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="checkbox" />
+            <span>xoxo</span>
+          </label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="checkbox" />
+            <span>xoxo</span>
+          </label> 
+        </div>
       </div>
   </div>
 
  <div class="toolbar">
    <div class="open_icon" onclick="openNav()">&#9776;</div>
-   <span class="blog_icon">whatsdood</span>
+   <span class="blog_icon">
+   <img src="./assets/icon.svg" alt="Whatspost" />
+   </span>
+ </div>
+
+ <div class="popup-input" >
+   <input type="text" placeholder="Insert Script" name="script" required />
+   <button type="submit" class="btn_save">Save</button>
+   <button class="btn_cancel">Cancel</button>
  </div>
 </header>
+
 <body>
+
     <div class="_allposts">  
         <div class="control-section">
                 <label for="search" class="label-search">Search</label>
                 <input class="search" id="search"  type="search" />
-                <span class="edit" >&#10001</span>
+                <span class="edit">&#10001</span>
                 <span class="remove">&#9987</span>  
                 <button class="new">New</button>
         </div>

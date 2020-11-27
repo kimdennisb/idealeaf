@@ -32,7 +32,7 @@
     "mocha": "^8.2.0"
   },
   "scripts": {
-    "start": "SET NODE_ENV=dev && node index.js",
+    "start": "SET NODE_ENV=dev && nodemon index.js",
     "test": "mocha --timeout 10000"
   },
   "author": "Dennis Kim",

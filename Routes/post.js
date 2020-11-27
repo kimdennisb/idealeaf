@@ -1,5 +1,6 @@
-var express = require('express')
-    router = express.Router(),
+var express = require('express');
+const { config } = require('process');
+const router = express.Router(),
     app = express(),
     bcrypt = require('bcryptjs'),
     {Readable} = require('stream'),
@@ -11,6 +12,8 @@ var express = require('express')
     session = require('express-session'),
     mongoStore = require('connect-mongo')(session),
     jimp = require('jimp'),
+    crypto = require('crypto'),
+    nodemailer = require('nodemailer'),
     postmodel = require('../Models/postSchema'),
     user = require('../Models/userSchema'),
     databaseConnection = require('../Database/database');
@@ -51,7 +54,7 @@ var express = require('express')
         console.log(req.session)
         req.session.userId = user._id;
         console.log(user._id)
-        return res.redirect('/profile');
+        //return res.redirect('/profile');
       }
     });
   }
@@ -79,6 +82,69 @@ router.post('/signin',(req,res,next)=>{
     return next(err);
   }
   
+});
+
+//reset password
+router.post('/forgot-password',(req,res,next)=>{
+const email = req.body.email;
+
+user.findOne({ email: email })
+    .then( async function(person){
+      if(!person){
+        var err = new Error('No user with that email address.');
+        err.status = 404;
+        return next(err);
+      }
+
+      //use the user's id to destroy the credentials
+      const accountID = person.id
+       if(accountID){
+        await  user.deleteOne({ _id: accountID})
+       }
+    
+    //token is sent to the forgot password form
+   const token = crypto.randomBytes(32).toString('hex');
+
+  
+   //hashing the password to be stored in database
+   bcrypt.hash(token,10,function(err,hash){
+     user.create({ email: req.body.email,password: hash})
+         .then( async function(item){
+           if(!item){
+             var err = new Error('Failed to create new password.');
+             err.status = 403;
+             return next(err);
+           }
+
+           let testAccount = await nodemailer.createTestAccount();
+           let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user:'kimdennisb@gmail.com',
+              pass: "password"
+            }
+           });
+
+           let mailOptions = {
+             from : 'kimdennisb@gmail.com',
+             to : person.email,
+             subject : 'Reset your whatspost password',
+             html : '<h1><b>Reset Password</b></h1>' + '<p>To reset your password,complete this form:</p>' + 
+                     '<a href='+ 'config.clientUrl' + 'reset/' + person.id + '/' + token + ''>''
+                       + '<br><br>' 
+           }
+           //sending mail to the user where password reset can be done.user id and token are sent as params in a link.
+          let mailSent = await transporter.sendmail(mailOptions);
+          console.log("Message sent: %s",mailSent.messageId)
+          if(mailSent){
+            return res.json({success: true,message: 'Check your mail to reset your password.'});
+          }else {
+            return res.json({message: 'Unable to send mail.'})
+          }
+
+         });
+        })
+   })
 });
 
 /**

@@ -4,18 +4,20 @@ var express = require('express');
     cacheMiddleware = require('../Cache/cache'),
     postmodel = require('../Models/postSchema'),
     databaseConnection = require('../Database/database'),
-    ObjectID = require('mongodb').ObjectID;
+    ObjectID = require('mongodb').ObjectID,
+    user = require('../Models/userSchema');
 
     //call database function
    let conn = databaseConnection();
-   
+  
+
     //getting the landing page
-router.get('/signup',(req,res)=>{
+router.get('/signup',(req, res)=>{
     res.render('signUp.ejs'); 
 });
 
 //signIn page
-router.get('/signin',(req,res)=>{
+router.get('/signin',(req, res)=>{
     res.render('signIn.ejs')
 });
 
@@ -59,16 +61,22 @@ router.get('/logout', function (req, res, next) {
   }
 });
 
+//forgot password
+router.get('/forgot-password',function(req, res, next){
+  res.render('forgotPassword.ejs');
+});
+
 //new article
-router.get('/new',(req,res)=>{
-res.render('writeArticle')
+router.get('/new',(req, res, next)=>{
+  console.log(`called`)
+res.render('writeArticle.ejs');
 });
 
 //edit article
-router.get('/edit/:header',(req,res)=>{
-   var editPathname = (req.params.header).split('-').join(' ');
+router.get('/edit/:header',(req, res)=>{
+   var editPathName = (req.params.header).split('-').join(' ');
   //console.log(editPathname)
-  postmodel.findOne({header: editPathname},(err,data)=>{
+  postmodel.findOne({header: editPathName},(err,data)=>{
     if(err) res.send(500,err);
    res.render('editArticle.ejs',{data: data.item});
   });
@@ -131,7 +139,7 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
       const dataObject = data[0];
       console.log(dataObject)
       //res.json(dataObject) -during testing
-      res.render('viewArticle',{data:dataObject});
+      res.render('viewArticle',{data: dataObject});
  });
  });
 

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="100">
+ <g>
+  <text xml:space="preserve" 
+        text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" 
+        font-size="24" 
+        id="svg" 
+        y="25" 
+        x="50%" 
+        stroke-width="0" 
+        stroke="#000" 
+        fill="#fff">
+        Whatspost
+  </text>
+ </g>
+</svg>

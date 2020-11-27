@@ -13,8 +13,9 @@ var express=require('express'),
    ejs = require('ejs'),
    config = require('config'),
    morgan = require('morgan'),
+   session = require('express-session'),
+   mongoStore = require('connect-mongo')(session),
    databaseConnection = require('./Database/database');
-
 //don't show the log when it is test
 if(config.util.getEnv('NODE_ENV' !== 'test')){
   //use morgan to log at command line
