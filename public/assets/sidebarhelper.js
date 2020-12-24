@@ -44,24 +44,74 @@ window.onresize = function() {
 const insertScript = document.querySelector("input[type='text']"),
       saveScript = document.querySelector('.btn_save');
 saveScript.onclick = ()=>{
+
+    //store script in the database
+    var xhr = new XMLHttpRequest();
+   
+    //we open xhr here so that it can be used anytime on `click` event
+
+    xhr.open('POST','/scriptToInject',true);
+    xhr.setRequestHeader('Accept','application/json');
+    xhr.setRequestHeader('Content-type','application/json');
     
-    //build script
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = insertScript.value;
-    document.querySelector('head').insertAdjacentElement('beforeend',script)
+    var data = {
+        'scriptToInject' : insertScript.value
+    }
+    
+    var scriptToInject = JSON.stringify(data);
+    console.log(scriptToInject)
+    xhr.send(scriptToInject);
+}
+
+window.onload = function(){
+        
+    //fetch scripts
+    fetch('/getinjectedscripts',{
+        method: 'GET'
+    })
+    .then((res)=>{
+        if(res.ok) return res.json()
+    }).then((data)=>{
+        //loop over the data received from the server and inject in the header and scripts section.
+        for(let i in data){
+            //console.log(data[i].url)
+            //build script
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = data[i].url;
+            document.querySelector('head').insertAdjacentElement('beforeend',script);
+
+            var label = document.createElement('label');
+            label.className = 'custom-checkbox';
+            var input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = 'checkbox';
+            var span = document.createElement('span');
+            span.textContent = data[i].url;
+            var spanDelete = document.createElement('span');
+            spanDelete.className = 'spanDelete'
+            spanDelete.textContent = 'X';
+            spanDelete.style.color = 'DodgerBlue';
+            spanDelete.style.marginLeft = '5px';
+            label.appendChild(input);
+            label.appendChild(span);
+            label.appendChild(spanDelete);
+            document.querySelector('._injectedScripts').appendChild(label)
+        }
+    })
 }
 
 //collapsible
-var coll = document.getElementsByClassName('collapsible');
+var coll = document.getElementsByClassName('collapsible-btn');
 for(var i = 0;i < coll.length;i++){
     coll[i].addEventListener('click',function(){
-        this.classList.toggle('active');
+       this.classList.toggle('active');
         var content = this.nextElementSibling;
-        if(content.style.display === "block"){
-            content.style.display = 'none';
-        }else{
-            content.style.display = 'block';
+        if(content.style.display == "none"){
+            content.style.display = "block";
+        }else {
+            content.style.display = "none";
         }
+        
     })
 }

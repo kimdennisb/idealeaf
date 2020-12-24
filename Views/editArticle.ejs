@@ -98,6 +98,10 @@
             xhr.onloadend = function(e){
               progressBar.value = e.loaded;
               percentile.innerText = 'Published!'
+              Swal.fire(
+                'Published'
+              );
+             
             }
 
             xhr.onprogress = function(e){
@@ -111,6 +115,9 @@
             
             xhr.onerror = function(e){
               console.log(e)
+               Swal.fire(
+                'Error publishing article'
+              );
             }
              var _returntoDashboard = document.querySelector('.done');
              _returntoDashboard.onclick = function(){ window.location.href = '/admin' }

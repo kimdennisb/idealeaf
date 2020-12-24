@@ -6,16 +6,18 @@ var mongoose = require('mongoose'),
     bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
-    email:{
+    email: {
         type:String,
         required:true,
         trim:true,
         unique:true
     },
-    password:{
+    password: {
         type:String,
         required:true
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: String
 });
 
 //authenticate input against database

@@ -1,5 +1,6 @@
-//get checkbox element
+//get checkbox elements for  the posts and script sections
 var checkbox = document.querySelectorAll('.checkbox');
+var checkboxInjectedScript = document.querySelectorAll('#checkbox');
 
 //get edit and remove elements
 var edit = document.querySelector('.edit');

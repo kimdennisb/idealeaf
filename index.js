@@ -59,9 +59,6 @@ app.use(session({
   })
 }));
 
-//provide acess to sweetalert functions
-app.locals.sweetAlert = swal;
-
 //use routes
 app.use('/',get);
 app.use('/',post);
@@ -70,16 +67,20 @@ app.use('/',remove);
 
  // catch 404 and forward to error handler
  app.use(function (req, res, next) {
+   
+  /*
+  //facilitate the right error message
   var err = new Error('File Not Found');
-  err.status = 404;
+  err.status = 404;*/
   next(err);
 });
 
 // error handler
 // define as the last app.use callback
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500);
-  res.send(err.message);
+  res.status(err.status || 500)
+  //res.json(err.message);
+  res.json(err.message)
 });
 
 app.listen(port,()=>{

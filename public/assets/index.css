@@ -165,7 +165,10 @@ login and sign up forms
     width: 100%;
     text-align: center;
     margin-top: 30px;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .overlay-content button {
@@ -226,7 +229,7 @@ float: none;
   background-color: gray;
   cursor: pointer;
 }
-.collapsible {
+.collapsible-btn {
   background-color: #eee;
   color: #444;
   padding: 18px;
@@ -236,11 +239,31 @@ float: none;
   font-size: 15px;
   margin-bottom: 18px;
 }
-.active, .collapsible:hover, .addScript:hover {
+.active, .collapsible-btn:hover, .addScript:hover {
   background-color: #ccc;
   cursor: pointer;
 }
-
+ ._injectedScripts {
+  display: flex;
+  flex-direction: column;
+  margin: 8px;
+  width: 500px;
+  height: 110px;
+  overflow-y: auto;
+  border: 1px solid snow;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.collapsible {
+  display: none; 
+}
+._injectedScripts label {
+  left: 0;
+}
+.spanDelete:hover {
+  background-color: whitesmoke;
+  cursor: pointer;
+}
 /* 
 arrow down bounce
 *//*

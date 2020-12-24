@@ -5,14 +5,14 @@
 var mongoose = require('mongoose');
 
 var postSchema=new mongoose.Schema({
-  header:{
+  header: {
       type:String,
       required:true
   },
-  item:{
+  item: {
     type:String
   },
-  _imageFromSearch:{
+  _imageFromSearch: {
     type:String
   }
   });

@@ -12,10 +12,12 @@ const router = express.Router(),
     session = require('express-session'),
     mongoStore = require('connect-mongo')(session),
     jimp = require('jimp'),
+   { check, validationResult, matchedData } = require('express-validator'),
     crypto = require('crypto'),
     nodemailer = require('nodemailer'),
     postmodel = require('../Models/postSchema'),
     user = require('../Models/userSchema'),
+    scriptToInjectModel = require('../Models/scriptToInjectSchema'),
     databaseConnection = require('../Database/database');
 
      //call database function
@@ -45,6 +47,8 @@ const router = express.Router(),
     var userData = {
       email: req.body.email,
       password: req.body.password,
+      resetPasswordToken: '',
+      resetPasswordExpires: ''
     }
 
     user.create(userData, function (error, user) {
@@ -83,68 +87,92 @@ router.post('/signin',(req,res,next)=>{
   }
   
 });
-
+ 
 //reset password
 router.post('/forgot-password',(req,res,next)=>{
 const email = req.body.email;
 
+//find user with this email address
 user.findOne({ email: email })
     .then( async function(person){
       if(!person){
         var err = new Error('No user with that email address.');
         err.status = 404;
-        return next(err);
+         return next(err);
       }
-
-      //use the user's id to destroy the credentials
-      const accountID = person.id
-       if(accountID){
-        await  user.deleteOne({ _id: accountID})
-       }
     
     //token is sent to the forgot password form
    const token = crypto.randomBytes(32).toString('hex');
 
+   //set the resetpasswordtoken and resetpasswordexpires fields
+   user.updateOne({email: email},
+    { $set: 
+    { resetPasswordToken: token,
+      resetPasswordExpires: Date.now() + 3600000 }
+    },(err,res)=>{
+      if (err) throw err;
+      console.log(`Document updated`);
+    }); 
+
+    var userEmail = person.email;
+    
+
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'kimutaidennisbrian@gmail.com',
+        pass: 'kimutaidn1#'
+      }
+     });
+
+     let mailOptions = {
+      from : 'kimdennisb@gmail.com',
+      to : userEmail,
+      subject : 'Reset your whatspost password',
+      text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +  
+      'Please click on the following link, or paste this into your browser to complete the process:\n\n' +  
+      'http://' + req.headers.host + '/reset/' + token + '\n\n' +  
+      'If you did not request this, please ignore this email and your password will remain unchanged.\n' 
+    }
+     //send the email
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+      console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
   
-   //hashing the password to be stored in database
-   bcrypt.hash(token,10,function(err,hash){
-     user.create({ email: req.body.email,password: hash})
-         .then( async function(item){
-           if(!item){
-             var err = new Error('Failed to create new password.');
-             err.status = 403;
-             return next(err);
-           }
+        });
+});
 
-           let testAccount = await nodemailer.createTestAccount();
-           let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user:'kimdennisb@gmail.com',
-              pass: "password"
-            }
-           });
-
-           let mailOptions = {
-             from : 'kimdennisb@gmail.com',
-             to : person.email,
-             subject : 'Reset your whatspost password',
-             html : '<h1><b>Reset Password</b></h1>' + '<p>To reset your password,complete this form:</p>' + 
-                     '<a href='+ 'config.clientUrl' + 'reset/' + person.id + '/' + token + ''>''
-                       + '<br><br>' 
-           }
-           //sending mail to the user where password reset can be done.user id and token are sent as params in a link.
-          let mailSent = await transporter.sendmail(mailOptions);
-          console.log("Message sent: %s",mailSent.messageId)
-          if(mailSent){
-            return res.json({success: true,message: 'Check your mail to reset your password.'});
-          }else {
-            return res.json({message: 'Unable to send mail.'})
-          }
-
-         });
-        })
-   })
+//reset password
+router.post('/reset/:token',(req,res,next)=>{
+  var query = { 
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: { 
+       $gt: Date.now() 
+      }
+    };
+    //find user with this token
+   user.findOne(query,(err,theuser)=>{
+    if (!user) {  
+      res.json({message: 'Password reset token is invalid or has expired.'});  
+  } 
+  //if found,update the collection
+  var myquery = { resetPasswordToken: req.params.token };  
+  var newvalues = { $set: {
+     password: req.body.password,
+     resetPasswordToken:'',
+     resetPasswordExpires:'', 
+     modifiedDate : Date(Date.now()) 
+    }
+  };  
+  user.updateOne(myquery,newvalues,(err,result)=>{
+    if(err) throw err;
+    console.log(`Password updated!`)
+  })
+})
 });
 
 /**
@@ -265,5 +293,16 @@ storeImage =(photo)=>{
             }
           });
         });
-   
+        
+  router.post('/scriptToInject',(req, res)=>{
+    console.log(req.body)
+  var scriptToInject = new scriptToInjectModel({url : req.body.scriptToInject});
+  scriptToInject.save((err,item)=>{
+    if(err){
+      res.send(err);
+    }else {
+      console.log(`saved successfully`)
+    }
+  })
+  });
 module.exports = router;

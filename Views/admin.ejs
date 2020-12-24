@@ -16,28 +16,21 @@
         <a href="/new">Write Post</a>
         <!--The button has to behave as a block element--> 
         <div>
-           <button type="button" class="addScript">Inject code</button>
+           <button type="button" class="addScript">Inject Script</button>
         </div>
-        <button type="button" class="collapsible">Code</button>
+        <button type="button" class="collapsible-btn">Injected Scripts</button>
         <!--arrow bounce
         <div class="arrow bounce">
           <a class="fa fa-arrow-down fa-2x"></a>
         </div>-->
+        
         <!--Stored scripts-->
-        <div class="_allposts">
-          <label class="custom-checkbox">
-            <input type="checkbox" id="checkbox" />
-            <span>xoxo</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" id="checkbox" />
-            <span>xoxo</span>
-          </label>
-          <label class="custom-checkbox">
-            <input type="checkbox" id="checkbox" />
-            <span>xoxo</span>
-          </label> 
+        <div class="collapsible">
+          <div class="_injectedScripts">
+            <!--scripts to be injected dynamically-->   
         </div>
+        </div>
+        
       </div>
   </div>
 
@@ -49,7 +42,7 @@
  </div>
 
  <div class="popup-input" >
-   <input type="text" placeholder="Insert Script" name="script" required />
+   <input type="text"class="input" placeholder="Insert Script" name="script" required />
    <button type="submit" class="btn_save">Save</button>
    <button class="btn_cancel">Cancel</button>
  </div>

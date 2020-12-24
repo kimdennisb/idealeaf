@@ -11,6 +11,7 @@
     "ejs": "^2.7.4",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "express-validator": "^6.8.1",
     "gridfs-stream": "^1.1.1",
     "jimp": "^0.13.0",
     "jsdom": "^16.4.0",

@@ -6,7 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="./assets/pell.css">
         <link rel="stylesheet" type="text/css" href="./assets/index.css">  
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
+        <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
         <script src="./assets/pell.js"></script>
     </head>
     <body>
@@ -75,6 +77,9 @@
             xhr.onloadend = function(e){
               progressBar.value = e.loaded;
               percentile.innerText = 'Published!'
+              Swal.fire(
+                'Published'
+              );
             }
 
             xhr.onprogress = function(e){
@@ -87,7 +92,10 @@
             }
             
             xhr.onerror = function(e){
-              console.log(e)
+              console.log(e);
+              Swal.fire(
+                'Error publishing article'
+              );
             }
              var _returntoDashboard = document.querySelector('.done');
              _returntoDashboard.onclick = function(){ window.location.href = '/admin' }

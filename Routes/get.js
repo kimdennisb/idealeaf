@@ -1,10 +1,13 @@
 var express = require('express');
+const { use } = require('./post');
 
    const router = express.Router(),
     cacheMiddleware = require('../Cache/cache'),
     postmodel = require('../Models/postSchema'),
     databaseConnection = require('../Database/database'),
     ObjectID = require('mongodb').ObjectID,
+    fs = require('fs'),
+    scriptToInjectModel = require('../Models/scriptToInjectSchema'),
     user = require('../Models/userSchema');
 
     //call database function
@@ -63,7 +66,10 @@ router.get('/logout', function (req, res, next) {
 
 //forgot password
 router.get('/forgot-password',function(req, res, next){
-  res.render('forgotPassword.ejs');
+  res.render('forgotPassword.ejs',
+  { data: {},
+    errors: {}
+  });
 });
 
 //new article
@@ -71,6 +77,14 @@ router.get('/new',(req, res, next)=>{
   console.log(`called`)
 res.render('writeArticle.ejs');
 });
+
+//get injected scripts
+  router.get('/getinjectedscripts',(req,res)=>{
+   scriptToInjectModel.find({},(err,scripts)=>{
+     if(err) res.send(500,err);
+     res.send(scripts);
+   });
+  });
 
 //edit article
 router.get('/edit/:header',(req, res)=>{
@@ -113,6 +127,19 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
      });*/
  });
    
+ //reset password with token 
+  router.get('/reset/:token',(req,res,next)=>{
+    var query = { resetPasswordToken: req.params.token,
+       resetPasswordExpires: { $gt: Date.now() }
+      } 
+  user.findOne(query,(err,theuser)=>{
+    if (!user) {  
+      res.json({message: 'Password reset token is invalid or has expired.'});  
+    }
+     res.render('newPassword.ejs')
+      });
+  });
+
  //get first number of posts on the front page(4)
  router.get('/',(req,res,next)=>{
   postmodel.find({})
@@ -178,5 +205,5 @@ router.get('/image/:photoID', (req, res) => {
     });
   });
   
- 
+  
 module.exports = router;
