@@ -34,13 +34,23 @@ body {
   max-height: 1200px;
   max-width: 350px;
 }
-.pell-actionbar {
+.pell-content:empty:before {
+  content: attr(data-placeholder);
+  position: absolute;
+  color: rgba(10, 10, 10, 0.4); 
+}
+.pell-content:empty:focus:before {
+  color: rgba(10, 10, 10, 0.1); 
+}
+
+.pell-actionbar ~ .pell-button {
   background-color: #FFF;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.1); 
   display: flex;
   flex-direction: row;
-  align-items: center;
-    justify-content: center;
+ flex-wrap: wrap;
+}
+.pell-actionbar {
+  border-bottom: 1px solid rgba(10, 10, 10, 0.1); 
 }
 
 .pell-button {
@@ -64,17 +74,24 @@ margin-top: 20px;
 
 #title {
 width: 100%;
-border-width: 0 0 1px 0;
+border-width: 0 0 0 0;
 outline: none;
 margin-bottom: 10px;
+font-size: larger;
 }
 
-::placeholder {
+::placeholder#title {
 color: green;
-font-size: 18px;
 text-align: center;
 }
 
+#title::first-line{
+  background-color: green;
+}
+
+#title::first-line:focus{
+  background-color: white;
+}
 #progress {
     margin-top: 10px;
 }

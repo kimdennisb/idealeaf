@@ -7,6 +7,7 @@ const { use } = require('./post');
     databaseConnection = require('../Database/database'),
     ObjectID = require('mongodb').ObjectID,
     fs = require('fs'),
+    mongoose = require('mongoose'),
     scriptToInjectModel = require('../Models/scriptToInjectSchema'),
     user = require('../Models/userSchema');
 
@@ -102,7 +103,7 @@ router.get('/html/:header',(req,res)=>{
 })
 
 //posts get route
-router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
+router.get('/page/:page',cacheMiddleware(30),(req, res, next)=>{
   //console.log(req.session)
   var perPage = 4,
       page = req.params.page || 1;
@@ -132,9 +133,11 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
     var query = { resetPasswordToken: req.params.token,
        resetPasswordExpires: { $gt: Date.now() }
       } 
-  user.findOne(query,(err,theuser)=>{
-    if (!user) {  
-      res.json({message: 'Password reset token is invalid or has expired.'});  
+  user.findOne(query,(err, theuser)=>{
+    if (!theuser) {  
+      var error = new Error('Password reset token is invalid or has expired.')
+      error.status = 400;
+      return next(error)  ;
     }
      res.render('newPassword.ejs')
       });
@@ -155,37 +158,67 @@ router.get('/page/:page',cacheMiddleware(30),(req,res,next)=>{
  });
 
  //view specific article
- router.get('/:header',cacheMiddleware(30),(req,res)=>{
-   //console.log(req.params.header)
- 
-   var header = (req.params.header).split('-').join(' ');
-    postmodel.find({header:header},(err,data)=>{
-      if(err) res.send(500,err);
+ router.get('/:title',cacheMiddleware(30),(req, res, next)=>{
+   //console.log(req.params.title)
+   
+   var header = (req.params.title).split('-').join(' ');
+   
+    postmodel.findOne({ title: header },(err, data)=>{
+      var error =  new Error('This article is not available:(');
+      if(err) {
+        console.log(err)
+        err.status = 404;
+         return next(error);
+      }
 
       //get object from array to avoid iterating in client
-      const dataObject = data[0];
-      console.log(dataObject)
+
+      // get and concatenate hostname with image url
+      const hostName = req.headers.host;
+
+      console.log(data)
+    
+      var imageURL = hostName + data._imageFromSearch;
+      
+      console.log(imageURL,`xoxo`)
+
+      //build data for response 
+       // console.log(data[0]._id)
+
+       var dataObject = {
+         title: data.title,
+         body: data.body,
+         _imageFromSearch: imageURL,
+         hostName: hostName
+       };
+      
+
+     //console.log(dataObject)
       //res.json(dataObject) -during testing
-      res.render('viewArticle',{data: dataObject});
- });
+      //return res.json(dataObject)
+      res.render('viewArticle',{ data: dataObject});
+      
+   });
  });
 
 
 /**
  * GET /image/:photoID
  */
-router.get('/image/:photoID', (req, res) => {
+router.get('/image/:photoID', (req, res, next) => {
     //get images from req.params.photoID object
+
     try {
       var photoID = new ObjectID(req.params.photoID);
-      console.log(photoID)
+      //console.log(photoID)
     } catch(err) {
-        console.log(err)
-      return res.status(400).json({ message: "Invalid ImageID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters" }); 
+        console.log(err);
+        var error = new Error("Invalid ImageID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters");
+        error.status = 400;
+        //pass the error to the error handler
+      return next(error);
     }
-    /*res.set('content-type', 'audio/mp3');
-    res.set('accept-ranges', 'bytes');*/
-  
+   
     let bucket = new mongoose.mongo.GridFSBucket(conn.db, {
       bucketName: 'photos'
     });

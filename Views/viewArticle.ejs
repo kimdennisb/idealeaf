@@ -3,27 +3,29 @@
         <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <meta charset="utf-8">
-                <meta description="view the post">
+                <meta property="og:type" content="Article" />
+                <meta property="og:title" content="<%- data.title %>" />
+                <meta property="og:description" content="<%= data.body.substring(3,30) %>"/>
+                <meta property="og:image" content="<%- data._imageFromSearch %>" />
+                <meta property="og:url" content="<%- data.hostName" %>" />
+                <meta property="og:site_name" content="whatspost" />
                 <link href="./assets/index.css" rel="stylesheet" type="text/css">
                 <link rel="icon" type="image/png" href="./assets/1391017.png"/>
                 <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-                <title>whatsdood</title>
+                <title><%- data.title %></title>
               
         </head>
     <body>
-
+     <section>
         <div class="article">
             <div class="article_title">
-             <span><%- data.header %></span>  
+             <span><%- data.title %></span><span>  
             </div>
   
              <div class="article_body">
-              <%- data.item %>
+              <%- data.body %>
               </div>
-            
-        </div>
+        </div> 
+     </section>
     </body>
-    <script>console.log(window.innerWidth)</script>
 </html> 

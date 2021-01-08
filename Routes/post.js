@@ -176,25 +176,40 @@ router.post('/reset/:token',(req,res,next)=>{
 });
 
 /**
- * Store Images in Mongo GridFS
+ * Resize and Store Images in Mongo GridFS
+ * 
+ * Multer adds a body object and a file or files object to the req object
+ * 
+ * Body object contains the values of text fields of the form,
+ * the file or files object contains then files uploaded via the form
+ * 
+ * memory storage,the file info will contain a filed called buffer.
  */
 
 const storage = multer.memoryStorage(),
-      uploadImage = multer({ storage: storage, limits: {fields: 12, fileSize: 1000 * 1000 * 18,file: 12, parts: 24 }});
+      uploadImage = multer({ storage: storage, limits: { 
+        fields: 12,
+        fileSize: 1024 * 1024 * 18,
+        file: 12,
+        parts: 24 
+      }
+    });
 
 router.post('/photos',uploadImage.array('photo',5), async (req,res)=>{
- //console.log(req.files)
+          //console.log(req.files)
           
          //iterate through the files array to perform file operations and return access IDS.
          var accessIDS = await Promise.all(req.files.map(async photo=>{
 
           if(!photo.originalname){
-            return res.status(400).json({ message: "No photo name in request file" }) 
+           // return res.status(400).json({ message: "No photo name in request file" }) 
+           //assign an empty string to the photoName
+           photo.originalname = "";
            }
           
            var urlArray = new Array();
 
-           //resized image sizes
+           //sizes to use to resize images
            const sizes = [240,320,480];
 
            var imagesrcsets = [];
@@ -207,9 +222,9 @@ router.post('/photos',uploadImage.array('photo',5), async (req,res)=>{
                  image.getBuffer(jimp.AUTO,(err,buffer)=>{
                      if(err) console.error(err);
                      const photoName = photo.originalname + "-" + size;
-                     const returnedURL = storeImage({photoName,buffer});
+                     const returnedURL = storeImage({ photoName,buffer });
                      imagesrcsets.push("/image/" + returnedURL + " " + size  + "w");
-                 })
+                 });
              })
 
            );
@@ -219,13 +234,15 @@ router.post('/photos',uploadImage.array('photo',5), async (req,res)=>{
               const id = imagesrcsets.join();
               return id;
          
-   })); 
+   })
+   ); 
        // res.status(201).json({accessIDS});
-       console.log(accessIDS)
+       //console.log(accessIDS)
+       //accessIDS will be used to send  an http get request for them to be rendered.
        res.send(accessIDS)
 });
 
-//store image  
+//store image helper function 
 storeImage =(photo)=>{
            
   //initialize gridfs bucket
@@ -252,39 +269,41 @@ storeImage =(photo)=>{
     return id;
    }
 
-
-        router.post('/article',(req,res)=>{
+router.post('/article',(req,res)=>{
           //console.log(req.body)
           
           //res.send(`Sucessfully received`);
 
           const article = {
-            header : req.body.title,
-            item : req.body.body
+            title : req.body.title,
+            body : req.body.body
           }
         
           //grab the first image from the html string
-          
+        
          var _searchImageRegex = /<img\b(?=\s)(?=(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*?\ssrc=['"]([^"]*)['"]?)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"\s]*)*"\s?\/?>/
 
         //console.log(_searchImageRegex.exec(article.item))
-         //try to search for an image in the HTML string
+         //search for an image in the HTML string,if found return the first image
+         //else return a string 'noImageFound'
          //var _imageFromSearch =_searchImageRegex.exec(article.item)[1];
          _imageSearch = (htmlString)=>{ 
            if(_searchImageRegex.exec(htmlString)) return _searchImageRegex.exec(htmlString)[1];
            else return 'noImageFound';
          }
 
-         //refined article
+         //build the full article and save in the database
          const refinedArticle = {
-          header : req.body.title,
-          item : req.body.body,
-          _imageFromSearch : _imageSearch(req.body.body)
+          title: req.body.title,
+          body: req.body.body,
+          _imageFromSearch: _imageSearch(req.body.body)
         }
 
-          //creates new article
+          
         var myposts = new postmodel(refinedArticle);
-          /* save it into the db */
+          /* create new article and 
+          save it into the database
+          */
           myposts.save((err,item)=>{
             if(err){
               res.send(err);
@@ -305,4 +324,6 @@ storeImage =(photo)=>{
     }
   })
   });
+  
+  //export the router
 module.exports = router;

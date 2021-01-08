@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="US">
     <head>
-        <title>whatsdood</title>
+        <title>Home</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
         <meta name="description" content="blog site:shows all the posts about us and ideas around us.
@@ -10,7 +10,7 @@
         <link rel="icon" type="image/png" href="./assets/1391017.png"/>
         <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        
     </head>
     <body>
       <header>
@@ -37,7 +37,7 @@
           <div>
            <% if(data[i]._imageFromSearch == 'noImageFound') { %>
             <div class="article_title onlytext">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+              <a href="/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
             <% } else { %>
             <div class="article_image">
@@ -45,14 +45,17 @@
             </div>
                   
             <div class="article_title">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+              <a href="/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
               <% } %>
           </div>
          
        <% } %>
-      </section>
 
+
+      </section>
+      
+      <!--Go by pages-->
       <div class="bottom-toolbar">
         <a href="/page/1">MORE &#62 &#62</a>
       </div>

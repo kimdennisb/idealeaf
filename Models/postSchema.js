@@ -5,16 +5,10 @@
 var mongoose = require('mongoose');
 
 var postSchema=new mongoose.Schema({
-  header: {
-      type:String,
-      required:true
-  },
-  item: {
-    type:String
-  },
-  _imageFromSearch: {
-    type:String
-  }
+  title: { type: String, required: true },
+  body: String,
+  _imageFromSearch: String,
+ date : { type: Date, default: Date.now}
   });
   
   module.exports = mongoose.model('postmodel',postSchema);

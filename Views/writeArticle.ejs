@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="US">
     <head>
-        <title>Admin</title>
+        <title>Write new</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="./assets/pell.css">
         <link rel="stylesheet" type="text/css" href="./assets/index.css">  
+        <link rel="icon" type="image/png" href="./assets/1391017.png"/>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
         <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
@@ -13,15 +14,19 @@
     </head>
     <body>
            <div class="content">
+           <!--
              <input type="text" id="title" placeholder="(Title)" required />
+           -->  
             <div id="editor" class="pell"></div>
             <div id="progress">
               <progress id="progressBar" value="0"></progress>
               <span id="percentile"></span>
             </div>
             
-            <button id="pell-push" >Publish</button>
+           <!--
+             <button id="pell-push" >Publish</button>
             <button class="done">Done</button>
+           --> 
            <div  style="margin-top: 20px;display: none;">
               <h3>HTML output:</h3>
               <pre id="html-output"></pre>
@@ -33,6 +38,7 @@
             var editor = window.pell.init({
               element: document.getElementById('editor'),
               defaultParagraphSeparator: 'p',
+              placeholder: "Type something...",
               onChange: function (html) {
                 document.getElementById('html-output').textContent = html
               },
@@ -59,15 +65,37 @@
             var _articleBody = document.querySelector('pre').textContent;
                 _articleTitle = document.getElementById('title').value;
 
-            var data = {
+            //check if the title and body are empty and thus proceed with publishing
+            checkTitleAndBody= () =>{
+              if(_articleBody == ''){
+              Swal.fire(
+                'Please add article content'
+              );
+              
+            } else if (_articleTitle == '') {
+              Swal.fire(
+                'Please add a title'
+              );
+        
+            } else {
+              //publish content
+
+              var data = {
               'title' : _articleTitle,
               'body' : _articleBody
                       }
 
             var content =JSON.stringify(data);
             xhr.send(content);
-            });
+          }
+            }
+            
+            //call the check function
+            checkTitleAndBody(); 
 
+                });
+
+            
             xhr.onloadstart = function(){
             //console.log(`Loaded ${xhr.status} ${xhr.response}`);
             progressBar.value = 0

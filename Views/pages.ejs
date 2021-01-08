@@ -35,7 +35,7 @@
           <div>
            <% if(data[i]._imageFromSearch == 'noImageFound') { %>
             <div class="article_title onlytext">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
             <% } else { %>
             <div class="article_image">
@@ -43,7 +43,7 @@
             </div>
                   
             <div class="article_title">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].header%> </a>
+              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
               <% } %>
           </div>

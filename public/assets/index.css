@@ -21,6 +21,9 @@ body {
 .article_body {
     font-size: 23px;
 }
+.article_body p img {
+  display: block;
+}
 /*select and deselect non required images because the dom tree is not explicit*/
 /*img {
     height: auto;
@@ -51,7 +54,12 @@ section > div {
     align-items: center;
     border-bottom: 1px solid #eee;
 }
-
+/*
+handle images and body content in <P></P> tag to cover full width when viewing in mobile
+*/
+section .article_body p {
+  text-align: center;
+}
 .toolbar {
     position: fixed;
     margin-bottom:8px;
@@ -61,10 +69,6 @@ section > div {
     top:0px;
     z-index: 100;
    text-align: center;
-
-}
-section {
-    
 }
 .open_icon {
     position: inherit;
@@ -326,7 +330,7 @@ manage posts
 .edit , .remove , .new , .done :hover {
 cursor: pointer;
 }
-.new , .done {
+.new  {
   font-size: medium;
     border-radius: 3px;
     margin-left: auto;

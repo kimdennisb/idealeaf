@@ -39,6 +39,7 @@
     };
     
     var exec = function exec(command) {
+      console.log(arguments,`xoxo`)
       var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       return document.execCommand(command, false, value);
     };
@@ -165,12 +166,12 @@
       if(!uploadImageInput){
         var url = window.prompt('Enter the image URL');
         if (url) exec('insertImage', url);
-      }else{
+      } else {
           uploadImageInput.click();
       }
   };
   
-  //just set `url`,`method` and `body` for fetch api
+  //set `url`,`method` and `body` for fetch api
   var uploadImage = function uploadImage(_ref,success,error){
       var api =_ref.api,
           data = _ref.data;
@@ -233,6 +234,15 @@
     };
     
     var init = function init(settings) {
+      /*
+      Object.keys(object) evaluates to the object data access points in an array form,i.e
+       const name = {
+         firstName: 'Dennis',
+         lastName: 'kimutai'
+       }
+
+      Object.keys(name) evaluates to  ["firstName","lastName"];
+      */
       console.log(Object.keys(settings),settings);
       console.log(Object.keys(defaultActions))
       var actions = settings.actions ? settings.actions.map(function (action) {
@@ -249,16 +259,51 @@
       
       //use 'p' or 'div'
       var defaultParagraphSeparator = settings[defaultParagraphSeparatorString] || 'div';
-    
+      
+      //actionBar
       var actionbar = createElement('div');
-      actionbar.className = classes.actionbar;//`pell-actionBar
+      actionbar.className = classes.actionbar;//`pell-actionBar`
       appendChild(settings.element, actionbar);
        console.log(settings.element,actionbar)
     
+      //save and done buttons
+      var saveDone = createElement('div');
+      saveDone.className = 'saveDone';
+      const save = createElement('button'),
+            done = createElement('button');
+      save.setAttribute('type', 'button'); 
+      save.style.margin = '2px';
+      save.style.color = 'green';
+      save.id = 'pell-push';
+
+      done.setAttribute('type', 'button');     
+      save.innerHTML = 'save';
+      done.innerHTML = 'Done'
+      done.style.margin = '2px';
+      done.style.color = 'green';
+      done.className = 'done';
+
+      saveDone.appendChild(save);
+      saveDone.appendChild(done);
+      saveDone.style.textAlign = 'right';
+      
+
       var content = settings.element.content = createElement('div');
       content.contentEditable = true;
       content.className = classes.content; //`pell-content`
-      console.log(content)
+      if (settings.placeholder) {
+        content.dataset.placeholder = settings.placeholder;
+      }
+      console.log(settings.element,content)
+
+      //create and append input field for the title
+      var inputTitle = createElement('input');
+      inputTitle.type = 'text';
+      inputTitle.placeholder = 'Title here...';
+      inputTitle.id = 'title';
+      inputTitle.required = true;
+      appendChild(settings.element,inputTitle);
+
       //listener for any input to the content-editable section
       content.oninput = function (_ref) {
         var firstChild = _ref.target.firstChild;
@@ -299,7 +344,10 @@
     
         appendChild(actionbar, button);
       });
-    
+
+      //append the save and done buttons
+      appendChild(actionbar, saveDone);
+
       if (settings.styleWithCSS) exec('styleWithCSS');
       exec(defaultParagraphSeparatorString, defaultParagraphSeparator);
       
