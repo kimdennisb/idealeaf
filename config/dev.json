@@ -1,3 +1,3 @@
 {
-    "DBHost": "mongodb://localhost/DKBAPP"
+    "DBHost": "mongodb+srv://mypost:mypost@mypost.5vcao.mongodb.net/mypost?retryWrites=true&w=majority"
 }
