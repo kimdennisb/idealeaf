@@ -45,15 +45,17 @@ if no user is authorized,redirect to sign in page else fetch user data
       if (error) {
         next(error);
       }
-      (authorizedUser === null)
-        ? (res.redirect("/signin"))
-        : postmodel.find({}, (err, data) => {
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        postmodel.find({}, (err, data) => {
           if (err) {
             next(err);
           }
 
-          res.render("admin.ejs", { data });
+          res.render("admin.ejs", { data: data });
         });
+      }
     });
 });
 
