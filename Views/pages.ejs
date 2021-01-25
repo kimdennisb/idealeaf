@@ -4,8 +4,11 @@
         <title>whatsdood</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
-        <meta name="description" content="blog site:shows all the posts about us and ideas around us.
-        Content is curated for everybody;tech reviews,how to guides">
+        <meta name="description" content="<%- siteDescription %>">
+        <meta property="og:type" content="Articles" />
+        <meta property="og:description" content="<%- siteDescription %>"/>
+        <meta property="og:url" content="<%- siteURL %>" />
+        <meta property="og:site_name" content="<%- siteName %>" />
         <link href="../assets/index.css" rel="stylesheet" type="text/css">
         <link rel="icon" type="image/png" href="./assets/1391017.png"/>
         <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
@@ -23,10 +26,16 @@
             </div> 
         </div>
 
-       <div class="toolbar">
+      <!--<div class="toolbar">
          <div class="open_icon" onclick="openNav()">&#9776;</div>
          <span class="blog_icon">whatsdood</span>
-       </div>
+       </div>--> 
+      <div class="toolbar">
+        <div class="open_icon" onclick="openNav()">&#9776;</div>
+        <span class="blog_icon">
+         <img src="../assets/icon.svg" alt="<%- siteName %>" />
+        </span>
+      </div>
 </header>
         
 
@@ -35,7 +44,7 @@
           <div>
            <% if(data[i]._imageFromSearch == 'noImageFound') { %>
             <div class="article_title onlytext">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
+              <a href="/article/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
             <% } else { %>
             <div class="article_image">
@@ -43,7 +52,7 @@
             </div>
                   
             <div class="article_title">
-              <a href="/<%= data[i].header.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
+              <a href="/article/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
             </div>
               <% } %>
           </div>
@@ -98,5 +107,5 @@
         <%}%>
       </div>
     </body>
-   <script src="../assets/sidebarhelper.js"></script>
+    <script src="../assets/sidebarhelper.js"></script>
 </html>
