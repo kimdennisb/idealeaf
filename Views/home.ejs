@@ -12,29 +12,53 @@
         <link rel="icon" type="image/png" href="./assets/1391017.png" />
         <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" /> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
     </head>
     <body>
-      <header>
-        <!--sidebar nav-bar-->
-        <div id="myNav" class="overlay">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <div class="overlay-content">
-              <a href="/">#</a>
-              <a href="/signin">Login</a>
-            </div> 
-        </div>
-        <!--Toolbar-->
-       <div class="toolbar">
-         <div class="open_icon" onclick="openNav()">&#9776;</div>
-         <span class="blog_icon">
-          <img src="./assets/icon.svg" alt="Whatspost" />
-         </span>
-       </div>
-</header>
-        
+      <header class="header-outer">
+        <div class="header-inner">
+          <div class="header-content responsive-wrapper">
 
-      <section>
+            <!--sidebar navbar-->
+            <div id="myNav" class="overlay">
+              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+              <nav>
+                <div class="overlay-content">
+                  <a href="/">#</a>
+                  <a href="/signin">Login</a>
+                </div>
+              </nav>
+            </div>
+
+            <!--search Box-->
+            <div id="myOverlay" class="overlaySearch">
+              <span class="closebtn" onclick="closeSearch()" title="Close Overlay">X</span>
+              <div class="overlay-contentSearch">
+                <div class="searchContainer">
+                   <i class="fa fa-search searchIcon" ></i>
+                   <input class="searchBox" type="search" name="search" placeholder="Search..." />
+                </div>
+                <div>
+                  <ul class="live-search-list">
+                    
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+              <div class="open_icon" onclick="openNav()">&#9776;</div>
+              <img class="blog_icon" src="./assets/icon.svg" alt="<%- siteName %>" />
+              <img class="search_icon" src="./assets/search-icon.svg" alt="search icon" onclick="openSearch()" />
+            </div>
+          </div>
+        </div>
+</header>
+<main class="main">
+  <div class="main-content responsive-wrapper">
+     <section class="widget">
         <% for(let i=0;i < data.length;i++) { %>
           <div>
            <% if(data[i]._imageFromSearch == 'noImageFound') { %>
@@ -51,15 +75,15 @@
             </div>
               <% } %>
           </div>
-         
        <% } %>
-
-
       </section>
+  </div>
+</main>
+      
       
       <!--Go by pages-->
       <div class="bottom-toolbar">
-        <a href="/page/1">MORE &#62&#62</a>
+        <a href="/page/1">MORE &#62</a>
       </div>
     </body>
    <script src="./assets/sidebarhelper.js"></script>

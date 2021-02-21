@@ -18,11 +18,16 @@ const mongoose = require("mongoose");
 // const session = require("express-session");
 // const mongoStore = require("connect-mongo")(session);
 const jimp = require("jimp");
+const _ = require("lodash");
 // const { check, validationResult, matchedData } = require("express-validator");
-const config = require("config");
-const siteName = config.siteName;
+// const config = require("config");
+// const siteName = config.siteName;
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
+const { htmlToText } = require("html-to-text");
+const mailgun = require("mailgun-js");
+const mailgunDomain = "sandboxd4f3f52e209e4038a6fe654dc393a82c.mailgun.org";
+const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: mailgunDomain });
 const postmodel = require("../Models/postSchema");
 const user = require("../Models/userSchema");
 const scriptToInjectModel = require("../Models/scriptToInjectSchema");
@@ -31,17 +36,17 @@ const databaseConnection = require("../Database/database");
 // call database function
 const conn = databaseConnection();
 
-/*
-    // parse incoming requests
-    app.use(bodyParser.urlencoded({extended:true}));
-    app.use(bodyParser.json());
-    app.use(express.json({
-      type: ['application/json','text/plain']
-    }));
-    */
-
 // sign up user
 router.post("/signup", (req, res, next) => {
+  // check if user with the email address exists,if exists notify else proceed to sign up
+  user.findOne({ email: req.body.email }, (err, identity) => {
+    if (identity != null) {
+      const error = new Error("User with that email address already exists!");
+      next(error);
+    // console.log(identity);
+    }
+  });
+
   // confirm that user typed same password twice
   if (req.body.password !== req.body.passwordConf) {
     const err = new Error("Passwords do not match.");
@@ -80,7 +85,8 @@ router.post("/signin", (req, res, next) => {
         err.status = 401;
         return next(err);
       }
-      req.session.userId = user._id;
+      req.session.userId = theUser._id;
+      console.log(req.session, "user token session", theUser._id);
       return res.redirect("/admin");
     });
   } else {
@@ -92,8 +98,7 @@ router.post("/signin", (req, res, next) => {
 
 // reset password
 router.post("/forgot-password", (req, res, next) => {
-// eslint-disable-next-line prefer-destructuring
-  const email = req.body.email;
+  const { email } = req.body;
 
   // find user with this email address
   user.findOne({ email: email })
@@ -105,7 +110,7 @@ router.post("/forgot-password", (req, res, next) => {
       }
       // token is sent to the forgot password form
       const token = crypto.randomBytes(32).toString("hex");
-
+      /*
       // set the resetpasswordtoken and resetpasswordexpires fields
       user.updateOne({ email: email },
         {
@@ -119,9 +124,19 @@ router.post("/forgot-password", (req, res, next) => {
           if (err) throw err;
           console.log("Document updated");
         });
+        */
 
       const userEmail = person.email;
-
+      const data = {
+        from: "noreply@blog.com",
+        to: userEmail,
+        subject: "Reset Password",
+        html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+        Please click on the following link, or paste this into your browser to complete the process:\n\n
+        https://${req.headers.host}/reset/${token}  \n\n  
+        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+      };
+      /*
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -129,17 +144,17 @@ router.post("/forgot-password", (req, res, next) => {
           pass: "kimutaidn1#",
         },
       });
-
+       */
+      /*
       const mailOptions = {
         from: "kimdennisb@gmail.com",
         to: userEmail,
         subject: `Reset your ${siteName} password`,
-        text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-        Please click on the following link, or paste this into your browser to complete the process:\n\n
-        https://${req.headers.host}/reset/${token}  \n\n  
-        If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        text: "message to be conveyed"
       };
+      */
       // send the email
+      /*
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.log(error);
@@ -147,26 +162,40 @@ router.post("/forgot-password", (req, res, next) => {
           console.log(`Email sent: ${info.response}`);
         }
       });
+      */
+      // eslint-disable-next-line no-unused-vars
+      return user.updateOne({ resetLink: token }, (err, success) => {
+        if (err) next(err);
+        mg.messages().send(data, (error, body) => {
+          if (error) next(error);
+          console.log(`Email has been sent!${body}`);
+          return res.json(body);
+        });
+      });
     });
 });
 
 // reset password
-router.post("/reset/:token", (req, res) => {
+router.post("/reset/:token", (req, res, next) => {
+  /*
   const query = {
     resetPasswordToken: req.params.token,
     resetPasswordExpires: {
       $gt: Date.now(),
     },
+  }; */
+  const query = {
+    resetLink: req.params.token,
   };
-    // find user with this token
-    // eslint-disable-next-line no-unused-vars
+  // find user with this token
+  // eslint-disable-next-line no-unused-vars
   user.findOne(query, (err, theuser) => {
-    if (!user) {
+    if (!theuser) {
       res.json({ message: "Password reset token is invalid or has expired." });
     }
     // if found,update the collection
-    const myquery = { resetPasswordToken: req.params.token };
-    const newvalues = {
+    const myquery = { resetLink: req.params.token };
+    /* const newvalues = {
       $set: {
         password: req.body.password,
         resetPasswordToken: "",
@@ -174,11 +203,24 @@ router.post("/reset/:token", (req, res) => {
         modifiedDate: Date(Date.now()),
       },
     };
-
+*/
     // eslint-disable-next-line no-unused-vars
-    user.updateOne(myquery, newvalues, (error, result) => {
+    /* user.updateOne(myquery, newvalues, (error, result) => {
       if (err) throw err;
       console.log("Password updated!");
+    });
+    */
+    user.findOne(myquery, (error, result) => {
+      if (err) return next(error);
+      // console.log(result);
+      const obj = { pasword: req.body.password };
+      // update user
+      _.assign(result, obj);
+      result.save((err) => {
+        if (err) return next(err);
+        console.log(result, "xo");
+        return res.status(200).json(result);
+      });
     });
   });
 });
@@ -292,6 +334,7 @@ router.post("/article", (req, res) => {
   const refinedArticle = {
     title: req.body.title,
     body: req.body.body,
+    plainTextBody: htmlToText(req.body.body),
     _imageFromSearch: _imageSearch(req.body.body),
   };
 

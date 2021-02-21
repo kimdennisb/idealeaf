@@ -1,64 +1,142 @@
-//get checkbox elements for  the posts and script sections
-var checkbox = document.querySelectorAll('.checkbox');
-var checkboxInjectedScript = document.querySelectorAll('#checkbox');
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
+// get checkbox elements for  the posts and script sections
+const checkbox = document.querySelectorAll(".checkbox");
+const checkboxInjectedScript = document.querySelectorAll("#checkbox");
+const checkUncheckActivator = document.querySelector(".check-uncheckActivator");
+const checkUncheckAll = document.querySelector(".check-uncheckAll");
 
-//get edit and remove elements
-var edit = document.querySelector('.edit');
-var remove = document.querySelector('.remove');
+// get edit and remove elements
+const edit = document.querySelector(".edit");
+const remove = document.querySelector(".remove");
 
-function handler() {
-    //allow sole checking
-    Array.prototype.forEach.call(checkbox,(e)=>{e.checked = false});
-     this.checked = true
+// variable to toggle between chooseAll states
+let all = false;
 
-   if(this.checked){
-     edit.style.opacity = '1';
-     remove.style.opacity = '1';
-     edit.style.pointerEvents = 'fill';
-     remove.style.pointerEvents = 'fill';
-   }
+// check all the checkboxes
+function checkAll() {
+  /**
+   *when we check all checkboxes,make the edit button unclickable and remove button clickable
+   */
+  edit.style.opacity = "0";
+  remove.style.opacity = "1";
+  edit.style.pointerEvents = "none";
+  remove.style.pointerEvents = "fill";
+
+  // console.log(checkbox, typeof checkbox);
+  Array.prototype.forEach.call(checkbox, (e) => { e.checked = true; });
+  checkUncheckAll.checked = true;
+  // eslint-disable-next-line no-unused-vars
+  all = true;
 }
 
- for (let i in checkbox){
-    // console.log(checkbox[i])
-   checkbox[i].onclick = handler;
- }
+// check all the checkboxes
+function uncheckAll() {
+/**
+   *when we uncheck all checkboxes,make the edit and remove buttons unclickable
+   */
+  edit.style.opacity = "0";
+  remove.style.opacity = "0";
+  edit.style.pointerEvents = "none";
+  remove.style.pointerEvents = "none";
 
- //get delete element and send ajax request
- remove.onclick = function(){
-     //returns a nodeList
-     var checkedPost = Array.prototype.filter.call(checkbox,(item) => { return item.checked})
-    //get next element sibling
-    var _sibling = document.getElementById(checkedPost[0].id).nextElementSibling.innerHTML;
-    //console.log(_sibling)
+  // console.log(checkbox, typeof checkbox);
+  Array.prototype.forEach.call(checkbox, (e) => { e.checked = false; });
+  checkUncheckAll.checked = false;
+  // eslint-disable-next-line no-unused-vars
+  all = false;
+}
 
-    //send ajax request
-    fetch('/delete',{
-        method: 'delete',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({'header':_sibling})
+function handler() {
+  // check for the number of checked checkboxes,if > 1 but < length - 1,allow only remove button,
+  // else allow edit and remove buttons
+  const noOfChecked = Array.prototype.filter.call(checkbox, (e) => e.checked);
+  if (noOfChecked.length > 1) {
+    edit.style.opacity = "0";
+    remove.style.opacity = "1";
+    edit.style.pointerEvents = "none";
+    remove.style.pointerEvents = "fill";
+  } else {
+    edit.style.opacity = "1";
+    remove.style.opacity = "1";
+    edit.style.pointerEvents = "fill";
+    remove.style.pointerEvents = "fill";
+  }
+}
+
+// toggle between check/uncheck all checkboxes when clicked
+checkUncheckActivator.onclick = () => {
+  all ? uncheckAll() : checkAll();
+};
+
+checkUncheckAll.onclick = () => {
+  all ? uncheckAll() : checkAll();
+};
+
+const checkboxElements = Object.values(checkbox);
+
+checkboxElements.map((elem) => {
+  elem.addEventListener("click", () => {
+    // bind the this value of the arrow function to the required object
+    // handler.call(elem);
+    handler();
+  });
+  return elem;
+});
+
+// get delete element and send ajax request
+remove.onclick = () => {
+  // returns a nodeList
+  const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
+  // get next element sibling
+  const _siblings = [];
+  checkedPost.forEach((x) => {
+    console.log(x, x.id);
+    const titles = document.getElementById(x.id).nextElementSibling.innerHTML;
+    _siblings.push(titles);
+  });
+
+  // send ajax request
+  fetch("/delete", {
+    method: "delete",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ header: _siblings }),
+  })
+    .then((res) => {
+      if (res.ok) return res.json();
     })
-    .then((res)=>{
-        if(res.ok) return res.json();
-    })
-    .then((data)=>{
-        window.location.reload(true);
+    // eslint-disable-next-line no-unused-vars
+    .then((data) => {
+      window.location.reload(true);
     });
- }
+};
 
- //update element
- edit.onclick = function() {
-       //returns a nodeList
-       var checkedPost = Array.prototype.filter.call(checkbox,(item) => { return item.checked})
-       //get next element sibling
-       var _sibling = document.getElementById(checkedPost[0].id).nextElementSibling.innerHTML;
-       console.log(_sibling)
-       var editPathname = _sibling.split(' ').join('-');
-       
-    //redirect to the edit page
-    window.location.href = `edit/${editPathname}`;
- }
+// update element
+edit.onclick = () => {
+  // returns a nodeList
+  const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
+  // get next element sibling
+  const _sibling = document.getElementById(checkedPost[0].id).nextElementSibling.innerHTML;
+  console.log(_sibling);
+  const editPathname = _sibling.split(" ").join("-");
 
- //redirect to editor
-var redirecttoEditor = document.querySelector('.new');
-redirecttoEditor.onclick = function() { window.location.href = '/new' }
+  // redirect to the edit page
+  window.location.href = `edit/${editPathname}`;
+};
+
+// redirect to editor
+const redirecttoEditor = document.querySelector(".new");
+redirecttoEditor.onclick = () => { window.location.href = "/new"; };
+
+// redirect user to signIn or signUp page
+document.querySelector(".userIcon").onclick = function () {
+  window.location.href = "/signin";
+};
+
+function openNav() {
+  document.getElementById("myNav").style.width = "100%";
+}
+
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+}

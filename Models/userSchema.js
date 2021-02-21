@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpires: String,
+  resetLink: {
+    data: String,
+    default: "",
+  },
 });
 
 // authenticate user input against database
@@ -50,6 +54,7 @@ UserSchema.statics.authenticate = function (email, password, callback) {
 
 UserSchema.pre("save", function (next) {
   const user = this;
+  if (!user.isModified("password")) return next();
   bcrypt.hash(user.password, 10, (err, hash) => {
     if (err) {
       return next(err);

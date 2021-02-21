@@ -10,22 +10,27 @@
     </head>
     <body>
            <div class="content">
-             <input type="text" id="title" placeholder="(Title)" required />
+             <!--
+               <input type="text" id="title" placeholder="(Title)" required />
+             -->
+             
             <div id="editor" class="pell"></div>
             <div id="progress">
               <progress id="progressBar" value="0"></progress>
               <span id="percentile"></span>
             </div>
-            
-            <button id="pell-push" >Publish</button>
+            <!--
+              <button id="pell-push" >Publish</button>
             <button class="done">Done</button>
-            <div  style="margin-top: 20px;display: none;">
+            -->
+            
+            <div  style="margin-top: 20px; display: none;">
               <h3>HTML output:</h3>
               <pre id="html-output"></pre>
             </div>
           </div>
       
-          <script src="./assets/pell.js"></script>
+          <script src="../assets/pell.js"></script>
           <script>
             var editor = window.pell.init({
               element: document.getElementById('editor'),
@@ -34,33 +39,17 @@
                 document.getElementById('html-output').textContent = html
               },
               upload : {
-                  api : 'photos'
+                  api : '/photos'
               }
             });
-
-           
-           //browser URL pathname
-            /*const pathname=  'html/' + window.location.pathname.split('/')[2];
-           console.log(pathname)
-           fetch(pathname,{
-                method: 'GET'
-            })
-            .then(res=>{
-                if(res.ok)
-                console.log(res);
-                return res.json();
-            }) 
-            .then(data =>{
-                console.log(data)
-            })
-*/          
+      
 
             //add data from the database to the editor
             const div = document.createElement('div');
              div.hidden = true;
-             div.innerText = '<%= data %>';
+             div.innerText = '<%- data.body %>';
               
-            editor.content.innerHTML ='<%- data %>' ; 
+            editor.content.innerHTML ='<%- data.body %>' ; 
 
             //get content and push to database
             var button = document.getElementById('pell-push'),
@@ -73,19 +62,20 @@
             
               //we open xhr here so that it can be used anytime on `click` event
 
-            xhr.open('POST','/article',true);
+            xhr.open('PUT','/update',true);
             xhr.setRequestHeader('Accept','application/json');
             xhr.setRequestHeader('Content-type','application/json');
 
             var _articleBody = document.querySelector('pre').textContent;
                 _articleTitle = document.getElementById('title').value;
-
+          
             var data = {
-              'title' : _articleTitle,
+              'title' : location.pathname.split("/")[2],
               'body' : _articleBody
                       }
 
             var content =JSON.stringify(data);
+            console.log(data,` my line `)
             xhr.send(content);
             });
 
@@ -97,9 +87,9 @@
 
             xhr.onloadend = function(e){
               progressBar.value = e.loaded;
-              percentile.innerText = 'Published!'
+              percentile.innerText = 'Updated!'
               Swal.fire(
-                'Published'
+                'Updated'
               );
              
             }
@@ -116,7 +106,7 @@
             xhr.onerror = function(e){
               console.log(e)
                Swal.fire(
-                'Error publishing article'
+                'Error updating article'
               );
             }
              var _returntoDashboard = document.querySelector('.done');

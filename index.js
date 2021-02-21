@@ -18,6 +18,8 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const databaseConnection = require("./Database/database");
 
+require("dotenv").config();
+
 // don't show the log when it is test
 if (config.util.getEnv("NODE_ENV" !== "test")) {
   // use morgan to log at command line
@@ -29,7 +31,7 @@ const port = process.env.PORT || 3000;
 const get = require("./Routes/get");
 const remove = require("./Routes/delete");
 const post = require("./Routes/post");
-// update = require('./Routes/update');
+const update = require("./Routes/update");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -65,7 +67,7 @@ app.use(session({
 app.use("/", get);
 app.use("/", post);
 app.use("/", remove);
-// app.use('/update',update);
+app.use("/", update);
 
 // catch 404 and forward to error handler
 /*

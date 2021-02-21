@@ -40,6 +40,7 @@ router.get("/admin", (req, res, next) => {
 find user using session stored
 if no user is authorized,redirect to sign in page else fetch user data
   */
+  // console.log(req.session.userId);
   user.findById(req.session.userId)
     .exec((error, authorizedUser) => {
       if (error) {
@@ -52,8 +53,7 @@ if no user is authorized,redirect to sign in page else fetch user data
           if (err) {
             next(err);
           }
-
-          res.render("admin.ejs", { data: data });
+          res.render("admin.ejs", { data: data, siteName });
         });
       }
     });
@@ -93,13 +93,34 @@ router.get("/getinjectedscripts", (req, res) => {
   });
 });
 
+// verify reset password token
+router.get("/reset/:token", (req, res, next) => {
+  /*
+  const query = {
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: { $gt: Date.now() },
+  };
+  */
+  const query = { resetLink: req.params.token };
+  // console.log(req.params.token);
+  user.findOne(query, (err, theuser) => {
+    if (!theuser) {
+      const error = new Error("Password reset token is invalid or has expired.");
+      error.status = 400;
+      return next(error);
+    }
+    res.render("newPassword.ejs");
+  });
+});
+
 // edit article
-router.get("/edit/:header", (req, res) => {
-  const editPathName = (req.params.header).split("-").join(" ");
-  // console.log(editPathname)
-  postmodel.findOne({ header: editPathName }, (err, data) => {
+router.get("/edit/:title", (req, res) => {
+  const editPathName = (req.params.title).split("-").join(" ");
+  // console.log(editPathName);
+  postmodel.findOne({ title: editPathName }, (err, data) => {
     if (err) res.send(500, err);
-    res.render("editArticle.ejs", { data: data.item });
+    // console.log(data);
+    res.render("editArticle.ejs", { data: data });
   });
 });
 
@@ -131,22 +152,6 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
         });
       });
     });
-});
-
-// reset password with token
-router.get("/reset/:token", (req, res, next) => {
-  const query = {
-    resetPasswordToken: req.params.token,
-    resetPasswordExpires: { $gt: Date.now() },
-  };
-  user.findOne(query, (err, theuser) => {
-    if (!theuser) {
-      const error = new Error("Password reset token is invalid or has expired.");
-      error.status = 400;
-      return next(error);
-    }
-    res.render("newPassword.ejs");
-  });
 });
 
 // view specific article
@@ -184,24 +189,32 @@ router.get("/article/:titleOfTheArticle", (req, res, next) => {
 
 // get first number of posts on the front page(4)
 router.get("/", (req, res, next) => {
-  postmodel.find({})
+  if (!req.query.s) {
+    postmodel.find({})
     // eslint-disable-next-line object-curly-spacing
     // eslint-disable-next-line quote-props
-    .sort({ "date": -1 })
-    .limit(4)
-    .exec((err_, data) => {
-      if (err_) res.send(500, err_);
-      // eslint-disable-next-line no-unused-vars
-      postmodel.count().exec((err, count) => {
-        if (err) return next(err);
-        // res.json(data) -during testing
-        const siteURL = req.headers.host;
+      .sort({ "date": -1 })
+      .limit(4)
+      .exec((err_, data) => {
+        if (err_) res.send(500, err_);
+        // eslint-disable-next-line no-unused-vars
+        postmodel.count().exec((err, count) => {
+          if (err) return next(err);
+          // res.json(data) -during testing
+          const siteURL = req.headers.host;
 
-        res.render("home.ejs", {
-          data: data, siteDescription, siteURL, siteName,
+          res.render("home.ejs", {
+            data: data, siteDescription, siteURL, siteName,
+          });
         });
       });
+  } else {
+    postmodel.fullTextSearch(req.query.s).exec((err, results) => {
+    // console.log(results, err);
+      if (err) next(err);
+      res.json(results);
     });
+  }
 });
 
 /**

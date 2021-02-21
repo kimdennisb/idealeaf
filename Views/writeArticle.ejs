@@ -105,9 +105,10 @@
             xhr.onloadend = function(e){
               progressBar.value = e.loaded;
               percentile.innerText = 'Published!'
-              Swal.fire(
+              /*Swal.fire(
                 'Published'
-              );
+              );*/
+              window.location.reload(true);
             }
 
             xhr.onprogress = function(e){

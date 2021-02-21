@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./assets/index.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="./assets/1391017.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Manage posts</title>
 </head>
+<header class="header-outer">
+  <div class="header-inner">
+    <div class="header-content responsive-wrapper">
 
-<header>
-  <!--sidebar nav-bar-->
-  <div id="myNav" class="overlay">
-      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-      <div class="overlay-content">
-        <a href="/admin">#</a>
-        <a href="/new">Write Post</a>
-        <!--The button has to behave as a block element--> 
-        <div>
-           <button type="button" class="addScript">Inject Script</button>
-        </div>
-        <button type="button" class="collapsible-btn">Injected Scripts</button>
-        <!--arrow bounce
-        <div class="arrow bounce">
-          <a class="fa fa-arrow-down fa-2x"></a>
-        </div>-->
+      <!--sidebar navbar-->
+      <div id="myNav" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="overlay-content">
+          <a href="/admin">#</a>
+          <a href="/new">Write Post</a>
+          <!--The button has to behave as a block element--> 
+          <div>
+             <button type="button" class="addScript">Inject Script</button>
+          </div>
+          <button type="button" class="collapsible-btn">Injected Scripts</button>
+          
         
-        <!--Stored scripts-->
-        <div class="collapsible">
-          <div class="_injectedScripts">
-            <!--scripts to be injected dynamically-->   
+          <!--Stored scripts-->
+          <div class="collapsible">
+            <div class="_injectedScripts">
+              <!--scripts to be injected dynamically-->   
+          </div>
+          </div>
+          
         </div>
-        </div>
-        
+    </div>
+
+      <!--Toolbar-->
+      <div class="header-navigation">
+        <div class="open_icon" onclick="openNav()">&#9776;</div>
+        <img class="blog_icon" src="./assets/icon.svg" alt="<%- siteName %>" />
+        <i class="fa fa-user userIcon"></i>
       </div>
+
+      <!--popup input-->
+      <div class="popup-input" >
+        <input type="text"class="input" placeholder="Insert Script" name="script" required />
+        <button type="submit" class="btn_save">Save</button>
+        <button class="btn_cancel">Cancel</button>
+      </div>
+    </div>
   </div>
-
- <div class="toolbar">
-   <div class="open_icon" onclick="openNav()">&#9776;</div>
-   <span class="blog_icon">
-   <img src="./assets/icon.svg" alt="Whatspost" />
-   </span>
- </div>
-
- <div class="popup-input" >
-   <input type="text"class="input" placeholder="Insert Script" name="script" required />
-   <button type="submit" class="btn_save">Save</button>
-   <button class="btn_cancel">Cancel</button>
- </div>
 </header>
 
 <body>
 
     <div class="_allposts">  
         <div class="control-section">
-                <label for="search" class="label-search">Search</label>
-                <input class="search" id="search"  type="search" />
-                <span class="edit">&#10001</span>
-                <span class="remove">&#9987</span>  
-                <button class="new">New</button>
+          <input type="checkbox" class="check-uncheckAll" />
+          <input type="button" class="check-uncheckActivator" value="Un/checkAll" />
+         <!--label for="search" class="label-search">Search</label>
+          <input class="search" id="search"  type="search" />--> 
+          <input type="button" value="&#10001;" class="edit" />
+          <input type="button" value="&#9987;" class="remove" />
+          <input type="button" value="New" class="new" />
         </div>
         <% for( var i = 0;i < data.length;i++) { %>
             <div class="_post">
@@ -65,23 +71,12 @@
                 <span><%= data[i].title %></span>
               </label>
                
-                <!-- <label class="c-custom-checkbox">
-                  <input type="checkbox" />
-                  <svg width="32" height="32" viewBox="-4 -4 39 39" aria-hidden="true" focusable="false">
-                    
-                    <rect class="checkbox_bg" width="35" height="35" x="-2" y="-2" stroke="currentColor" fill="none" stroke-width="3" rx="6" ry="6"></rect>
-                    
-                    <polyline class="checkbox_checkmark" points="4,14 2,23 28,5" stroke="transparent" stroke-width="4" fill="none"></polyline>
-                  </svg>
-                  <span><%= data[i].header %></span>
-                </label>-->
-               
         </div>
         <% } %>
         
     </div>
 </body>
-<script src="./assets/sidebarhelper.js"></script>
+<!--<script src="./assets/sidebarhelper.js"></script>-->
 <script src="./assets/update-deletehelper.js"></script>
 <script src="./assets/scriptHandler.js"></script>
 </html>
