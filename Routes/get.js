@@ -80,9 +80,19 @@ router.get("/forgot-password", (req, res) => {
 });
 
 // new article
-router.get("/new", (req, res) => {
-  console.log("called");
-  res.render("writeArticle.ejs");
+router.get("/new", (req, res, next) => {
+  // console.log("called");
+  user.findById(req.session.userId)
+    .exec((error, authorizedUser) => {
+      if (error) {
+        next(error);
+      }
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        res.render("writeArticle.ejs");
+      }
+    });
 });
 
 // get injected scripts
