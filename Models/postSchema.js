@@ -17,6 +17,7 @@ const postSchema = new mongoose.Schema({
   },
   _imageFromSearch: String,
   date: { type: Date, default: Date.now },
+  visits: { type: Number, required: true },
 });
 
 // index postschema to enable text searching
@@ -35,6 +36,7 @@ postSchema.index({
 // mongoose-partial-full-search
 
 postSchema.statics = {
+  /*
   searchPartial: function (q, callback) {
     return this.find({
       $or: [
@@ -58,6 +60,7 @@ postSchema.statics = {
       if (!err && data.length === 0) return this.searchPartial(q, callback);
     });
   },
+  */
   fullTextSearch: function (q) {
     return this.find({ $text: { $search: q, $caseSensitive: false } },
       { score: { $meta: "textScore" } })

@@ -170,13 +170,18 @@ router.get("/article/:titleOfTheArticle", (req, res, next) => {
   // console.log(req.params.title)
 
   const titleOfTheArticle = (req.params.titleOfTheArticle).split("-").join(" ");
+
+  // handle views count by incrementing visitors count
+  postmodel.findOneAndUpdate({ title: titleOfTheArticle },
+    { $inc: { visits: 1 } }, { new: true });
+
   postmodel.findOne({ title: titleOfTheArticle }, (err, article) => {
     if (err) {
       return next(err);
     }
     // console.log(article);
     const {
-      id, title, body, _imageFromSearch, date,
+      id, title, body, _imageFromSearch, date, visits,
     } = article;
     // eslint-disable-next-line no-undef
     // console.log(id, title, body, _imageFromSearch, date);
@@ -187,12 +192,14 @@ router.get("/article/:titleOfTheArticle", (req, res, next) => {
 
     // BUILD THE RESPONSE NICELY
     const cleanArticle = {
-      id, title, body, description, imageURL, siteURL, date, siteName,
+      id, title, body, description, imageURL, siteURL, date, siteName, visits,
     };
     // console.log(cleanArticle);
     // console.log(siteURL);
     // console.log(description);
     // console.log(req.headers);
+    // console.log(title);
+    console.log(visits);
     (_imageFromSearch === "noImageFound") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle }) : res.render("viewArticle", { data: cleanArticle });
   });
 });

@@ -86,7 +86,9 @@ search element
 */
 
 /* end of search-bar */
-
+.article_title {
+  position: relative;
+}
 .article_title > a {
     text-decoration: none;
     font-size: 25px;
@@ -95,6 +97,11 @@ search element
 .article_title span {
     font-size: 28px;
     font-weight: 300;
+}
+.article_title .view-count {
+  font-style: italic;
+  float: right;
+  margin-left: 15px;
 }
 .article_body {
     font-size: 23px;
