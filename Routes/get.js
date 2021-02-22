@@ -173,7 +173,7 @@ router.get("/article/:titleOfTheArticle", (req, res, next) => {
 
   // handle views count by incrementing visitors count
   postmodel.findOneAndUpdate({ title: titleOfTheArticle },
-    { $inc: { visits: 1 } }, { new: true });
+    { $inc: { visits: 1 } }, { new: true }).exec();
 
   postmodel.findOne({ title: titleOfTheArticle }, (err, article) => {
     if (err) {
