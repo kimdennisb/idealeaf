@@ -40,7 +40,7 @@ router.get("/admin", (req, res, next) => {
 find user using session stored
 if no user is authorized,redirect to sign in page else fetch user data
   */
-  // console.log(req.session.userId);
+  console.log(req.session.userId);
   user.findById(req.session.userId)
     .exec((error, authorizedUser) => {
       if (error) {
@@ -59,14 +59,67 @@ if no user is authorized,redirect to sign in page else fetch user data
     });
 });
 
+// access list of users
+router.get("/users", (req, res, next) => {
+  /*
+find user using session stored
+if no user is authorized,redirect to sign in page else fetch user data
+  */
+  // console.log(req.session.userId);
+  user.findById(req.session.userId)
+    .exec((error, authorizedUser) => {
+      if (error) {
+        next(error);
+      }
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        user.find({}, (err, data) => {
+          if (err) {
+            next(err);
+          }
+          res.render("users.ejs", { data: data, siteName });
+        });
+      }
+    });
+});
+
+// access list of scripts
+router.get("/scripts", (req, res, next) => {
+  /*
+find user using session stored
+if no user is authorized,redirect to sign in page else fetch user data
+  */
+  // console.log(req.session.userId);
+  user.findById(req.session.userId)
+    .exec((error, authorizedUser) => {
+      if (error) {
+        next(error);
+      }
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        scriptToInjectModel.find({}, (err, data) => {
+          if (err) {
+            next(err);
+          }
+          res.render("scripts.ejs", { data: data, siteName });
+        });
+      }
+    });
+});
+
 // destroy session(deauthenticate user)
 router.get("/logout", (req, res, next) => {
+  // delete cookie
+  res.clearCookie("loggedIn");
   if (req.session) {
     // delete session object
     req.session.destroy((err) => {
       if (err) {
         return next(err);
       }
+
       return res.redirect("/");
     });
   }
@@ -100,26 +153,6 @@ router.get("/getinjectedscripts", (req, res) => {
   scriptToInjectModel.find({}, (err, scripts) => {
     if (err) res.send(500, err);
     res.send(scripts);
-  });
-});
-
-// verify reset password token
-router.get("/reset/:token", (req, res, next) => {
-  /*
-  const query = {
-    resetPasswordToken: req.params.token,
-    resetPasswordExpires: { $gt: Date.now() },
-  };
-  */
-  const query = { resetLink: req.params.token };
-  // console.log(req.params.token);
-  user.findOne(query, (err, theuser) => {
-    if (!theuser) {
-      const error = new Error("Password reset token is invalid or has expired.");
-      error.status = 400;
-      return next(error);
-    }
-    res.render("newPassword.ejs");
   });
 });
 
@@ -166,7 +199,7 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
 
 // view specific article
 
-router.get("/article/:titleOfTheArticle", (req, res, next) => {
+router.get("/article/:titleOfTheArticle", cacheMiddleware(30), (req, res, next) => {
   // console.log(req.params.title)
 
   const titleOfTheArticle = (req.params.titleOfTheArticle).split("-").join(" ");
@@ -199,13 +232,13 @@ router.get("/article/:titleOfTheArticle", (req, res, next) => {
     // console.log(description);
     // console.log(req.headers);
     // console.log(title);
-    console.log(visits);
+    // console.log(visits);
     (_imageFromSearch === "noImageFound") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle }) : res.render("viewArticle", { data: cleanArticle });
   });
 });
 
 // get first number of posts on the front page(4)
-router.get("/", (req, res, next) => {
+router.get("/", cacheMiddleware(30), (req, res, next) => {
   if (!req.query.s) {
     postmodel.find({})
     // eslint-disable-next-line object-curly-spacing
@@ -237,7 +270,7 @@ router.get("/", (req, res, next) => {
 /**
  * GET /image/:photoID
  */
-router.get("/image/:photoID", (req, res, next) => {
+router.get("/image/:photoID", cacheMiddleware(30), (req, res, next) => {
   // get images from req.params.photoID object
 
   try {
@@ -269,6 +302,50 @@ router.get("/image/:photoID", (req, res, next) => {
   downloadStream.on("end", () => {
     res.end();
   });
+});
+
+/**
+ * @returns json in array form
+ * route is consumed by client
+ * important during testing
+ */
+
+// gets all posts
+router.get("/posts", cacheMiddleware(30), (req, res, next) => {
+  postmodel.find({}).exec((err, posts) => {
+    if (err) return next(err);
+    res.status(200).json(posts);
+  });
+});
+
+// verify reset password token
+router.get("/reset/:token", (req, res, next) => {
+  // console.log(req.params.token);
+  const query = { resetLink: req.params.token };
+  // console.log(req.params.token);
+  user.findOne(query, (err, theuser) => {
+    if (!theuser) {
+      const error = new Error("Password reset token is invalid or has expired.");
+      error.status = 400;
+      return next(error);
+    }
+    res.render("newPassword.ejs");
+  });
+});
+
+// gets view for a single post
+router.get("/singlepost/:title", cacheMiddleware(30), (req, res, next) => {
+  const title = (req.params.title).split("-").join(" ");
+  postmodel.find({ title: title }, (err, post) => {
+    if (err) return next(err);
+    console.log(post[0]);
+    res.status(200).json(post[0]);
+  });
+});
+
+// handle a 404 page(needs to be the last)
+router.get("*", (req, res) => {
+  res.render("error.ejs");
 });
 
 module.exports = router;

@@ -89,9 +89,11 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(port, () => {
-  console.log(`listening on the port ${port}`);
-});
+if (!module.parent) {
+  app.listen(port, () => {
+    console.log(`listening on the port ${port}`);
+  });
+}
 
 module.exports = app; // for testing
 
@@ -99,7 +101,7 @@ module.exports = app; // for testing
  *
  *
  *
- * :)
+ * :) Dennis Kimutai
  *
  *
  *

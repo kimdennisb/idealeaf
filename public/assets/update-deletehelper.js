@@ -2,8 +2,8 @@
 /* eslint-disable no-underscore-dangle */
 // get checkbox elements for  the posts and script sections
 const checkbox = document.querySelectorAll(".checkbox");
-const checkboxInjectedScript = document.querySelectorAll("#checkbox");
-const checkUncheckActivator = document.querySelector(".check-uncheckActivator");
+// const checkboxInjectedScript = document.querySelectorAll("#checkbox");
+// const checkUncheckActivator = document.querySelector(".check-uncheckActivator");
 const checkUncheckAll = document.querySelector(".check-uncheckAll");
 
 // get edit and remove elements
@@ -56,6 +56,11 @@ function handler() {
     remove.style.opacity = "1";
     edit.style.pointerEvents = "none";
     remove.style.pointerEvents = "fill";
+  } else if (noOfChecked.length < 1) {
+    edit.style.opacity = "0";
+    remove.style.opacity = "0";
+    edit.style.pointerEvents = "none";
+    remove.style.pointerEvents = "none";
   } else {
     edit.style.opacity = "1";
     remove.style.opacity = "1";
@@ -63,11 +68,6 @@ function handler() {
     remove.style.pointerEvents = "fill";
   }
 }
-
-// toggle between check/uncheck all checkboxes when clicked
-checkUncheckActivator.onclick = () => {
-  all ? uncheckAll() : checkAll();
-};
 
 checkUncheckAll.onclick = () => {
   all ? uncheckAll() : checkAll();
@@ -84,42 +84,47 @@ checkboxElements.map((elem) => {
   return elem;
 });
 
-// get delete element and send ajax request
-remove.onclick = () => {
-  // returns a nodeList
-  const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
-  // get next element sibling
-  const _siblings = [];
-  checkedPost.forEach((x) => {
-    console.log(x, x.id);
-    const titles = document.getElementById(x.id).nextElementSibling.innerHTML;
-    _siblings.push(titles);
-  });
-
-  // send ajax request
-  fetch("/delete", {
+// delete-helper
+function deleteHelper(route, element) {
+  fetch(route, {
     method: "delete",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ header: _siblings }),
+    body: JSON.stringify({ header: element }),
   })
     .then((res) => {
       if (res.ok) return res.json();
     })
-    // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
     .then((data) => {
       window.location.reload(true);
     });
-};
+}
 
-// update element
+// get delete element and send ajax request
+remove.onclick = function () {
+  const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
+  const _siblings = [];
+  checkedPost.forEach((x) => {
+    console.log(x, x.id);
+    const titles = document.getElementById(x.id).parentElement.nextElementSibling;
+    const element = titles.firstChild.innerHTML;
+    _siblings.push(element);
+  });
+  // eslint-disable-next-line no-nested-ternary
+  (this.id === "remove-post") ? deleteHelper("/delete-post", _siblings)
+    : (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings)
+      : deleteHelper("/delete-script", _siblings);
+};
+// update(edit) element
 edit.onclick = () => {
   // returns a nodeList
   const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
   // get next element sibling
-  const _sibling = document.getElementById(checkedPost[0].id).nextElementSibling.innerHTML;
-  console.log(_sibling);
-  const editPathname = _sibling.split(" ").join("-");
-
+  const _sibling = document.getElementById(checkedPost[0].id).parentElement.nextElementSibling;
+  const element = _sibling.firstChild.innerHTML;
+  // console.log(element);
+  const editPathname = element.split(" ").join("-");
+  // console.log(editPathname);
   // redirect to the edit page
   window.location.href = `edit/${editPathname}`;
 };
@@ -129,14 +134,52 @@ const redirecttoEditor = document.querySelector(".new");
 redirecttoEditor.onclick = () => { window.location.href = "/new"; };
 
 // redirect user to signIn or signUp page
-document.querySelector(".userIcon").onclick = function () {
-  window.location.href = "/signin";
+document.querySelector(".sign-out-wrapper").onclick = () => {
+  window.location.href = "/logout";
 };
 
+// redirect user to admin page for posts
+document.querySelector(".posts").onclick = () => {
+  window.location.href = "/admin";
+};
+// redirect user to admin page for users
+document.querySelector(".users").onclick = () => {
+  window.location.href = "/users";
+};
+
+// redirect user to admin page for posts
+document.querySelector(".scripts").onclick = () => {
+  window.location.href = "/scripts";
+};
+
+// eslint-disable-next-line no-unused-vars
 function openNav() {
   document.getElementById("myNav").style.width = "100%";
 }
 
+// eslint-disable-next-line no-unused-vars
 function closeNav() {
   document.getElementById("myNav").style.width = "0%";
 }
+
+/**
+ * live search posts in admin
+ */
+const input = document.querySelector(".searchBox");
+const table = document.getElementsByTagName("table")[0];
+const items = table.rows;
+input.addEventListener("keyup", (ev) => {
+  const text = ev.target.value;
+  const pat = new RegExp(text, "i");
+  // eslint-disable-next-line no-plusplus
+  for (let i = 1; i < items.length; i++) {
+    const item = items[i];
+    const elem = item.children.item(1);
+    if (pat.test(elem.firstChild.innerHTML)) {
+      item.classList.remove("hidden");
+    } else {
+      // console.log(item);
+      item.classList.add("hidden");
+    }
+  }
+});

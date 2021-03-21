@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable consistent-return */
 /* eslint-disable object-shorthand */
+
 /**
  * User registration schema
  */
@@ -15,18 +16,17 @@ const UserSchema = new mongoose.Schema({
     required: true,
     trim: true,
     unique: true,
+    lowercase: true,
   },
   password: {
     type: String,
     required: true,
   },
-  resetPasswordToken: String,
-  resetPasswordExpires: String,
   resetLink: {
     data: String,
     default: "",
   },
-});
+}, { timestamps: true });
 
 // authenticate user input against database
 UserSchema.statics.authenticate = function (email, password, callback) {

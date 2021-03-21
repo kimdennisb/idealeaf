@@ -21,6 +21,7 @@
   position: sticky;
   top: calc(var(--header-height-difference) * -1);
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 .header-inner {
   width: 100%;
@@ -38,7 +39,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-.header-content .header-navigation {
+.header-content .header-navigation  {
   display: grid;
   grid-template-columns: 10% 80% 10%;
   justify-items: center;
@@ -82,8 +83,11 @@ body {
     background-color: #f2f5f7;
 }
 /*
-search element
+search element in admin dashboard
 */
+.hidden { 
+  display: none;
+}
 
 /* end of search-bar */
 .article_title {
@@ -271,7 +275,6 @@ login and sign up forms
     position: relative;
     top: 25%;
     width: 100%;
-    text-align: center;
     margin-top: 30px;
     display: flex;
     flex-direction: column;
@@ -282,7 +285,6 @@ login and sign up forms
 .overlay-contentSearch {
 position: relative;
 top: 25%;
-width: 80%;
 text-align: center;
 margin-top: 30px;
 margin: auto;
@@ -394,8 +396,8 @@ li:hover{
 float: none;
  position: fixed;
  display: none;
- border: 3px solid #f1f1f1;
- z-index: 9;
+ border: 3px solid gray;
+ z-index: 10000;
 }
 
 .popup-input input {
@@ -418,7 +420,7 @@ float: none;
   background-color: gray;
   cursor: pointer;
 }
-.collapsible-btn {
+.collapsible-btn, .addScript {
   background-color: #eee;
   color: #444;
   padding: 18px;
@@ -427,12 +429,23 @@ float: none;
   outline: none;
   font-size: 15px;
   margin-bottom: 18px;
+  text-align: left;
 }
+.collapsible-btn::after {
+  content: "\02795";
+  font-size: 13px;
+  color: #777;
+  float: right;
+}
+/*
+.active::after{
+  content: "\2796";
+}*/
 .active, .collapsible-btn:hover, .addScript:hover {
   background-color: #ccc;
   cursor: pointer;
 }
- ._injectedScripts {
+ ._injectedScripts {/*
   display: flex;
   flex-direction: column;
   margin: 8px;
@@ -441,13 +454,19 @@ float: none;
   overflow-y: auto;
   border: 1px solid snow;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: flex-start;*/
+  padding: 0 10px;
+  max-height: 0;
+  transition: max-height 0.5s;
+  overflow: hidden;
+  overflow-y: scroll;
 }
+/*
 .collapsible {
   display: none; 
-}
+}*/
 ._injectedScripts label {
-  left: 0;
+    display: block;
 }
 .spanDelete:hover {
   background-color: whitesmoke;
@@ -471,12 +490,16 @@ manage posts
 ._allposts {
     display: flex;
     flex-direction: column;
-    /*justify-content: center;
-    align-items: center;*/
+    justify-content: center;
+    align-items: center;
     margin: 38px;
 }
+.containerSearch {
+text-align: center;
+margin-top: 2px;
+}
 ._post  {
-    margin-top: 8px;
+    margin: 8px 0 8px 0;
 }
 .edit , .remove {
     margin-left: auto;
@@ -568,3 +591,175 @@ border-radius: 5px;
   stroke: var(--checked-state-checkmark-color);
 }
 }*/
+
+
+/* 404 error page 
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500);
+
+body { 
+  background-color: gray; 
+  color: #fff;
+  font-size: 100%;
+  line-height: 1.5;
+  font-family: "Roboto", sans-serif;
+}*/
+
+.Error > .button {
+  font-weight: 300;
+  color: #fff;
+  font-size: 1.2em;
+  text-decoration: none;
+  border: 1px solid #efefef;
+  padding: .5em;
+  border-radius: 3px;
+  float: left;
+  margin: 6em 0 0 -155px;
+  left: 50%;
+  position: relative;
+  transition: all .3s linear;
+}
+
+.Error >.button:hover {
+  background-color: green;
+  color: #fff;
+}
+
+.Error > p {
+  font-size: 2em;
+  text-align: center;
+  font-weight: 100;
+}
+
+.Error > h1 {
+  text-align: center;
+  font-size: 5em;
+  font-weight: 100;
+}
+
+/* Email sent page */
+h1.EmailSent h1.Passwordchange {
+  font-style: italic;
+  text-align: center;
+}
+
+/* Actions
+
+section , .row {
+  display: flex;
+  flex-direction: row; 
+  flex-wrap: wrap;
+  justify-content: space-around;/* aligns items horizontally */
+ /* align-items: center;/* aligns items vertically 
+}*/
+
+/* style col-md-3 as button 
+.col-md-3 {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 400;
+  border: 1px solid transparent;
+  color: gray;
+  background-color: rgba(128, 128, 128, 0.527);
+  margin: 3px 0 0 3px;
+  border-radius: 5px;
+}
+.col-md-3 > a {
+  text-decoration: none;
+}
+*/
+/*Posts in Admin section 
+.container.Posts> .row {
+  border: 1px solid gray;
+}
+.card-header > h4 {
+  text-align: center;
+  font-size: 1.5em;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+td, th {
+  padding: 8px;
+}
+.control-section {
+  margin-top: 5px;
+}
+*/
+/* Sign out button */
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,700");
+
+.wrapper {
+  width: 30%;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 50%;
+}
+
+.sign-out-wrapper {
+  margin-right: 1em;
+}
+
+.sign-out {
+  color: black;
+  outline: none;
+  text-decoration: none;
+  transition: all 0.1s;
+}
+
+.sign-out:focus,
+.sign-out:hover,
+.sign-out:active {
+  color: black;
+  background-color: grey;
+  text-decoration: none;
+}
+
+.sign-out > span {
+  margin: 0.1em;
+}
+
+/*side navigation*/
+.side-navigation  {
+ /* position: absolute;*/
+  margin-left: auto;
+  margin-right: auto;
+}
+.side-navigation:hover {
+background-color: #ccc;
+border: 1px solid transparent;
+}
+.side-navigation i {
+  margin: 8px;
+  display: block;
+  padding: 4px;
+}
+.side-navigation i:hover {
+  background-color: white;
+}
+.body-content {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 10% 90%;
+  justify-items: center;
+  align-items: center;
+}
+table {
+  border-collapse: collapse;
+}
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+.fa:hover {
+  cursor: pointer;
+}
+
+.restricted-routes, .nonrestricted-routes {
+  display: none;
+}

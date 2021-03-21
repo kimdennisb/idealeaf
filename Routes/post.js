@@ -60,8 +60,6 @@ router.post("/signup", (req, res, next) => {
     const userData = {
       email: req.body.email,
       password: req.body.password,
-      resetPasswordToken: "",
-      resetPasswordExpires: "",
     };
 
     user.create(userData, (error, UniqueUser) => {
@@ -87,6 +85,8 @@ router.post("/signin", (req, res, next) => {
       }
       req.session.userId = theUser._id;
       console.log(req.session, "user token session", theUser._id);
+      // set cookie
+      res.cookie("loggedIn", Math.random() * 123456789);
       return res.redirect("/admin");
     });
   } else {
@@ -110,21 +110,6 @@ router.post("/forgot-password", (req, res, next) => {
       }
       // token is sent to the forgot password form
       const token = crypto.randomBytes(32).toString("hex");
-      /*
-      // set the resetpasswordtoken and resetpasswordexpires fields
-      user.updateOne({ email: email },
-        {
-          $set:
-    {
-      resetPasswordToken: token,
-      resetPasswordExpires: Date.now() + 3600000,
-    },
-        // eslint-disable-next-line no-unused-vars
-        }, (err, response) => {
-          if (err) throw err;
-          console.log("Document updated");
-        });
-        */
 
       const userEmail = person.email;
       const data = {
@@ -169,7 +154,8 @@ router.post("/forgot-password", (req, res, next) => {
         mg.messages().send(data, (error, body) => {
           if (error) next(error);
           console.log(`Email has been sent!${body}`);
-          return res.json(body);
+          //  return res.json(body);
+          res.render("emailSentForPasswordChange.ejs");
         });
       });
     });
@@ -177,13 +163,6 @@ router.post("/forgot-password", (req, res, next) => {
 
 // reset password
 router.post("/reset/:token", (req, res, next) => {
-  /*
-  const query = {
-    resetPasswordToken: req.params.token,
-    resetPasswordExpires: {
-      $gt: Date.now(),
-    },
-  }; */
   const query = {
     resetLink: req.params.token,
   };
@@ -195,31 +174,23 @@ router.post("/reset/:token", (req, res, next) => {
     }
     // if found,update the collection
     const myquery = { resetLink: req.params.token };
-    /* const newvalues = {
-      $set: {
-        password: req.body.password,
-        resetPasswordToken: "",
-        resetPasswordExpires: "",
-        modifiedDate: Date(Date.now()),
-      },
-    };
-*/
-    // eslint-disable-next-line no-unused-vars
-    /* user.updateOne(myquery, newvalues, (error, result) => {
-      if (err) throw err;
-      console.log("Password updated!");
-    });
-    */
     user.findOne(myquery, (error, result) => {
       if (err) return next(error);
       // console.log(result);
-      const obj = { pasword: req.body.password };
+      console.log(req.body.password);
+      const obj = {
+        password: req.body.password,
+        resetLink: "",
+      };
       // update user
       _.assign(result, obj);
+      // eslint-disable-next-line no-shadow
       result.save((err) => {
         if (err) return next(err);
-        console.log(result, "xo");
-        return res.status(200).json(result);
+        // console.log(result, "xo");
+        // after a successful save,forward to /sucessful route
+        // return res.status(200).json(result);
+        res.render("passwordChangedSuccessfully.ejs");
       });
     });
   });
@@ -336,6 +307,7 @@ router.post("/article", (req, res) => {
     body: req.body.body,
     plainTextBody: htmlToText(req.body.body),
     _imageFromSearch: _imageSearch(req.body.body),
+    visits: 0,
   };
 
   // eslint-disable-next-line new-cap
@@ -348,6 +320,7 @@ router.post("/article", (req, res) => {
       res.send(err);
     } else { // if no errors,send it back to client
       res.json({ message: "Article successfully added!", item });
+      // console.log(item);
     }
   });
 });
@@ -362,6 +335,7 @@ router.post("/scriptToInject", (req, res) => {
       res.send(err);
     } else {
       console.log("saved successfully");
+      res.json({ message: " Script successfully added!", item });
     }
   });
 });

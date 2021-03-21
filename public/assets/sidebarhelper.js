@@ -34,23 +34,23 @@ function closeSearch() {
 const queryParams = new URLSearchParams(window.location.search);
 
 // get value from search input on change
+const searchBox = document.querySelector(".searchBoxPosts");
+if (searchBox) {
+  searchBox.oninput = function () {
+    // set new or modify existing parameter value
 
-const searchBox = document.querySelector(".searchBox");
+    queryParams.set("s", this.value);
+    history.replaceState(null, null, `?${queryParams.toString()}`);
+    // remove all query params when input is empty
 
-searchBox.oninput = function () {
-// set new or modify existing parameter value
+    if (this.value === "") {
+      history.replaceState(null, "", location.href.split("?")[0]);
+    }
 
-  queryParams.set("s", this.value);
-  history.replaceState(null, null, `?${queryParams.toString()}`);
-  // remove all query params when input is empty
-
-  if (this.value === "") {
-    history.replaceState(null, "", location.href.split("?")[0]);
-  }
-
-  // eslint-disable-next-line no-use-before-define
-  performSearch();
-};
+    // eslint-disable-next-line no-use-before-define
+    performSearch();
+  };
+}
 
 function performSearch() {
   /**
@@ -96,3 +96,19 @@ function performSearch() {
 if (location.href.includes("?")) {
   openSearch();
 }
+
+// check cookie if it exists
+(function () {
+  const { cookie } = document;
+  const decodedCookie = decodeURIComponent(cookie);
+  const boolean = decodedCookie.split("=")[0];
+  console.log(boolean);
+  if (boolean === "loggedIn") {
+    // show the  links to restricted pages
+    const restrictedroutes = document.querySelector(".restricted-routes");
+    restrictedroutes.style.display = "block";
+  } else {
+    const nonrestrictedroutes = document.querySelector(".nonrestricted-routes");
+    nonrestrictedroutes.style.display = "block";
+  }
+}());

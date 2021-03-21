@@ -1,5 +1,5 @@
 {
-    "DBHost": "mongodb+srv://mypost:mypost@mypost.5vcao.mongodb.net/mypost?retryWrites=true&w=majority",
+    "DBHost": "mongodb://localhost/DKBAPP",
     "siteName": "blog",
     "description": "blog site:shows all the posts about us and ideas around us.Content is curated for everybody;tech reviews,how to guides"
 }

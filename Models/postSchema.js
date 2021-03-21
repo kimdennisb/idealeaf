@@ -10,14 +10,28 @@ const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
+    required: true,
   },
-  body: String,
+  body: {
+    type: String,
+    required: true,
+  },
   plainTextBody: {
     type: String,
+    required: true,
   },
   _imageFromSearch: String,
   date: { type: Date, default: Date.now },
   visits: { type: Number, required: true },
+});
+
+// Sets the createdAt parameter equal to the current time
+postSchema.pre("save", (next) => {
+  const now = new Date();
+  if (!this.date) {
+    this.date = now;
+  }
+  next();
 });
 
 // index postschema to enable text searching

@@ -2,6 +2,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
+
 // add script
 function addScript() {
   const popup = document.querySelector(".popup-input");
@@ -9,7 +10,7 @@ function addScript() {
 
   // distinguish between resize and onclick of the buttons and show popup so the width cannot be 0
   // eslint-disable-next-line no-unused-expressions
-  (this.className === "addScript'") ? popup.style.display = "block" : null;
+  (this.id === "injectscript") ? popup.style.display = "block" : null;
 
   // get popup and window width.
   const popupWidthCenter = (popup.clientWidth / 2);
@@ -24,8 +25,10 @@ function addScript() {
 
   return `${widthString}%`;
 }
-const addScriptButton = document.querySelector(".addScript");
-addScriptButton.onclick = addScript;
+const addScriptButton = document.querySelector("#injectscript");
+if (addScriptButton) {
+  addScriptButton.onclick = addScript;
+}
 
 // position the popup at the center on window resizing
 // eslint-disable-next-line func-names
@@ -37,9 +40,10 @@ window.onresize = function () {
 // grab input from the add script input and insert in header
 const insertScript = document.querySelector("input[type='text']");
 const saveScript = document.querySelector(".btn_save");
+
+const xhr = new XMLHttpRequest();
 saveScript.onclick = () => {
   // store script in the database
-  const xhr = new XMLHttpRequest();
 
   // we open xhr here so that it can be used anytime on `click` event
 
@@ -53,10 +57,16 @@ saveScript.onclick = () => {
   };
 
   const scriptToInject = JSON.stringify(data);
-  console.log(scriptToInject);
+  //  console.log(scriptToInject);
   xhr.send(scriptToInject);
 };
-
+xhr.onloadstart = function () {
+  console.log("started");
+};
+xhr.onloadend = function (e) {
+  console.log("ended", e.loaded);
+  window.location.reload(true);
+};
 // eslint-disable-next-line func-names
 window.onload = function () {
   // fetch scripts
@@ -76,38 +86,6 @@ window.onload = function () {
         script.type = "text/javascript";
         script.src = data[i].url;
         document.querySelector("head").insertAdjacentElement("beforeend", script);
-
-        const label = document.createElement("label");
-        label.className = "custom-checkbox";
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.id = "checkbox";
-        const span = document.createElement("span");
-        span.textContent = data[i].url;
-        const spanDelete = document.createElement("span");
-        spanDelete.className = "spanDelete";
-        spanDelete.textContent = "X";
-        spanDelete.style.color = "DodgerBlue";
-        spanDelete.style.marginLeft = "5px";
-        label.appendChild(input);
-        label.appendChild(span);
-        label.appendChild(spanDelete);
-        document.querySelector("._injectedScripts").appendChild(label);
       }
     });
 };
-
-// collapsible
-const coll = document.getElementsByClassName("collapsible-btn");
-// eslint-disable-next-line no-plusplus
-for (let i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function () {
-    this.classList.toggle("active");
-    const content = this.nextElementSibling;
-    if (content.style.display === "none") {
-      content.style.display = "block";
-    } else {
-      content.style.display = "none";
-    }
-  });
-}

@@ -6,7 +6,7 @@
     <link href="./assets/index.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="./assets/1391017.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Manage posts</title>
+    <title>Manage Users</title>
 </head>
 <header class="header-outer">
   <div class="header-inner">
@@ -16,10 +16,11 @@
       <div id="myNav" class="overlay">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         <div class="overlay-content">
-          <div class="restricted-routes">
-          <a href="/admin">Posts</a>
-          <a href="/users">Users</a>
-          <a href="/scripts">Scripts</a>            
+          <a href="/admin">#</a>
+         <!--<a href="/new">Write Post</a>--> 
+          <!--The button has to behave as a block element--> 
+          <div>
+             <button type="button" class="addScript">Inject Script</button>
           </div>
         </div>
     </div>
@@ -52,7 +53,7 @@
 <div class="containerSearch">
   <div class="searchContainer">
     <i class="fa fa-search searchIcon" ></i>
-    <input class="searchBox" type="search" name="search" placeholder="Search Posts..." />
+    <input class="searchBox" type="search" name="search" placeholder="Search Users ..." />
  </div>
 </div>
 <div class="body-content body-navigation">
@@ -73,15 +74,15 @@
     <table>
       <tr>
         <th><input type="checkbox" class="check-uncheckAll" /></th> 
-        <th>Title</th> 
+        <th>Email</th> 
         <th>Created At</th>
-        <th>Edit<i class="fa fa-pencil edit" style="margin-left: 2px;"></i></th>
-        <th>Delete<i class="fa fa-trash remove" id="remove-post" style="margin-left: 2px;"></i></th>
+        <th style="display: none;"><i class="fa fa-pencil edit" style="margin-left: 2px;"></i></th>
+        <th><i class="fa fa-trash remove"id="remove-user" style="margin-left: 2px;"></i></th>
       </tr>
  
       <div class="searchablePosts">
         <% for( var i = 0;i < data.length;i++) { %>
-          <% const date = data[i].date %>
+          <% const date = data[i].createdAt %>
           <%const year = date.getFullYear() %>
           <%const month = date.getMonth() + 1 %>
           <%const dt = date.getDay() %>
@@ -91,7 +92,7 @@
           <% const dateNames = ["Sun","Mon","Tue","Wed","Thur","Frid","Sart"]; %>
             <tr>
               <td><input type="checkbox" class="checkbox" id="select-<%=i%>" /></td>  
-              <td><label for="select-<%=i%>"><%= data[i].title %></label></td>
+              <td><label for="select-<%=i%>"><%= data[i].email %></label></td>
               <td><label for="select-<%=i%>"><%- dateNames[dt]+ " " + monthNames[month] + " "+ year %></label></td>                        
               <!--<td>Edit</td>
               <td>Delete</td> -->
@@ -104,7 +105,7 @@
 </div>
 
 </body>
-<script src="./assets/sidebarhelper.js"></script>
+<!--<script src="./assets/sidebarhelper.js"></script>-->
 <script src="./assets/update-deletehelper.js"></script>
 <script src="./assets/scriptsHandler.js"></script>
 </html>

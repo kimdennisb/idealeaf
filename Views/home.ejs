@@ -30,16 +30,22 @@
         <div class="header-inner">
           <div class="header-content responsive-wrapper">
 
-            <!--sidebar navbar-->
-            <div id="myNav" class="overlay">
-              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-              <nav>
-                <div class="overlay-content">
-                  <a href="/">#</a>
-                  <a href="/signin">Login</a>
-                </div>
-              </nav>
-            </div>
+      <!--sidebar navbar-->
+      <div id="myNav" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <div class="overlay-content">
+          <div class="nonrestricted-routes">
+          <a href="/">#</a>
+          <a href="/signin">Sign In</a>
+          </div>
+          <div class="restricted-routes">
+          <a href="/admin">Posts</a>
+          <a href="/users">Users</a>
+          <a href="/scripts">Scripts</a>  
+          <a href="/logout">Logout</a>          
+          </div>
+        </div>
+    </div>
 
             <!--search Box-->
             <div id="myOverlay" class="overlaySearch">
@@ -47,7 +53,7 @@
               <div class="overlay-contentSearch">
                 <div class="searchContainer">
                    <i class="fa fa-search searchIcon" ></i>
-                   <input class="searchBox" type="search" name="search" placeholder="Search..." />
+                   <input class="searchBoxPosts" type="search" name="search" placeholder="Search..." />
                 </div>
                 <div>
                   <ul class="live-search-list">
@@ -71,16 +77,35 @@
         <% for(let i=0;i < data.length;i++) { %>
           <div>
            <% if(data[i]._imageFromSearch == 'noImageFound') { %>
+            <% const date = data[i].date %>
+            <%const year = date.getFullYear() %>
+            <%const month = date.getMonth() + 1 %>
+            <%const dt = date.getDay() %>
+            <% const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+            ]; %>
+            <% const dateNames = ["Sun","Mon","Tue","Wed","Thur","Frid","Sart"]; %>
+           
             <div class="article_title onlytext">
               <a href="article/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
+              <p class="date"> <%- dateNames[dt]+ " " + monthNames[month] + " "+ year %></p>
             </div>
             <% } else { %>
+              <% const date = data[i].date %>
+              <%const year = date.getFullYear() %>
+              <%const month = date.getMonth() + 1 %>
+              <%const dt = date.getDay() %>
+              <% const monthNames = ["January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"
+              ]; %>
+              <% const dateNames = ["Sun","Mon","Tue","Wed","Thur","Frid","Sart"]; %>
             <div class="article_image">
               <img class="image" src="<%= data[i]._imageFromSearch %>"  alt=""/>
             </div>
                   
             <div class="article_title">
               <a href="article/<%= data[i].title.split(' ').join('-') %>" target="_self"><%= data[i].title%> </a>
+              <p class="date"> <%- dateNames[dt]+ " " + monthNames[month] + " "+ year %></p>
             </div>
               <% } %>
           </div>

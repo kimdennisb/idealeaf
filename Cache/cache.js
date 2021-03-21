@@ -1,23 +1,20 @@
-var cache = require("memory-cache");
+const cache = require("memory-cache");
 
-//configuring cache middleware
-let memCache=new cache.Cache();
-let cacheMiddleware=(duration)=> {
-  return (req,res,next)=>{
-    let key='__express__' + req.originalUrl || req.url
-    let cacheContent=cache.get(key);
-    if(cacheContent){
-      res.send(cacheContent);
-      return
-    }else{
-      res.sendResponse=res.send;
-      res.send=(body)=>{
-        memCache.put(key,body,duration*1000);
-        res.sendResponse(body);
-      }
-      next();
-    }
-  };
+// configuring cache middleware
+const memCache = new cache.Cache();
+const cacheMiddleware = (duration) => (req, res, next) => {
+  const key = `__express__${req.originalUrl}` || req.url;
+  const cacheContent = cache.get(key);
+  if (cacheContent) {
+    res.send(cacheContent);
+  } else {
+    res.sendResponse = res.send;
+    res.send = (body) => {
+      memCache.put(key, body, duration * 1000);
+      res.sendResponse(body);
+    };
+    next();
+  }
 };
 
 module.exports = cacheMiddleware;

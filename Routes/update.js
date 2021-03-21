@@ -19,6 +19,7 @@ router.put("/update", (req, res, next) => {
     // eslint-disable-next-line no-unused-vars
     }).then((result) => {
     // console.log(result);
+    res.json(result);
   }).catch((error) => {
     console.error(error);
     next(error);
