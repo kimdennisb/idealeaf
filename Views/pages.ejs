@@ -30,18 +30,22 @@
       <div class="header-inner">
         <div class="header-content responsive-wrapper">
 
-          <div class="overlay-content">
-            <div class="nonrestricted-routes">
-            <a href="/">#</a>
-            <a href="/signin">Sign In</a>
-            </div>
-            <div class="restricted-routes">
-            <a href="/admin">Posts</a>
-            <a href="/users">Users</a>
-            <a href="/scripts">Scripts</a>  
-            <a href="/logout">Logout</a>          
-            </div>
+      <!--sidebar navbar-->
+      <div id="myNav" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <div class="overlay-content">
+          <div class="nonrestricted-routes">
+          <a href="/">#</a>
+          <a href="/signin">Sign In</a>
           </div>
+          <div class="restricted-routes">
+          <a href="/admin">Posts</a>
+          <a href="/users">Users</a>
+          <a href="/scripts">Scripts</a>  
+          <a href="/logout">Logout</a>          
+          </div>
+        </div>
+    </div>
           
           <!--search Box-->
           <div id="myOverlay" class="overlaySearch">

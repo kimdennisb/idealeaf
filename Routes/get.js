@@ -149,22 +149,43 @@ router.get("/new", (req, res, next) => {
 });
 
 // get injected scripts
-router.get("/getinjectedscripts", (req, res) => {
-  scriptToInjectModel.find({}, (err, scripts) => {
-    if (err) res.send(500, err);
-    res.send(scripts);
-  });
+router.get("/getinjectedscripts", (req, res, next) => {
+  user.findById(req.session.userId)
+    .exec((error, authorizedUser) => {
+      if (error) {
+        next(error);
+      }
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        scriptToInjectModel.find({}, (err, scripts) => {
+          if (err) res.send(500, err);
+          res.send(scripts);
+        });
+      }
+    });
 });
 
 // edit article
-router.get("/edit/:title", (req, res) => {
+router.get("/edit/:title", (req, res, next) => {
   const editPathName = (req.params.title).split("-").join(" ");
   // console.log(editPathName);
-  postmodel.findOne({ title: editPathName }, (err, data) => {
-    if (err) res.send(500, err);
-    // console.log(data);
-    res.render("editArticle.ejs", { data: data });
-  });
+
+  user.findById(req.session.userId)
+    .exec((error, authorizedUser) => {
+      if (error) {
+        next(error);
+      }
+      if (authorizedUser === null) {
+        (res.redirect("/signin"));
+      } else {
+        postmodel.findOne({ title: editPathName }, (err, data) => {
+          if (err) res.send(500, err);
+          // console.log(data);
+          res.render("editArticle.ejs", { data: data });
+        });
+      }
+    });
 });
 
 // posts get route
