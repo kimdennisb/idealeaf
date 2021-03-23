@@ -19,12 +19,15 @@ const mongoose = require("mongoose");
 // const mongoStore = require("connect-mongo")(session);
 const jimp = require("jimp");
 const _ = require("lodash");
+
 // const { check, validationResult, matchedData } = require("express-validator");
 // const config = require("config");
 // const siteName = config.siteName;
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
 const { htmlToText } = require("html-to-text");
+const gridfs = require("gridfs-stream");
+
 const mailgun = require("mailgun-js");
 const mailgunDomain = "sandboxd4f3f52e209e4038a6fe654dc393a82c.mailgun.org";
 const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: mailgunDomain });
@@ -35,6 +38,8 @@ const databaseConnection = require("../Database/database");
 
 // call database function
 const conn = databaseConnection();
+
+gridfs.mongo = mongoose.mongo;
 
 // sign up user
 router.post("/signup", (req, res, next) => {
@@ -152,7 +157,7 @@ router.post("/forgot-password", (req, res, next) => {
       return user.updateOne({ resetLink: token }, (err, success) => {
         if (err) next(err);
         mg.messages().send(data, (error, body) => {
-          if (error) next(error);
+          // if (error) next(error);
           console.log(`Email has been sent!${body}`);
           //  return res.json(body);
           res.render("emailSentForPasswordChange.ejs");
