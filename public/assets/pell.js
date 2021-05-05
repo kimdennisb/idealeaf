@@ -1,3 +1,12 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable prefer-rest-params */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-multi-assign */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-alert */
+/* eslint-disable no-undef */
+/* eslint-disable no-nested-ternary */
 (function (global, factory) {
   // debugging
   // console.log(global,factory)
@@ -5,6 +14,8 @@
     : typeof define === "function" && define.amd ? define(["exports"], factory)
       : (factory((global.pell = {})));
 }(this, ((exports) => {
+  console.log(exports);
+  // eslint-disable-next-line no-unused-vars
   const _extends = Object.assign || function (target) {
     for (let i = 1; i < arguments.length; i++) {
       const source = arguments[i];
@@ -151,13 +162,28 @@
       result: function result() {
         // var url = window.prompt('Enter the image URL');
         // if (url) exec('insertImage', url);
+        // eslint-disable-next-line no-use-before-define
         execInsertImageAction();
+      },
+    },
+    save: {
+      icon: "&#x2193;",
+      title: "Save",
+      result: function result() {
+        // save content to database
+      },
+    },
+    reroute: {
+      icon: "&#x21b8",
+      title: "Done",
+      result: function result() {
+        // reroute
       },
     },
   };
 
   // default for not set `upload` config
-  var execInsertImageAction = function execInsertImageAction() {
+  const execInsertImageAction = function execInsertImageAction() {
     const uploadImageInput = document.querySelector(".pell input[type=\"file\"]");
     if (!uploadImageInput) {
       const url = window.prompt("Enter the image URL");
@@ -175,10 +201,10 @@
     window.fetch(api, {
       method: "POST",
       body: data,
-    }).then((res) => res.json()).then((data) => {
+    }).then((res) => res.json()).then((image) => {
       // console.log(data)
       // success(data.url);
-      data.forEach((imageURL) => {
+      image.forEach((imageURL) => {
         success(`${imageURL}`);
       });
     }, (err) => error(err));
@@ -194,12 +220,12 @@
       input.accept = "image/*";
       input.multiple = true;
       addEventListener(input, "change", (e) => {
-        const _images = e.target.files;
+        const images = e.target.files;
         const fd = new window.FormData();
         // fd.append('pell-upload-image',image);
-        for (let i = 0; i < _images.length; i++) {
-          console.log(_images[i]);
-          fd.append("photo", _images[i]);
+        for (let i = 0; i < images.length; i++) {
+          // console.log(images[i]);
+          fd.append("photo", images[i]);
         }
 
         uploadImage({
@@ -208,8 +234,16 @@
         }, (url) => {
           // return exec('insertImage',url);
           // build src from string srcsets and sizes media condition
-          const src = url.split(",")[2].split(" ")[0];
-          return exec("insertHTML", `<img srcset="${url}" src="${src}" sizes="(max-width: 320px) 240px,(max-width: 600px) and (min-width: 320px) 320px,(min-width: 600px) 480px,240px" alt=""  />`);
+          // array with srcsets and altName
+          const src = url.split(",");
+          // get altName
+          const altName = src.shift();
+          // build srcsets from array which altName has ben removed
+          const srcset = src.toString();
+          const basesrc = src[1];
+          // console.log(srcset);
+          // console.log(typeof altName);
+          return exec("insertHTML", `<img srcset="${srcset}" src="${basesrc}" sizes="(max-width: 320px) 240px,(max-width: 600px) and (min-width: 320px) 320px,(min-width: 600px) 480px,240px" alt="${altName}"  />`);
         }, (err) => window.alert(err));
       });
       appendChild(settings.element, input);
@@ -250,10 +284,14 @@
 
     // actionBar
     const actionbar = createElement("div");
-    actionbar.className = classes.actionbar;// `pell-actionBar`
-    appendChild(settings.element, actionbar);
+    actionbar.className = classes.actionbar;// `pell-actionBar` `< div class="pell-actionbar" />`
+    const details = createElement("details");
+    const summary = createElement("summary");
+    details.appendChild(actionbar);
+    details.appendChild(summary);
+    appendChild(settings.element, details);
     console.log(settings.element, actionbar);
-
+    /*
     // save and done buttons
     const saveDone = createElement("div");
     saveDone.className = "saveDone";
@@ -273,20 +311,22 @@
 
     saveDone.appendChild(save);
     saveDone.appendChild(done);
-    saveDone.style.textAlign = "right";
+    saveDone.style.textAlign = "right"; */
 
     const content = settings.element.content = createElement("div");
     content.contentEditable = true;
-    content.className = classes.content; // `pell-content`
+    content.className = classes.content;
+    // `pell-content` `<div class="pell-content" contenteditable="true">
     if (settings.placeholder) {
       content.dataset.placeholder = settings.placeholder;
+      // `<div class="pell-content" contenteditable="true" data-placeholder="Type something...">`
     }
     console.log(settings.element, content);
 
     // create and append input field for the title
     const inputTitle = createElement("input");
     inputTitle.type = "text";
-    inputTitle.placeholder = "Title here...";
+    inputTitle.placeholder = "Untitled";
     inputTitle.id = "title";
     inputTitle.required = true;
     appendChild(settings.element, inputTitle);
@@ -331,7 +371,7 @@
     });
 
     // append the save and done buttons
-    appendChild(actionbar, saveDone);
+    // appendChild(actionbar, saveDone);
 
     if (settings.styleWithCSS) exec("styleWithCSS");
     exec(defaultParagraphSeparatorString, defaultParagraphSeparator);

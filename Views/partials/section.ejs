@@ -1,17 +1,29 @@
-
 <main class="main">
   <div class="main-content responsive-wrapper">
-    <div class="article">
-    <div class="article_title">
-      <span><%- data.title %></span>
-      <div class="view-count">
-        <p><%- data.visits %> views</p>
+    <div class="specific">
+      <div class="specific_title">
+        <span>
+          <%- data.title %>
+        </span>
+        <div class="view-miscallenous">
+          <% const date=data.date %>
+            <%const year=date.getFullYear() %>
+              <%const month=date.getMonth() + 1 %>
+                <%const dt=date.getDate() %>
+                  <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August"
+                    , "September" , "October" , "November" , "December" ]; %>
+                    <p>
+                      <%- dt + " " + monthNames[month] + " " + year %>
+                    </p>
+                    <p>
+                      <%- data.visits %> views
+                    </p>
+        </div>
+      </div>
+
+      <div class="specific_html">
+        <%- data.html %>
       </div>
     </div>
-
-     <div class="article_body">
-    <%- data.body %>  
-      </div>
-  </div> 
   </div>
 </main>

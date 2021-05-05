@@ -10,13 +10,14 @@ const app = express();
 
 const bodyParser = require("body-parser");
 const path = require("path");
-// const swal = require("sweetalert");
+const swal = require("sweetalert");
 // const ejs = require("ejs");
 const config = require("config");
 const morgan = require("morgan");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const databaseConnection = require("./Database/database");
+const checkIfUserExists = require("./Middlewares/checkIfUserExists");
 
 require("dotenv").config();
 
@@ -62,6 +63,11 @@ app.use(session({
     mongooseConnection: conn,
   }),
 }));
+// check if user has been authenticated
+app.use(
+  ["/admin", "/scripts", "/users", "/new", "/edit/:title", "/singlepost/:title"],
+  checkIfUserExists,
+);
 
 // use routes
 app.use("/", get);
@@ -82,10 +88,10 @@ app.use((req, res, next) => {
 // error handler
 // define as the last app.use callback
 app.use((err, req, res, next) => {
-  // console.log(err);
   res.status(err.status || 500);
   // res.json(err.message);
-  res.json(err.message);
+  // res.json(err.message);
+  swal("err.message");
   next();
 });
 

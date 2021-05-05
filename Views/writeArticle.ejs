@@ -1,132 +1,107 @@
 <!DOCTYPE html>
 <html lang="US">
-    <head>
-        <title>Write new</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="./assets/pell.css">
-        <link rel="stylesheet" type="text/css" href="./assets/index.css">  
-        <link rel="icon" type="image/png" href="./assets/1391017.png"/>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-        <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
-        <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
-        <script src="./assets/pell.js"></script>
-    </head>
-    <body>
-           <div class="content">
-           <!--
-             <input type="text" id="title" placeholder="(Title)" required />
-           -->  
-            <div id="editor" class="pell"></div>
-            <div id="progress">
-              <progress id="progressBar" value="0"></progress>
-              <span id="percentile"></span>
-            </div>
-            
-           <!--
-             <button id="pell-push" >Publish</button>
-            <button class="done">Done</button>
-           --> 
-           <div  style="margin-top: 20px;display: none;">
-              <h3>HTML output:</h3>
-              <pre id="html-output"></pre>
-            </div>
-          </div>
-      
-         
-          <script>
-            var editor = window.pell.init({
-              element: document.getElementById('editor'),
-              defaultParagraphSeparator: 'p',
-              placeholder: "Type something...",
-              onChange: function (html) {
-                document.getElementById('html-output').textContent = html
-              },
-              upload : {
-                  api : 'photos'
-              }
-            });
 
-            //get content and push to database
-            var button = document.getElementById('pell-push'),
-                progressBar = document.getElementById('progressBar'),
-                percentile = document.getElementById('percentile');
+<head>
+  <title>Write new</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-            var xhr = new XMLHttpRequest();
+  <meta property="og:url" content="/new" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="<%- siteName %>" />
+  <meta property="og:site_name" content="<%- siteName %>" />
+  <meta property="og:image" content="/assets/icons/rel_icon.png" />
+  <meta property="og:image:alt" content="<%- siteName %>" />
+  <meta name="description" content="<%- siteDescription %>" />
 
-            button.addEventListener('click',() => {
-            
-              //we open xhr here so that it can be used anytime on `click` event
+  <!--Twitter meta tags-->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@kimdennisb" />
+  <meta name="twitter:description" content="<%- siteDescription %>" />
+  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
 
-            xhr.open('POST','/article',true);
-            xhr.setRequestHeader('Accept','application/json');
-            xhr.setRequestHeader('Content-type','application/json');
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="/assets/pell.css">  
+  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
+  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+  <script src="/assets/pell.js"></script>
 
-            var _articleBody = document.querySelector('pre').textContent;
-                _articleTitle = document.getElementById('title').value;
+</head>
 
-            //check if the title and body are empty and thus proceed with publishing
-            checkTitleAndBody= () =>{
-              if(_articleBody == ''){
-              Swal.fire(
-                'Please add article content'
-              );
-              
-            } else if (_articleTitle == '') {
-              Swal.fire(
-                'Please add a title'
-              );
-        
-            } else {
-              //publish content
+<body>
+  <div class="settingsicon">
+  </div>
+  <div class="article-settings">
+    <h3>Article settings</h3>
+    <form method="POST" action="/articleimage" enctype="multipart/form-data">
+      <div class="articleimagemain">
+        <label class="imagetext">Upload article image</label>
+          <input type="file" name="articleimage" accept="image/*" />
+          <svg class="remove-image" width="15" height="15" viewBox="0 0 1792 1792"
+            xmlns="http://www.w3.org/2000/svg">
+            <title>Delete</title>
+            <path
+              d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z">
+            </path>
+          </svg>
 
-              var data = {
-              'title' : _articleTitle,
-              'body' : _articleBody
-                      }
+      </div>
 
-            var content =JSON.stringify(data);
-            xhr.send(content);
-          }
-            }
-            
-            //call the check function
-            checkTitleAndBody(); 
+    </form>
 
-                });
-                
-            xhr.onloadstart = function(){
-            //console.log(`Loaded ${xhr.status} ${xhr.response}`);
-            progressBar.value = 0
-            percentile.innerText = '0%';
-            }
+    <label for="tags">
+      Tags
+      <input type="text" name="tags" class="tags" />
+    </label>
+  </div>
 
-            xhr.onloadend = function(e){
-              progressBar.value = e.loaded;
-              percentile.innerText = 'Published!'
-              /*Swal.fire(
-                'Published'
-              );*/
-              window.location.reload(true);
-            }
+  <div class="content">
+    <div id="editor" class="pell"></div>
 
-            xhr.onprogress = function(e){
-              //console.log(`Received ${e.loaded} of ${e.total}`);
-               if (e.lengthComputable) {
-                 progressBar.max = e.total;
-                 progressBar.value = e.loaded;
-                 percentile.innerText = Math.floor((e.loaded / e.total) * 100) + '%';
-               }
-            }
-            
-            xhr.onerror = function(e){
-              console.log(e);
-              Swal.fire(
-                'Error publishing article'
-              );
-            }
-             var _returntoDashboard = document.querySelector('.done');
-             _returntoDashboard.onclick = function(){ window.location.href = '/admin' }
-          </script>
-    </body>
+    <div style="margin-top: 20px;display: none;">
+      <h3>HTML output:</h3>
+      <pre id="html-output"></pre>
+    </div>
+  </div>
+
+</body>
+<script src="/assets/requestsHandler.js"></script>
+<script>
+  const settings = document.querySelector(".settingsicon");
+  const articlesettings = document.querySelector(".article-settings");
+  settings.onclick = function () {
+    articlesettings.classList.toggle("open");
+    this.classList.toggle("open");
+  }
+  const articleimage = document.querySelector(".articleimagemain");
+  const imagetext = document.querySelector(".imagetext")
+  const removebackground = document.querySelector(".remove-image");
+  removebackground.classList.add("close");
+  document.querySelector("input").addEventListener("change", (e) => {
+    const image = e.target.files[0];
+    const fd = new window.FormData();
+    fd.append('articleimage', image);
+    fetch("/articleimage", {
+      method: "POST",
+      body: fd,
+    }).then((res) => {
+      if (res.ok) return res.json();
+    }).then((data) => {
+      imagetext.classList.add("close")
+      articleimage.style.backgroundImage = `url(${data})`;
+      removebackground.classList.remove("close");
+    }).catch((error) => {
+      console.log(error)
+    })
+  })
+  removebackground.onclick= function() {
+    articleimage.style.backgroundImage = "none"
+    imagetext.classList.remove("close")
+    this.classList.add("close");
+  }
+</script>
+
 </html>

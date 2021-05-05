@@ -1,25 +1,23 @@
 /* eslint-disable import/newline-after-import */
 const express = require("express");
 const router = express.Router();
-const postmodel = require("../Models/postSchema");
-const scriptToInjectSchema = require("../Models/scriptToInjectSchema");
-const user = require("../Models/userSchema");
+const postmodel = require("../Models/Post");
+const scriptToInjectSchema = require("../Models/scriptToInject");
+const user = require("../Models/User");
 
 // delete posts
 router.delete("/delete-posts", (req, res, next) => {
   // res.body.header is sent through fetch request
   // titles to delete
   const titles = req.body.header;
+  // console.log(titles);
   titles.forEach((element) => {
-    postmodel.findOne({ title: element }, (err, result) => {
+    postmodel.findOneAndDelete({ title: element }, (err, result) => {
       if (err) {
         next(err);
         console.log(err);
       }
-      result.remove((error, result1) => {
-        if (error) throw error;
-        console.log("Successfully deleted", result1);
-      });
+      console.log(result);
     });
   });
   res.json({ message: "An article was successfully deleted" });
@@ -36,7 +34,7 @@ router.delete("/delete-users", (req, res, next) => {
         next(err);
         console.log(err);
       }
-      console.log(result);
+      console.log(result, element);
       result.remove((error, result1) => {
         if (error) throw error;
         console.log("Successfully deleted", result1);
@@ -47,7 +45,7 @@ router.delete("/delete-users", (req, res, next) => {
 });
 
 // delete scripts
-router.delete("/delete-script", (req, res, next) => {
+router.delete("/delete-scripts", (req, res, next) => {
   // res.body.header is sent through fetch request
   // titles to delete
   const scripts = req.body.header;

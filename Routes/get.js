@@ -1,10 +1,10 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable object-shorthand */
 /* eslint-disable consistent-return */
 /* eslint-disable no-lonely-if */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable import/newline-after-import */
 const express = require("express");
-// const { use } = require("./post");
 const mongodb = require("mongodb");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -13,100 +13,62 @@ const config = require("config");
 const siteName = config.siteName;
 const siteDescription = config.description;
 const cacheMiddleware = require("../Cache/cache");
-const postmodel = require("../Models/postSchema");
+const postmodel = require("../Models/Post");
 const databaseConnection = require("../Database/database");
 const ObjectID = mongodb.ObjectID;
-// const fs = require("fs");
-const scriptToInjectModel = require("../Models/scriptToInjectSchema");
-const user = require("../Models/userSchema");
+const scriptToInjectModel = require("../Models/scriptToInject");
+const user = require("../Models/User");
+const checkRolesExisted = require("../Middlewares/checkRolesExisted");
 
 // call database function
 const conn = databaseConnection();
 
 // signUp page
 router.get("/signup", (req, res) => {
-  res.render("signUp.ejs");
+  res.render("signUp.ejs", { siteName, siteDescription });
 });
 
 // signIn page
 router.get("/signin", (req, res) => {
-  res.render("signIn.ejs");
+  // console.log(req.headers.referer);
+  req.session.referer = req.headers.referer || "/";
+  res.render("signIn.ejs", { siteName, siteDescription });
 });
 
 // access user admin
 // GET route after registering
-router.get("/admin", (req, res, next) => {
-  /*
-find user using session stored
-if no user is authorized,redirect to sign in page else fetch user data
-  */
-  console.log(req.session.userId);
-  user.findById(req.session.userId)
-    .exec((error, authorizedUser) => {
-      if (error) {
-        next(error);
-      }
-      if (authorizedUser === null) {
-        (res.redirect("/signin"));
-      } else {
-        postmodel.find({}, (err, data) => {
-          if (err) {
-            next(err);
-          }
-          res.render("admin.ejs", { data: data, siteName });
-        });
-      }
-    });
+router.get("/admin/posts", (req, res, next) => {
+  postmodel.find({}, (err, data) => {
+    if (err) {
+      next(err);
+    }
+    res.render("posts.ejs", { data: data, siteName, siteDescription });
+  });
 });
 
 // access list of users
-router.get("/users", (req, res, next) => {
-  /*
-find user using session stored
-if no user is authorized,redirect to sign in page else fetch user data
-  */
-  // console.log(req.session.userId);
-  user.findById(req.session.userId)
-    .exec((error, authorizedUser) => {
-      if (error) {
-        next(error);
-      }
-      if (authorizedUser === null) {
-        (res.redirect("/signin"));
-      } else {
-        user.find({}, (err, data) => {
-          if (err) {
-            next(err);
-          }
-          res.render("users.ejs", { data: data, siteName });
-        });
-      }
-    });
+router.get("/admin/users", checkRolesExisted, (req, res, next) => {
+  user.find({}, (err, data) => {
+    if (err) {
+      next(err);
+    }
+    res.render("users.ejs", { data: data, siteName, siteDescription });
+  });
 });
 
 // access list of scripts
-router.get("/scripts", (req, res, next) => {
-  /*
-find user using session stored
-if no user is authorized,redirect to sign in page else fetch user data
-  */
-  // console.log(req.session.userId);
-  user.findById(req.session.userId)
-    .exec((error, authorizedUser) => {
-      if (error) {
-        next(error);
-      }
-      if (authorizedUser === null) {
-        (res.redirect("/signin"));
-      } else {
-        scriptToInjectModel.find({}, (err, data) => {
-          if (err) {
-            next(err);
-          }
-          res.render("scripts.ejs", { data: data, siteName });
-        });
-      }
-    });
+router.get("/admin/scripts", (req, res, next) => {
+  scriptToInjectModel.find({}, (err, data) => {
+    if (err) {
+      next(err);
+    }
+    res.render("scripts.ejs", { data: data, siteName, siteDescription });
+  });
+});
+
+// code injection page
+router.get("/admin/codeinjection", (req, res) => {
+  res.render("codeinjection.ejs", { siteName, siteDescription });
 });
 
 // destroy session(deauthenticate user)
@@ -143,49 +105,27 @@ router.get("/new", (req, res, next) => {
       if (authorizedUser === null) {
         (res.redirect("/signin"));
       } else {
-        res.render("writeArticle.ejs");
+        res.render("writeArticle.ejs", { siteName, siteDescription });
       }
     });
 });
 
 // get injected scripts
-router.get("/getinjectedscripts", (req, res, next) => {
-  user.findById(req.session.userId)
-    .exec((error, authorizedUser) => {
-      if (error) {
-        next(error);
-      }
-      if (authorizedUser === null) {
-        (res.redirect("/signin"));
-      } else {
-        scriptToInjectModel.find({}, (err, scripts) => {
-          if (err) res.send(500, err);
-          res.send(scripts);
-        });
-      }
-    });
+router.get("/getinjectedscripts", (req, res) => {
+  scriptToInjectModel.find({}, (err, scripts) => {
+    if (err) res.send(500, err);
+    res.send(scripts);
+  });
 });
 
 // edit article
-router.get("/edit/:title", (req, res, next) => {
+router.get("/edit/:title", (req, res) => {
   const editPathName = (req.params.title).split("-").join(" ");
-  // console.log(editPathName);
-
-  user.findById(req.session.userId)
-    .exec((error, authorizedUser) => {
-      if (error) {
-        next(error);
-      }
-      if (authorizedUser === null) {
-        (res.redirect("/signin"));
-      } else {
-        postmodel.findOne({ title: editPathName }, (err, data) => {
-          if (err) res.send(500, err);
-          // console.log(data);
-          res.render("editArticle.ejs", { data: data });
-        });
-      }
-    });
+  postmodel.findOne({ title: editPathName }, (err, data) => {
+    if (err) res.send(500, err);
+    // console.log(data);
+    res.render("editArticle.ejs", { data: data, siteName, siteDescription });
+  });
 });
 
 // posts get route
@@ -235,26 +175,28 @@ router.get("/article/:titleOfTheArticle", cacheMiddleware(30), (req, res, next) 
     }
     // console.log(article);
     const {
-      id, title, body, _imageFromSearch, date, visits,
+      // eslint-disable-next-line camelcase
+      id, title, html, text, feature_image, visits, date,
     } = article;
-    // eslint-disable-next-line no-undef
-    // console.log(id, title, body, _imageFromSearch, date);
+
     const hostName = req.headers.host;
-    const imageURL = hostName + _imageFromSearch;
-    const siteURL = `${hostName}/${titleOfTheArticle}`;
-    const description = htmlToText(body, { wordWrap: 130, baseElement: "p" });
+    // eslint-disable-next-line camelcase
+    const featureimage = feature_image;
+    const siteURL = `${hostName}/article/${titleOfTheArticle}`;
+    const description = htmlToText(html, { wordWrap: 130, baseElement: "p" });
 
     // BUILD THE RESPONSE NICELY
     const cleanArticle = {
-      id, title, body, description, imageURL, siteURL, date, siteName, visits,
+      id, title, html, text, description, featureimage, siteURL, date, siteName, visits,
     };
-    // console.log(cleanArticle);
+    console.log(cleanArticle);
     // console.log(siteURL);
     // console.log(description);
     // console.log(req.headers);
     // console.log(title);
     // console.log(visits);
-    (_imageFromSearch === "noImageFound") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle }) : res.render("viewArticle", { data: cleanArticle });
+    // eslint-disable-next-line camelcase
+    (feature_image == "") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle }) : res.render("viewArticle", { data: cleanArticle });
   });
 });
 
@@ -273,19 +215,32 @@ router.get("/", cacheMiddleware(30), (req, res, next) => {
           if (err) return next(err);
           // res.json(data) -during testing
           const siteURL = req.headers.host;
-
           res.render("home.ejs", {
             data: data, siteDescription, siteURL, siteName,
           });
         });
       });
-  } else {
-    postmodel.fullTextSearch(req.query.s).exec((err, results) => {
-    // console.log(results, err);
-      if (err) next(err);
-      res.json(results);
-    });
   }
+});
+
+// search posts page
+router.get("/search", (req, res) => {
+  // console.log(req.query);
+  if (!req.query.s) {
+    // console.log(req.query.s);
+    res.render("search.ejs", { siteName, siteDescription });
+  } else {
+    res.render("search.ejs", { siteName, siteDescription });
+  }
+});
+
+// get posts that have been searched
+router.get("/getsearch", (req, res, next) => {
+  postmodel.fullTextSearch(req.query.s).exec((err, results) => {
+    if (err) next(err);
+    res.json(results);
+    // setTimeout(() => { res.json(results); }, 0);
+  });
 });
 
 /**
@@ -366,7 +321,7 @@ router.get("/singlepost/:title", cacheMiddleware(30), (req, res, next) => {
 
 // handle a 404 page(needs to be the last)
 router.get("*", (req, res) => {
-  res.render("error.ejs");
+  res.render("error.ejs", { siteName, siteDescription });
 });
 
 module.exports = router;

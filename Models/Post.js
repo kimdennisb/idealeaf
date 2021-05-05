@@ -12,15 +12,17 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  body: {
+  html: {
     type: String,
     required: true,
   },
-  plainTextBody: {
+  text: {
     type: String,
     required: true,
   },
-  _imageFromSearch: String,
+  feature_image: {
+    type: String,
+  },
   date: { type: Date, default: Date.now },
   visits: { type: Number, required: true },
 });

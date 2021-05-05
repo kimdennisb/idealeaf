@@ -5,7 +5,15 @@
 const mongoose = require("mongoose");
 
 const scriptToInjectSchema = new mongoose.Schema({
-  url: String,
+  script: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  placement: {
+    type: String,
+    required: true,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model("scriptToInjectModel", scriptToInjectSchema);

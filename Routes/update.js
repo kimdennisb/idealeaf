@@ -1,7 +1,7 @@
 /* eslint-disable import/newline-after-import */
 const express = require("express");
 const router = express.Router();
-const postmodel = require("../Models/postSchema");
+const postmodel = require("../Models/Post");
 
 // update the article
 router.put("/update", (req, res, next) => {

@@ -50,6 +50,8 @@ function uncheckAll() {
 function handler() {
   // check for the number of checked checkboxes,if > 1 but < length - 1,allow only remove button,
   // else allow edit and remove buttons
+  // if all checkboxes are not checked,make uncheckAll be true
+  // and if all checked make checkAll be true
   const noOfChecked = Array.prototype.filter.call(checkbox, (e) => e.checked);
   if (noOfChecked.length > 1) {
     edit.style.opacity = "0";
@@ -67,6 +69,9 @@ function handler() {
     edit.style.pointerEvents = "fill";
     remove.style.pointerEvents = "fill";
   }
+  // eslint-disable-next-line no-nested-ternary
+  (noOfChecked.length === checkbox.length) ? checkUncheckAll.checked = true
+    : checkUncheckAll.checked = false;
 }
 
 checkUncheckAll.onclick = () => {
@@ -105,51 +110,48 @@ remove.onclick = function () {
   const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
   const _siblings = [];
   checkedPost.forEach((x) => {
-    console.log(x, x.id);
+    // console.log(x, x.id);
     const titles = document.getElementById(x.id).parentElement.nextElementSibling;
-    const element = titles.firstChild.innerHTML;
+    const element = titles.firstChild.innerHTML.trim();
     _siblings.push(element);
   });
   // eslint-disable-next-line no-nested-ternary
-  (this.id === "remove-post") ? deleteHelper("/delete-post", _siblings)
+  (this.id === "remove-post") ? deleteHelper("/delete-posts", _siblings)
     : (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings)
-      : deleteHelper("/delete-script", _siblings);
+      : deleteHelper("/delete-scripts", _siblings);
 };
+
 // update(edit) element
-edit.onclick = () => {
+if (edit) {
+  edit.onclick = () => {
   // returns a nodeList
-  const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
-  // get next element sibling
-  const _sibling = document.getElementById(checkedPost[0].id).parentElement.nextElementSibling;
-  const element = _sibling.firstChild.innerHTML;
-  // console.log(element);
-  const editPathname = element.split(" ").join("-");
-  // console.log(editPathname);
-  // redirect to the edit page
-  window.location.href = `edit/${editPathname}`;
-};
+    const checkedPost = Array.prototype.filter.call(checkbox, (item) => item.checked);
+    // get next element sibling
+    const _sibling = document.getElementById(checkedPost[0].id).parentElement.nextElementSibling;
+    const element = _sibling.firstChild.innerHTML.trim();
+    const editPathname = element.split(" ").join("-");
+    console.log(editPathname);
+    // redirect to the edit page
+    window.location.href = `/edit/${editPathname}`;
+  };
+}
 
 // redirect to editor
 const redirecttoEditor = document.querySelector(".new");
 redirecttoEditor.onclick = () => { window.location.href = "/new"; };
 
-// redirect user to signIn or signUp page
-document.querySelector(".sign-out-wrapper").onclick = () => {
-  window.location.href = "/logout";
-};
-
 // redirect user to admin page for posts
 document.querySelector(".posts").onclick = () => {
-  window.location.href = "/admin";
+  window.location.href = "/admin/posts";
 };
 // redirect user to admin page for users
 document.querySelector(".users").onclick = () => {
-  window.location.href = "/users";
+  window.location.href = "admin/users";
 };
 
 // redirect user to admin page for posts
 document.querySelector(".scripts").onclick = () => {
-  window.location.href = "/scripts";
+  window.location.href = "admin/scripts";
 };
 
 // eslint-disable-next-line no-unused-vars

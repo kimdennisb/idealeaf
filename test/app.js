@@ -10,7 +10,7 @@ const config = require("config");
 const chaiHttp = require("chai-http");
 // eslint-disable-next-line import/no-self-import
 const server = require("../index");
-const TestPostModel = require("../Models/postSchema");
+const TestPostModel = require("../Models/Post");
 
 const should = chai.should();
 

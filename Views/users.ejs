@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./assets/index.css" rel="stylesheet" type="text/css">
-    <link rel="icon" type="image/png" href="./assets/1391017.png" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Manage Users</title>
+  <meta charset="utf-8">
+  <meta property="og:url" content="/admin/users" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="<%- siteName %>" />
+  <meta property="og:site_name" content="<%- siteName %>" />
+  <meta property="og:image" content="/assets/icons/rel_icon.png" />
+  <meta property="og:image:alt" content="<%- siteName %>" />
+  <meta name="description" content="<%- siteDescription %>" />
+
+  <!--Twitter meta tags-->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@kimdennisb" />
+  <meta name="twitter:description" content="<%- siteDescription %>" />
+  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
+  <title>
+    <%- siteName %> Admin
+  </title>
 </head>
 <header class="header-outer">
   <div class="header-inner">
     <div class="header-content responsive-wrapper">
 
       <!--sidebar navbar-->
-      <div id="myNav" class="overlay">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <div class="overlay-content">
-          <a href="/admin">#</a>
-         <!--<a href="/new">Write Post</a>--> 
-          <!--The button has to behave as a block element--> 
-          <div>
-             <button type="button" class="addScript">Inject Script</button>
-          </div>
-        </div>
-    </div>
+      <div id="mySidenav" class="sidenav">
+        <%- include("partials/admin/sidenavigation.ejs"); -%>
+      </div>
 
       <!--Top Toolbar-->
       <div class="header-navigation">
-        <div class="open_icon" onclick="openNav()">☰</div>
-        <img class="blog_icon" src="./assets/icon.svg" alt="blog">
-       <!--<i class="fa fa-user userIcon"></i>--> 
-        <div class="col-6 col-md-7 sign-out-wrapper clearfix">
-          <a href="/logout" class="sign-out pull-right">
-        <span>Sign Out</span>
-        <i class="fa fa-sign-out"></i>
-      </a>
-        </div>
+        <!--toolbar-->
+        <%- include("partials/toolbar.ejs"); -%>
       </div>
 
       <!--popup input-->
@@ -50,62 +51,58 @@
 
 <body>
 
-<div class="containerSearch">
-  <div class="searchContainer">
-    <i class="fa fa-search searchIcon" ></i>
-    <input class="searchBox" type="search" name="search" placeholder="Search Users ..." />
- </div>
-</div>
-<div class="body-content body-navigation">
-        <!--Side Toolbar-->
-      <div class="side-navigation">
-        <!--New-->
-        <i class="fa fa-plus new" aria-hidden="false" title="Compose"></i>
-        <!--Posts-->
-        <i class="fa fa-th-list posts" aria-hidden="true" title="Posts"></i>
-        <!--users-->
-        <i class="fa fa-users users" aria-hidden="true" title="Users"></i>
-        <!--scripts-->
-        <i class="fa fa-tag scripts" aria-hidden="true" title="Scripts"></i>
-      </div>
-
-<div class="_allposts">
- <div class="control-section">
-    <table>
-      <tr>
-        <th><input type="checkbox" class="check-uncheckAll" /></th> 
-        <th>Email</th> 
-        <th>Created At</th>
-        <th style="display: none;"><i class="fa fa-pencil edit" style="margin-left: 2px;"></i></th>
-        <th><i class="fa fa-trash remove"id="remove-user" style="margin-left: 2px;"></i></th>
-      </tr>
- 
-      <div class="searchablePosts">
-        <% for( var i = 0;i < data.length;i++) { %>
-          <% const date = data[i].createdAt %>
-          <%const year = date.getFullYear() %>
-          <%const month = date.getMonth() + 1 %>
-          <%const dt = date.getDay() %>
-          <% const monthNames = ["January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"
-          ]; %>
-          <% const dateNames = ["Sun","Mon","Tue","Wed","Thur","Frid","Sart"]; %>
-            <tr>
-              <td><input type="checkbox" class="checkbox" id="select-<%=i%>" /></td>  
-              <td><label for="select-<%=i%>"><%= data[i].email %></label></td>
-              <td><label for="select-<%=i%>"><%- dateNames[dt]+ " " + monthNames[month] + " "+ year %></label></td>                        
-              <!--<td>Edit</td>
-              <td>Delete</td> -->
-            </tr>
-          <% } %>
-      </div>
-    </table>
+  <div class="containerSearch">
+    <div class="searchContainer">
+      <i class="fa fa-search searchIcon"></i>
+      <input class="searchBox" type="search" name="search" placeholder="Search Users ..." />
     </div>
-</div>
-</div>
+  </div>
+
+  <div class="body-content body-navigation">
+
+    <div class="_allposts">
+      <div class="control-section">
+        <table>
+          <tr>
+            <th><input type="checkbox" class="check-uncheckAll" /></th>
+            <th>Email</th>
+            <th>Created At</th>
+            <th>
+              <svg class="remove" id="remove-user" width="20" height="20" viewBox="0 0 1792 1792"
+                xmlns="http://www.w3.org/2000/svg">
+                <title>Delete</title>
+                <path
+                  d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z" />
+              </svg>
+            </th>
+          </tr>
+
+          <% for( var i=0;i < data.length;i++) { %>
+            <% const date=data[i].createdAt %>
+              <%const year=date.getFullYear() %>
+                <%const month=date.getMonth() + 1 %>
+                  <%const dt=date.getDay() %>
+                    <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August"
+                      , "September" , "October" , "November" , "December" ]; %>
+                      <% const dateNames=["Sun","Mon","Tue","Wed","Thur","Frid","Sart"]; %>
+                        <tr>
+                          <td><input type="checkbox" class="checkbox" id="select-<%=i%>" /></td>
+                          <td><label for="select-<%=i%>">
+                              <%= data[i].email %>
+                            </label></td>
+                          <td><label for="select-<%=i%>">
+                              <%- dateNames[dt]+ " " + monthNames[month] + " " + year %>
+                            </label></td>
+                        </tr>
+                        <% } %>
+        </table>
+      </div>
+    </div>
+  </div>
 
 </body>
-<!--<script src="./assets/sidebarhelper.js"></script>-->
-<script src="./assets/update-deletehelper.js"></script>
-<script src="./assets/scriptsHandler.js"></script>
+<script src="/assets/sidebarhelper.js"></script>
+<script src="/assets/update-deletehelper.js"></script>
+<script src="/assets/scriptsHandler.js"></script>
+
 </html>

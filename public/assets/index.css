@@ -41,7 +41,7 @@
 }
 .header-content .header-navigation  {
   display: grid;
-  grid-template-columns: 10% 80% 10%;
+  grid-template-columns: 10% 75% 15%;
   justify-items: center;
   align-items: center;
 }
@@ -60,12 +60,12 @@
   margin-top: 3rem;
 }
 
-.widget {
+.widget, .showwidget {
   width: 100%;
   max-width: 600px;
   border-radius: 8px;
-  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
-  background-color: #FFF;
+  /*box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
+  background-color: #FFF;*/
   padding: 2.5rem;
   margin-left: auto;
   margin-right: auto;
@@ -75,6 +75,8 @@
 .widget > * + * {
   margin-top: 1.25em;
 }
+
+
 body {
     width: 100%;
     overflow-x: hidden;
@@ -90,8 +92,13 @@ search element in admin dashboard
 }
 
 /* end of search-bar */
+
 .article_title {
   position: relative;
+}
+
+.date {
+  font-size: small;
 }
 .article_title > a {
     text-decoration: none;
@@ -113,64 +120,37 @@ search element in admin dashboard
 .article_body p img {
   display: block;
 }
-/*select and deselect non required images because the dom tree is not explicit*/
-/*img {
-    height: auto;
-    max-width:100%;
-}*/
-    .article_image > img {
+.article_image > img {
     height:95px;
     width: 95px;
 }
-.article {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
 .article_image {
-    margin: 25px;
+    margin: 12px;
 }
 .article_title.onlytext {
-    margin: 25px;
-}/*
-header {
-    margin-bottom: 30px;
-}*/
+    margin: 8px;
+}
 section > div {
     display: flex;
     flex-direction: row;
     align-items: center;
     border-bottom: 1px solid #eee;
 }
+
 /*
 handle images and body content in <P></P> tag to cover full width when viewing in mobile
 */
 section .article_body p {
   text-align: center;
-}/*
-.toolbar {
-    position: fixed;
-    margin-bottom:8px;
-    background-color:#333;
-    height: 35px;
-    width: 100%;
-    top:0px;
-    z-index: 100;
-   text-align: center;
 }
-.open_icon {
-    position: inherit;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: white;
-}*/
-.blog_icon img:hover {
+.site_icon :hover {
 cursor:pointer;
 }
-.blog_icon img {
-  height: calc(var(--header-inner-height) - 30px);
+.search_icon:hover > path {
+  cursor: pointer;
+  fill: #fff;
 }
+
 /*
 login and sign up forms
 */
@@ -298,8 +278,7 @@ margin: auto;
   opacity: 0.8;
   width: 150px;
 }
-.overlay a {
-    padding: 8px;
+.overlay a, .overlay svg {
     text-decoration: none;
     font-size: 36px;
     color: #818181;
@@ -307,7 +286,7 @@ margin: auto;
     transition: 0.3s;
 }
 
-.overlay a:hover, .overlay a:focus {
+.overlay a:hover, .overlay a:focus  ,.overlay svg:hover{
     color: #f1f1f1;
     cursor: pointer;
 }
@@ -336,14 +315,44 @@ border-radius: 5px;
 overflow: hidden;
 }
 
-.searchIcon {
-  padding: 0.5rem;
+.search_icon:hover {
+  cursor: pointer;
+}
+.search_icon:hover g {
+  stroke: #fff;
 }
 
 .searchBox {
 border: 0;
 padding: 0.5rem 0.5rem 0.5rem 0;
 flex: 1;
+}
+
+/*search page */
+.searchwidget {
+  display: flex;
+height: 35px;
+  justify-content: center;
+  align-items: center;
+}
+.showwidget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+input[type=text].searchPosts {
+  border-bottom: 1px solid #000000;
+  background: none;
+  border-top: transparent;
+  border-right: transparent;
+  border-left: transparent;
+  outline: none;
+}
+.closenav {
+  position: absolute;
+  right: 0;
+  margin: 8px 8px 0 0;
 }
 
 /*
@@ -485,9 +494,9 @@ float: none;
 }
 
 /*
-manage posts
+manage
 */
-._allposts {
+.control-section {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -506,7 +515,7 @@ margin-top: 2px;
     pointer-events: none;
     opacity: .3;
 }
-.edit , .remove , .new , .done :hover {
+.edit , .remove , .new , .done , .posts , .users , .scripts , .codeinjection :hover {
 cursor: pointer;
 }
 .new  {
@@ -528,8 +537,46 @@ cursor: pointer;
   margin: 1em 1em 0 0;
   float: right;
 }
+/*code injection*/
+
+.code.injection {
+  position: relative;
+ /*display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  */margin: 0 auto; 
+  height: fit-content;
+  width: fit-content;
+}
+.code.injection h1 {
+  font-size: 24px;
+}
+.site.Header h2, .site.Footer h3  {
+  font-size: 16px;
+
+}
+textarea {
+  display: block;
+  width: 100%;
+  height: 100px;
+  border: 3px solid #cccccc;
+  padding: 5px;
+  resize: none;
+}
+.save.script {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.save.script:hover {
+  cursor: pointer;
+  background-color: rgb(245,249,252);
+  outline: none;
+}
 
 /* pagination elements */
+
 .bottom-toolbar .paginationtext-center  {
   margin-top: 1em;
 text-align: center;
@@ -550,59 +597,6 @@ border-radius: 5px;
 .paginationtext-center span.disabled {
   opacity: .5;
 }
-
-/*
-.c-custom-checkbox {
-  position: relative;
-  cursor: pointer;
-  --checked-state-bg-color:hsl(350,95%,58%);
-  --checked-state-check-color: #fff;
-  --outline-color:var(--checked-state-bg-color)
-  --outline-offset:2px;
-}
-.c-custom-checkbox input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 1em;
-  height: 1em;
-  z-index: 80;
-}
-.c-custom-checkbox input[type="checkbox"]:focus + svg {
-  outline: 3px solid #E55360;
-  outline-offset: 2px;
-}
-
-.c-custom-checkbox input[type="checkbox"]:focus:not(:focus-visible) + svg {
-  outline: none;
-}
-.c-custom-checkbox svg {
-  width: 1em;
-  height: 1em;
-  * {
-    transition: all 0.1s linear;
-  }
-}
-.c-custom-checkbox input[type="checkbox"]:checked + svg {
-.checkbox_bg {
-  fill: var(--checked-state-bg-color);
-  stroke: var(--checked-state-bg-color);
-}
-.checkbox_checkmark {
-  stroke: var(--checked-state-checkmark-color);
-}
-}*/
-
-
-/* 404 error page 
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,500);
-
-body { 
-  background-color: gray; 
-  color: #fff;
-  font-size: 100%;
-  line-height: 1.5;
-  font-family: "Roboto", sans-serif;
-}*/
 
 .Error > .button {
   font-weight: 300;
@@ -642,55 +636,12 @@ h1.EmailSent h1.Passwordchange {
   text-align: center;
 }
 
-/* Actions
-
-section , .row {
-  display: flex;
-  flex-direction: row; 
-  flex-wrap: wrap;
-  justify-content: space-around;/* aligns items horizontally */
- /* align-items: center;/* aligns items vertically 
-}*/
-
-/* style col-md-3 as button 
-.col-md-3 {
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 400;
-  border: 1px solid transparent;
-  color: gray;
-  background-color: rgba(128, 128, 128, 0.527);
-  margin: 3px 0 0 3px;
-  border-radius: 5px;
-}
-.col-md-3 > a {
-  text-decoration: none;
-}
-*/
-/*Posts in Admin section 
-.container.Posts> .row {
-  border: 1px solid gray;
-}
-.card-header > h4 {
-  text-align: center;
-  font-size: 1.5em;
-}
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-td, th {
-  padding: 8px;
-}
-.control-section {
-  margin-top: 5px;
-}
-*/
 /* Sign out button */
+
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,700");
 
 .wrapper {
-  width: 30%;
+  /*width: 30%;*/
   margin: 0 auto;
 }
 
@@ -713,7 +664,6 @@ td, th {
 .sign-out:hover,
 .sign-out:active {
   color: black;
-  background-color: grey;
   text-decoration: none;
 }
 
@@ -722,32 +672,77 @@ td, th {
 }
 
 /*side navigation*/
-.side-navigation  {
- /* position: absolute;*/
-  margin-left: auto;
-  margin-right: auto;
-}
-.side-navigation:hover {
+.side-navigation div:hover {
 background-color: #ccc;
 border: 1px solid transparent;
+cursor: pointer;
 }
-.side-navigation i {
-  margin: 8px;
+.side-navigation div svg {
+display: inline-block;
+vertical-align: middle;
+}
+.side-navigation div span {
+  vertical-align: middle;
+}
+
+/*
+ADMIN SIDENAV
+*/
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(245,249,252);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav div, details {
+  padding: 8px 8px 8px 16px;
+  text-decoration: none;
+  color: #818181;
   display: block;
-  padding: 4px;
+  font-size: 12px;
+  transition: 0.3s;
+  outline: none;
+  border: transparent;
 }
-.side-navigation i:hover {
-  background-color: white;
+summary {
+  outline: none;
 }
-.body-content {
-  width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  display: grid;
-  grid-template-columns: 10% 90%;
-  justify-items: center;
-  align-items: center;
+summary:hover {
+  cursor: pointer;
 }
+
+.sidenav div:hover.sideidentifier {
+  color: #f1f1f1;
+  background-color: rgb(128, 128, 128);
+  cursor: pointer;
+}
+
+.sidenav .closenav {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 16px;
+  margin-left: 50px;
+}
+.sidenav .closenav:hover {
+  cursor: pointer;
+}
+.managetext span, .settingstext span {
+  font-size: 16px;
+}
+
+@media screen and (max-height: 450px) {
+.sidenav {padding-top: 15px;}
+.sidenav a {font-size: 18px;}
+}
+
 table {
   border-collapse: collapse;
 }
@@ -762,4 +757,168 @@ td, th {
 
 .restricted-routes, .nonrestricted-routes {
   display: none;
+}
+
+/* toggle access*/
+
+.toggleAccess {
+  position: relative;
+  display: inline-block;
+}
+.accessText {
+visibility: hidden;
+  width: 80px;
+  background-color: gray;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: -1;
+  top: 150%;
+  left: 50%;
+  margin-left: -40px;
+}
+.accessText a {
+  text-decoration: none;
+  color: white;
+}
+.toggleAccess .accessText::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+.toggleAccess:hover {
+  cursor: pointer;
+}
+
+/*saving spinner*/
+
+.viewport {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  top: 0;
+  opacity: .5;
+ background-color: rgb(245,249,252)
+}
+
+.spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 45px;
+  width: 45px;
+  margin: 0px auto;
+  -webkit-animation: rotation .6s infinite linear;
+  -moz-animation: rotation .6s infinite linear;
+  -o-animation: rotation .6s infinite linear;
+  animation: rotation .6s infinite linear;
+  border-left:  6px solid rgba(0,174,239,.15);
+  border-right:  6px solid rgba(0,174,239,.15);
+  border-bottom: 6px solid rgba(0,174,239,.15);
+  border-top: 6px solid rgba(0,174,239,.8);
+  border-radius: 100px;
+}
+@-webkit-keyframes rotation {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes rotation {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(359deg);}
+}
+@-o-keyframes rotation {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(359deg);}
+}
+@keyframes rotation {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(359deg);}
+}
+
+.checkmark {
+  position: absolute;
+ left: 50%;
+  top: 50%;
+  display: inline-block;
+   transform: rotate(45deg);
+   height: 24px;
+   width: 12px;
+   border-bottom: 7px solid green;
+   border-right: 7px solid green;
+}
+.error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0px auto;
+  color: gray;
+}
+.crossmark {
+  margin-top: -3px;
+  margin-right: 40px;
+  position: relative;
+  display: inline-block;
+  top: -10px;
+}
+.crossmark::after {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 30px;
+  height: 0px;
+  border: solid #E00;
+  border-width:  0 0px 5px 0;
+  transform: rotate(45deg);
+  left: 0;
+  right: 0;
+}
+.crossmark::before {
+  position: absolute;
+  content: "";
+  display: block;
+  width: 30px;
+  height: 0px;
+  border: solid #E00;
+  border-width:  0 0px 5px 0;
+  transform: rotate(-45deg);
+  left: 0;
+  right: 0;
+}
+
+/* search spinner */
+#spinner:not([hidden]) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#spinner::after {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border:2px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 100%;
+  will-change: transform;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

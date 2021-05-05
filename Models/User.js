@@ -26,6 +26,11 @@ const UserSchema = new mongoose.Schema({
     data: String,
     default: "",
   },
+  role: {
+    type: String,
+    default: "User",
+    enum: ["User", "Admin"],
+  },
 }, { timestamps: true });
 
 // authenticate user input against database
@@ -51,7 +56,6 @@ UserSchema.statics.authenticate = function (email, password, callback) {
 };
 
 // hashing a password before saving it to the database
-
 UserSchema.pre("save", function (next) {
   const user = this;
   if (!user.isModified("password")) return next();

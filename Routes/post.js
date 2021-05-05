@@ -5,44 +5,28 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable consistent-return */
 const express = require("express");
-// const { config } = require("process");
 const router = express.Router();
-// const  app = express();
-// const bcrypt = require("bcryptjs");
-const { Readable } = require("stream");
 const multer = require("multer");
-// const mongodb = require("mongodb");
 const mongoose = require("mongoose");
-// const bodyParser = require("body-parser");
-// const jsdom = require("jsdom");
-// const session = require("express-session");
-// const mongoStore = require("connect-mongo")(session);
-const jimp = require("jimp");
+mongoose.Promise = global.Promise;
+const sharp = require("sharp");
+const config = require("config");
+const siteName = config.siteName;
+const siteDescription = config.description;
 const _ = require("lodash");
-
-// const { check, validationResult, matchedData } = require("express-validator");
-// const config = require("config");
-// const siteName = config.siteName;
 const crypto = require("crypto");
-// const nodemailer = require("nodemailer");
 const { htmlToText } = require("html-to-text");
-const gridfs = require("gridfs-stream");
-
 const mailgun = require("mailgun-js");
 const mailgunDomain = "sandboxd4f3f52e209e4038a6fe654dc393a82c.mailgun.org";
 const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: mailgunDomain });
-const postmodel = require("../Models/postSchema");
-const user = require("../Models/userSchema");
-const scriptToInjectModel = require("../Models/scriptToInjectSchema");
-const databaseConnection = require("../Database/database");
-
-// call database function
-const conn = databaseConnection();
-
-gridfs.mongo = mongoose.mongo;
+const postmodel = require("../Models/Post");
+const user = require("../Models/User");
+const Injectcode = require("../Models/scriptToInject");
+const applyRole = require("../Helpers/determineRole");
+const storeImage = require("../Helpers/imageUpload");
 
 // sign up user
-router.post("/signup", (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   // check if user with the email address exists,if exists notify else proceed to sign up
   user.findOne({ email: req.body.email }, (err, identity) => {
     if (identity != null) {
@@ -59,24 +43,20 @@ router.post("/signup", (req, res, next) => {
     res.send("passwords don`t match");
     return next(err);
   }
-  if (req.body.email &&
-    req.body.password &&
-    req.body.passwordConf) {
-    const userData = {
-      email: req.body.email,
-      password: req.body.password,
-    };
 
-    user.create(userData, (error, UniqueUser) => {
-      if (error) {
-        return next(error);
-      }
-      console.log(req.session);
-      req.session.userId = UniqueUser._id;
-      console.log(UniqueUser._id);
-      return res.redirect("/signin");
-    });
-  }
+  const userData = await applyRole(req);
+
+  user.create(userData, (error, UniqueUser) => {
+    if (error) {
+      return next(error);
+    }
+    console.log(req.session);
+    // attach user id to req.session.userId object
+    req.session.userId = UniqueUser._id;
+    // console.log(UniqueUser._id);
+    // redirect to referer
+    return res.redirect("back");
+  });
 });
 
 // sign in user
@@ -89,10 +69,13 @@ router.post("/signin", (req, res, next) => {
         return next(err);
       }
       req.session.userId = theUser._id;
-      console.log(req.session, "user token session", theUser._id);
+      // console.log(req.session, "user token session", theUser._id);
       // set cookie
       res.cookie("loggedIn", Math.random() * 123456789);
-      return res.redirect("/admin");
+      // console.log(req.session.referer);
+      // attach role to the session object;
+      req.session.role = theUser.role;
+      res.redirect(req.session.referer);
     });
   } else {
     const err = new Error("All fields required.");
@@ -160,7 +143,7 @@ router.post("/forgot-password", (req, res, next) => {
           // if (error) next(error);
           console.log(`Email has been sent!${body}`);
           //  return res.json(body);
-          res.render("emailSentForPasswordChange.ejs");
+          res.render("emailSentForPasswordChange.ejs", { siteName, siteDescription });
         });
       });
     });
@@ -193,9 +176,8 @@ router.post("/reset/:token", (req, res, next) => {
       result.save((err) => {
         if (err) return next(err);
         // console.log(result, "xo");
-        // after a successful save,forward to /sucessful route
         // return res.status(200).json(result);
-        res.render("passwordChangedSuccessfully.ejs");
+        res.render("passwordChangedSuccessfully.ejs", { siteName, siteDescription });
       });
     });
   });
@@ -207,6 +189,7 @@ router.post("/reset/:token", (req, res, next) => {
  * Body object contains the values of text fields of the form,
  * the file or files object contains then files uploaded via the form
  * memory storage,the file info will contain a file called buffer.
+ * Multer will not process any form which is not multipart(multipart/form-data)
  */
 
 const storage = multer.memoryStorage();
@@ -214,38 +197,38 @@ const uploadImage = multer({
   storage: storage,
   limits: {
     fields: 12,
-    fileSize: 1024 * 1024 * 18,
-    file: 12,
+    fileSize: 1024 * 1024 * 10,
+    files: 12,
     parts: 24,
   },
 });
-// store image helper function
-const storeImage = (photo) => {
-  // initialize gridfs bucket
-  const bucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "photos",
-  });
-  // eslint-disable-next-line prefer-destructuring
-  const photoName = photo.photoName;
 
-  // Covert buffer to Readable Stream
-  const readablePhototream = new Readable();
-  readablePhototream.push(photo.buffer);
-  readablePhototream.push(null);
-  const uploadStream = bucket.openUploadStream(photoName);
-  // eslint-disable-next-line prefer-destructuring
-  const id = uploadStream.id;
-  readablePhototream.pipe(uploadStream);
+// article image
+router.post("/articleimage", uploadImage.single("articleimage"), async (req, res, next) => {
+  // console.log(req.file);
+  const photo = req.file;
+  let imagesrcset;
+  const size = 95;
+  await sharp(photo.buffer)
+    .resize({ width: size, height: size })
+    .jpeg({ quality: 80 })
+    .toBuffer()
+    .then((buffer) => {
+    // console.log(buffer);
+      const photoName = `${photo.originalname}-${size}`;
+      const returnedURL = storeImage({ photoName, buffer });
+      imagesrcset = `/image/${returnedURL}`;
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+  res.json(imagesrcset);
+});
 
-  uploadStream.on("error", (req, res) => res.status(500).json({ message: "Error uploading file" }));
+router.post("/photos", uploadImage.array("photo", 5), async (req, res, next) => {
+  // console.log(req.files);
 
-  uploadStream.on("finish", () => {
-    console.log(`"File uploaded successfully, stored under Mongo ObjectID: " ${id}`);
-  });
-  return id;
-};
-router.post("/photos", uploadImage.array("photo", 5), async (req, res) => {
-  // console.log(req.files)
   // iterate through the files array to perform file operations and return access IDS.
   const accessIDS = await Promise.all(req.files.map(async (photo) => {
     if (!photo.originalname) {
@@ -258,91 +241,100 @@ router.post("/photos", uploadImage.array("photo", 5), async (req, res) => {
     // sizes to use to resize images
     const sizes = [240, 320, 480];
     const imagesrcsets = [];
-
+    // enable alt images
+    imagesrcsets.push(photo.originalname);
     await Promise.all(
       sizes.map(async (size) => {
-        const image = await jimp.read(photo.buffer);
+        // let me not delete this:)
+      /*  const image = await jimp.read(photo.buffer);
         image.resize(size, jimp.AUTO);
         image.quality(90);
         image.getBuffer(jimp.AUTO, (err, buffer) => {
           if (err) console.error(err);
+          console.log(buffer);
           const photoName = `${photo.originalname}-${size}`;
           const returnedURL = storeImage({ photoName, buffer });
           // eslint-disable-next-line prefer-template
           imagesrcsets.push("/image/" + returnedURL + " " + size + "w");
-        });
+        }); */
+
+        // using sharp(its faster)
+        await sharp(photo.buffer)
+          .resize({ width: size })
+          .jpeg({ quality: 80 })
+          .toBuffer()
+          .then((buffer) => {
+            // console.log(buffer);
+            const photoName = `${photo.originalname}-${size}`;
+            const returnedURL = storeImage({ photoName, buffer });
+            // eslint-disable-next-line prefer-template
+            imagesrcsets.push("/image/" + returnedURL + " " + size + "w");
+          })
+          .catch((err) => {
+            console.log(err);
+            next(err);
+          });
       }),
     );
 
     // build the srcset nicely
-    // console.log(imagesrcsets.join().length)
+    //  console.log(imagesrcsets);
     const id = imagesrcsets.join();
     return id;
   }));
     // res.status(201).json({accessIDS});
-    // console.log(accessIDS)
-    // accessIDS will be used to send  an http get request for them to be rendered.
+  console.log(accessIDS);
+  // accessIDS will be used to send  an http get request for them to be rendered.
   res.send(accessIDS);
 });
 
-router.post("/article", (req, res) => {
-  // console.log(req.body)
-  // res.send(`Sucessfully received`);
+// eslint-disable-next-line max-len
+// const _searchImageRegex = /<img\b(?=\s)(?=(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*?\ssrc=['"]([^"]*)['"]?)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"\s]*)*"\s?\/?>/;
 
-  /*
+router.post("/article", (req, res) => {
+  console.log(req.body);
+  const text = htmlToText(req.body.html);
   const article = {
     title: req.body.title,
-    body: req.body.body,
-  };
-*/
-  // grab the first image from the html string
-  const _searchImageRegex = /<img\b(?=\s)(?=(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*?\ssrc=['"]([^"]*)['"]?)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"\s]*)*"\s?\/?>/;
-
-  // console.log(_searchImageRegex.exec(article.item))
-  // search for an image in the HTML string,if found return the first image
-  // else return a string 'noImageFound'
-  // var _imageFromSearch =_searchImageRegex.exec(article.item)[1];
-  const _imageSearch = (htmlString) => {
-    if (_searchImageRegex.exec(htmlString)) return _searchImageRegex.exec(htmlString)[1];
-    return "noImageFound";
-  };
-  // build the full article and save in the database
-  const refinedArticle = {
-    title: req.body.title,
-    body: req.body.body,
-    plainTextBody: htmlToText(req.body.body),
-    _imageFromSearch: _imageSearch(req.body.body),
+    html: req.body.html,
+    text: text,
+    feature_image: req.body.feature_image,
     visits: 0,
   };
-
   // eslint-disable-next-line new-cap
-  const myposts = new postmodel(refinedArticle);
-  /* create new article and
-          save it into the database
- */
-  myposts.save((err, item) => {
+  const post = new postmodel(article);
+  post.save((err, item) => {
     if (err) {
       res.send(err);
+      console.log(err);
     } else { // if no errors,send it back to client
       res.json({ message: "Article successfully added!", item });
-      // console.log(item);
+      console.log(item);
     }
   });
 });
 
-router.post("/scriptToInject", (req, res) => {
+router.post("/injectcode", (req, res, next) => {
   console.log(req.body);
-  // eslint-disable-next-line new-cap
-  const scriptToInject = new scriptToInjectModel({ url: req.body.scriptToInject });
-  // eslint-disable-next-line no-unused-vars
-  scriptToInject.save((err, item) => {
-    if (err) {
-      res.send(err);
+  req.body.forEach((script) => {
+    const scriptToInject = new Injectcode({
+      script: script.script,
+      placement: script.placement,
+    });
+
+    if (script.script.length > 1) {
+      scriptToInject.save((err, item) => {
+        if (err) {
+          next(err);
+        } else {
+          console.log("saved successfully", item);
+        }
+      });
     } else {
-      console.log("saved successfully");
-      res.json({ message: " Script successfully added!", item });
+      return null;
     }
   });
+  res.json({ message: " Script successfully added!" });
 });
 
 // export the router
