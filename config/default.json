@@ -1,5 +1,5 @@
 {
-    "DBHost": "mongodb+srv://blog:blog1#@cluster0.q3awo.mongodb.net/blog?retryWrites=true&w=majority",
+    "DBHost": "mongodb+srv://blog:blog@blog.1jmkk.mongodb.net/blog?retryWrites=true&w=majority",
     "DBHfost": "mongodb://localhost/blog",
     "siteName": "blog",
     "description": "blog site:shows all the posts about us and ideas around us.Content is curated for everybody;tech reviews,how to guides"

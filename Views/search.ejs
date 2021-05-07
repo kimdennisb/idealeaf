@@ -63,95 +63,106 @@
   </main>
 
   <div class="bottom-toolbar">
-
+    <div class="paginationtext-center"></div>
   </div>
 
 </body>
 <script src="/assets/sidebarhelper.js"></script>
 <script>
-  const perPage = 3;
-  function pages(totalposts, perpage) {
-    return Math.ceil(totalposts / perPage);
-  }
-  fetch("/getsearch?s=Howdy", {
+
+
+  const showwidget = document.querySelector(".showwidget");
+
+  const fetchedData = []
+
+  fetch("/getsearch?s=building", {
     method: "GET",
   }).then((res) => {
     if (res.ok) return res.json();
   }).then((data) => {
-    console.log(data)
-    const totalpages = pages(data.length, perPage);
-    let current = 8;
-    if (totalpages > 0) {
-      const div = document.createElement("div");
-      div.className = "paginationtext-center";
-      if (current = 1) {
-        const span = document.createElement("span");
-        span.className = "disabled";
-        const a = document.createElement("a");
-        a.textContent = "First";
-        span.appendChild(a);
-        div.appendChild(span);
-      } else {
-        const span = document.createElement("span");
-        const a = document.createElement("a")
-        a.textContent = "First";
-        span.appendChild(a);
-        div.appendChild(span);
-      }
-      var i = current > 5 ? (current - 4) : 1;
-      if (i !== 1) {
-        const span = document.createElement("span");
-        span.className = "disabled";
-        const a = document.createElement("a");
-        a.textContent = "...";
-        span.appendChild(a);
-        div.appendChild(span);
-      }
-      for (i <= (current + 4) && i <= pages; i++;) {
-        if (i = current) {
-          const span = document.createElement("span");
-          span.className = "active";
-          const a = document.createElement("a");
-          a.textContent = i;
-          span.appendChild(a);
-          div.appendChild(span);
-        } else {
-          const span = document.createElement("span");
-          span.className = "active";
-          const a = document.createElement("a");
-          a.textContent = i;
-          span.appendChild(a);
-          div.appendChild(span);
-        }
-        if (i = (current + 4) && i < pages) {
-          const span = document.createElement("span");
-          span.className = "disabled";
-          const a = document.createElement("a");
-          a.textContent = "...";
-          span.appendChild(a);
-          div.appendChild(span);
-        }
-      }
-      if (current = pages) {
-        const span = document.createElement("span");
-        span.className = "disabled";
-        const a = document.createElement("a");
-        a.textContent = "Last";
-        span.appendChild(a);
-        div.appendChild(span);
-      } else {
-        const span = document.createElement("span");
-        span.className = "active";
-        const a = document.createElement("a");
-        a.textContent = "Last";
-        span.appendChild(a);
-        div.appendChild(span);
-      }
-      document.querySelector("body").appendChild(div)
+    const state = {
+      "querySet": data,
+      "page": 1,
+      dataPerPage: 3,
+      window: 3,
     }
+    fetchedData.push(state)
+    fetchedData.push("xoxo")
   }).catch((err) => {
     console.log(err)
-  })
+  });
+const state = fetchedData;
+  console.log("executed",state.length,fetchedData)
+
+
+  //console.log("dman",getData())
+  buildTitles();
+
+  function pagination(querySet, page, dataPerPage) {
+    const trimStart = (page - 1) * dataPerPage;
+    const trimEnd = trimStart + dataPerPage;
+    const trimmedData = querySet.slice(trimStart, trimEnd);
+    const pages = Math.round(querySet.length / dataPerPage);
+    return {
+      "querySet": trimmedData,
+      "pages": pages
+    }
+  }
+
+  function pageButtons(pages) {
+    const wrapper = document.querySelector(".paginationtext-center");
+    wrapper.innerHTML = ``;
+    console.log("pages", pages)
+    let maxLeft = (state.page - Math.floor(state.window / 2));
+    let maxRight = (state.page + Math.floor(state.window / 2));
+    if (maxLeft < 1) {
+      maxLeft = 1;
+      maxRight = state.window;
+    }
+    if (maxRight > pages) {
+      maxLeft = pages - (state.window - 1);
+
+      if (maxLeft < 1) {
+        maxLeft = 1
+      }
+      maxRight = pages;
+    }
+
+    for (let page = maxLeft; page <= maxRight; page++) {
+      wrapper.innerHTML = `<button value=${1} class="page">&#171; First</button>` + wrapper.innerHTML;
+    }
+
+    if (state.page != pages) {
+      wrapper.innerHTML += `<button value=${pages} class="page">Last &#187;</button>`;
+    }
+    const page = document.querySelector(".page");
+    page.onclick = function () {
+      showwidget.innerHTML = ``;
+      state.page = Number(this.value)
+      buildTitles();
+    };
+  }
+
+  function buildTitles() {
+    console.log(state)
+    const data = pagination(state.querySet, state.page, state.dataPerPage);
+    const myList = data.querySet;
+    for (let i = 1; i < myList.length; i++) {
+      const parentdiv = document.createElement("div");
+      const childdiv = document.createElement("div");
+      childdiv.classList = "article_title onlytext";
+      const a = document.createElement("a");
+      a.href = `/article/${data.querySet[i].title}`;
+      a.target = "_self";
+      a.textContent = data.querySet[i].title;
+      childdiv.appendChild(a);
+      parentdiv.appendChild(childdiv);
+      showwidget.appendChild(parentdiv);
+    }
+    pageButtons(data.pages)
+  }
+
+
 </script>
 
 </html>
