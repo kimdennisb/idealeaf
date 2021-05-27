@@ -21,8 +21,6 @@
 
   <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
-  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
-
 </head>
 
 <body>
@@ -57,12 +55,14 @@
                         , "August" , "September" , "October" , "November" , "December" ]; %>
 
                         <div class="article_title onlytext">
-                          <a href="article/<%= data[i].title.split(' ').join('-') %>" target="_self">
-                            <%= data[i].title%>
+                          <a href="article/<%= data[i]._id %>" target="_self">
+                            <h3>
+                              <%= data[i].title%>
+                            </h3>
+                            <div class="date-published">
+                              <%- dt + " " + monthNames[month] + " " + year %>
+                            </div>
                           </a>
-                          <p class="date">
-                            <%- dt + " " + monthNames[month] + " " + year %>
-                          </p>
                         </div>
                         <% } else { %>
                           <% const date=data[i].date %>
@@ -71,17 +71,16 @@
                                 <%const dt=date.getDate() %>
                                   <% const monthNames=["January", "February" , "March" , "April" , "May" , "June"
                                     , "July" , "August" , "September" , "October" , "November" , "December" ]; %>
-                                    <div class="article_image">
-                                      <img class="image" src="<%= data[i].feature_image %>" alt="" />
-                                    </div>
-
                                     <div class="article_title">
                                       <a href="article/<%= data[i].title.split(' ').join('-') %>" target="_self">
-                                        <%= data[i].title%>
+                                        <img class="image" src="<%= data[i].feature_image %>" alt="<%= data[i].feature_image_alt %>" />
+                                        <h3>
+                                          <%= data[i].title%>
+                                        </h3>
+                                        <div class="date-published">
+                                          <%- dt + " " + monthNames[month] + " " + year %>
+                                        </div>
                                       </a>
-                                      <p class="date">
-                                        <%- dt + " " + monthNames[month] + " " + year %>
-                                      </p>
                                     </div>
                                     <% } %>
           </div>

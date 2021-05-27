@@ -96,101 +96,101 @@ window.onload = function () {
 // saving progress ui
 
 const load = {
-  remove() {
-    const parentnode = document.querySelector(".viewport");
-    parentnode.parentElement.removeChild(parentnode);
-  },
-  start: () => {
-    const parentviewport = document.querySelector("body");
-    const viewPort = document.createElement("div");
-    const spinner = document.createElement("div");
-    viewPort.className = "viewport";
-    spinner.className = "spinner";
-    viewPort.appendChild(spinner);
-    parentviewport.appendChild(viewPort);
-  },
-  end() {
-    const checkmark = document.createElement("div");
-    checkmark.className = "checkmark";
-    const parentnode = document.querySelector(".viewport");
-    const chilnode = parentnode.firstChild;
-    parentnode.replaceChild(checkmark, chilnode);
-    setTimeout(() => { this.remove(); }, 1000);
-  },
-  error: () => {
-    const error = document.createElement("div");
-    error.className = "error";
-    const servererror = document.createElement("span");
-    servererror.innerText = "Server Error.";
-    const crossmark = document.createElement("span");
-    crossmark.className = "crossmark";
-    error.appendChild(crossmark);
-    error.appendChild(servererror);
-    const parentnode = document.querySelector(".viewport");
-    const chilnode = parentnode.firstChild;
-    parentnode.replaceChild(error, chilnode);
-    setTimeout(() => { this.remove(); }, 1000);
-  },
+    remove() {
+        const parentnode = document.querySelector(".viewport");
+        parentnode.parentElement.removeChild(parentnode);
+    },
+    start: () => {
+        const parentviewport = document.querySelector("body");
+        const viewPort = document.createElement("div");
+        const spinner = document.createElement("div");
+        viewPort.className = "viewport";
+        spinner.className = "spinner";
+        viewPort.appendChild(spinner);
+        parentviewport.appendChild(viewPort);
+    },
+    end() {
+        const checkmark = document.createElement("div");
+        checkmark.className = "checkmark";
+        const parentnode = document.querySelector(".viewport");
+        const chilnode = parentnode.firstChild;
+        parentnode.replaceChild(checkmark, chilnode);
+        setTimeout(() => { this.remove(); }, 1000);
+    },
+    error: () => {
+        const error = document.createElement("div");
+        error.className = "error";
+        const servererror = document.createElement("span");
+        servererror.innerText = "Server Error.";
+        const crossmark = document.createElement("span");
+        crossmark.className = "crossmark";
+        error.appendChild(crossmark);
+        error.appendChild(servererror);
+        const parentnode = document.querySelector(".viewport");
+        const chilnode = parentnode.firstChild;
+        parentnode.replaceChild(error, chilnode);
+        setTimeout(() => { this.remove(); }, 1000);
+    },
 };
 
 function sendPostRequest(body, route) {
-  const xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-  // we open xhr here so that it can be used anytime on `click` event
+    // we open xhr here so that it can be used anytime on `click` event
 
-  xhr.open("POST", route, true);
-  xhr.setRequestHeader("Accept", "application/json");
-  xhr.setRequestHeader("Content-type", "application/json");
+    xhr.open("POST", route, true);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.setRequestHeader("Content-type", "application/json");
 
-  const content = JSON.stringify(body);
-  xhr.send(content);
+    const content = JSON.stringify(body);
+    xhr.send(content);
 
-  xhr.onloadstart = function () {
-    // console.log(`Loaded ${xhr.status} ${xhr.response}`);
-    // progressBar.value = 0;
-    // percentile.innerText = "0%";
+    xhr.onloadstart = function() {
+        // console.log(`Loaded ${xhr.status} ${xhr.response}`);
+        // progressBar.value = 0;
+        // percentile.innerText = "0%";
 
-    // start progress overlay
-    load.start();
-  };
+        // start progress overlay
+        load.start();
+    };
 
-  xhr.onloadend = function (e) {
-    // progressBar.value = e.loaded;
-    // percentile.innerText = "Published!";
-    /* Swal.fire(
-      'Published'
-    ); */
-    // end progress overlay
-    console.log(e);
-    // stopSavingProgress();
-    // window.location.reload(true);
-    // const spinnertext = document.querySelector(".spinner");
-    load.end();
-  };
-  xhr.onprogress = function (e) {
-    // console.log(`Received ${e.loaded} of ${e.total}`);
-    if (e.lengthComputable) {
-      // progressBar.max = e.total;
-      // progressBar.value = e.loaded;
-      // percentile.innerText = `${Math.floor((e.loaded / e.total) * 100)}%`;
-      // continue progress overlay
-      load.start();
-    }
-  };
+    xhr.onloadend = function(e) {
+        // progressBar.value = e.loaded;
+        // percentile.innerText = "Published!";
+        /* Swal.fire(
+          'Published'
+        ); */
+        // end progress overlay
+        console.log(e);
+        // stopSavingProgress();
+        // window.location.reload(true);
+        // const spinnertext = document.querySelector(".spinner");
+        load.end();
+    };
+    xhr.onprogress = function(e) {
+        // console.log(`Received ${e.loaded} of ${e.total}`);
+        if (e.lengthComputable) {
+            // progressBar.max = e.total;
+            // progressBar.value = e.loaded;
+            // percentile.innerText = `${Math.floor((e.loaded / e.total) * 100)}%`;
+            // continue progress overlay
+            load.start();
+        }
+    };
 
-  xhr.onerror = function (e) {
-    console.log(e);
-    /* Swal.fire(
+    xhr.onerror = function(e) {
+        console.log(e);
+        /* Swal.fire(
       "Error publishing article",
     );
   }; */
-    // show error
-    load.error();
-  };
+        // show error
+        load.error();
+    };
 }
 
 // code injection
-const addscript = document.querySelector("[title=\"Done\"]");
+const addscript = document.querySelector(".script");
 
 /**
  * convert a string into HTML DOM nodes
@@ -198,71 +198,88 @@ const addscript = document.querySelector("[title=\"Done\"]");
  * @return {Node} HTML
  *  */
 function parseString(str) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(str, "text/html");
-  return doc.head.children;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(str, "text/html");
+    return doc.head.children;
 }
 
 if (addscript) {
-  addscript.onclick = function () {
-    const headerscript = document.querySelector(".headerscript").value;
-    const footerscript = document.querySelector(".footerscript").value;
+    addscript.onclick = function() {
+        const headerscript = document.querySelector(".headerscript").value;
+        const footerscript = document.querySelector(".footerscript").value;
 
-    const scripts = [];
-    const headerscriptsarr = [...parseString(headerscript)].map((child) => child.outerHTML);
-    const footerscriptsarr = [...parseString(footerscript)].map((child) => child.outerHTML);
-    // build scripts
-    headerscriptsarr.forEach((s) => {
-      const placeHeader = { script: s, placement: "header" };
-      scripts.push(placeHeader);
-    });
-    footerscriptsarr.forEach((s) => {
-      const placeFooter = { script: s, placement: "footer" };
-      scripts.push(placeFooter);
-    });
-    sendPostRequest(scripts, "/injectcode");
-  };
+        const scripts = [];
+        const headerscriptsarr = [...parseString(headerscript)].map((child) => child.outerHTML);
+        const footerscriptsarr = [...parseString(footerscript)].map((child) => child.outerHTML);
+        // build scripts
+        headerscriptsarr.forEach((s) => {
+            const placeHeader = { script: s, placement: "header" };
+            scripts.push(placeHeader);
+        });
+        footerscriptsarr.forEach((s) => {
+            const placeFooter = { script: s, placement: "footer" };
+            scripts.push(placeFooter);
+        });
+        sendPostRequest(scripts, "/injectcode");
+    };
 }
 
 // text editor
 
-window.pell.init({
-  element: document.getElementById("editor"),
-  defaultParagraphSeparator: "p",
-  placeholder: "Type something...",
-  onChange(html) {
-    document.getElementById("html-output").textContent = html;
-  },
-  upload: {
-    api: "photos",
-  },
-});
+if (typeof window.pell !== "undefined") {
+    let editor = window.pell.init({
+        element: document.getElementById("editor"),
+        defaultParagraphSeparator: "p",
+        placeholder: "Type something...",
+        onChange(html) {
+            document.getElementById("html-output").textContent = html;
+        },
+        upload: {
+            api: "photos",
+        },
+    });
+
+    if (window.location.href.includes("/edit")) {
+        //add data from the database to the editor
+        const div = document.createElement('div');
+        div.hidden = true;
+        div.innerText = '<%- data.html %>';
+
+        editor.content.innerHTML = '<%- data.html %>';
+    }
+
+}
+
+
 
 // get content and send to database
 const button = document.querySelector("[title=\"Save\"]");
 const feature_image = document.querySelector(".articleimagemain");
+const feature_image_altName = document.querySelector(".aria-label");
 const tags = document.querySelector(".tags");
 
 if (button) {
-  button.addEventListener("click", () => {
-    const pre = document.querySelector("pre");
-    const title = document.getElementById("title");
-    let article_title;
-    let article_html;
-    title.value == "" ? article_title = title.placeholder : article_title = title.value;
-    pre.textContent == "" ? article_html = " " : article_html = pre.textContent;
+    button.addEventListener("click", () => {
+        const pre = document.querySelector("pre");
+        const title = document.getElementById("title");
+        let article_title;
+        let article_html;
+        title.value == "" ? article_title = title.placeholder : article_title = title.value;
+        pre.textContent == "" ? article_html = " " : article_html = pre.textContent;
 
-    // eslint-disable-next-line max-len
-    const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
-    const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-    const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
-    const article_tags = tags.value;
-    const data = {
-      title: article_title,
-      html: article_html,
-      feature_image: article_feature_image,
-      article_tags,
-    };
-    sendPostRequest(data, "/article");
-  });
+        // eslint-disable-next-line max-len
+        const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
+        const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+        const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
+        const article_feature_image_alt = feature_image_altName.ariaLabel;
+        const article_tags = tags.value;
+        const data = {
+            title: article_title,
+            html: article_html,
+            feature_image: article_feature_image,
+            feature_image_alt: article_feature_image_alt,
+            article_tags,
+        };
+        sendPostRequest(data, "/article");
+    });
 }

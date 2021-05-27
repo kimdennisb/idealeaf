@@ -2,7 +2,7 @@
 <html lang="en-US">
 
 <head>
-  <title>Login</title>
+  <title>Session</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta property="og:url" content="/signin" />
@@ -34,7 +34,15 @@
       <h1>Sign in to <%- siteName %>
       </h1>
     </header>
-
+    <div class="wrong-password-or-email">
+      <span>Wrong password or email</span>
+      <svg class="clearError" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+        <title>close</title>
+        <g fill="none" stroke="#e00" stroke-width="2">
+            <path stroke-linecap="square" d="M8 8 L16.5 16.5 M16.5 8 L8 16.5"></path>
+        </g>
+    </svg>
+    </div>
     <form class="form" method="POST" action="/signin">
       <label for="user">
         Email address

@@ -147,7 +147,7 @@ summary::-webkit-details-marker {
   transition: 1s;
 }
 .article-settings.open {
-  width: 250px;
+  width: 300px;
 }
 .article-settings label {
   font-size: 12px;
@@ -164,8 +164,8 @@ cursor: pointer;
 .articleimagemain {
    display: flex;
    position: relative;
-  width: auto;
-  height: 95px;
+  width: 184px;
+  height: 111px;
   justify-content: center;
   align-items: center;
   background-color: rgb(219, 215, 215);

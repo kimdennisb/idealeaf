@@ -23,6 +23,9 @@ const postSchema = new mongoose.Schema({
   feature_image: {
     type: String,
   },
+  feature_image_alt: {
+    type: String,
+  },
   date: { type: Date, default: Date.now },
   visits: { type: Number, required: true },
 });

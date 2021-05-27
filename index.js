@@ -33,6 +33,7 @@ const get = require("./Routes/get");
 const remove = require("./Routes/delete");
 const post = require("./Routes/post");
 const update = require("./Routes/update");
+const { Console } = require("console");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -90,8 +91,13 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   // res.json(err.message);
-  // res.json(err.message);
-  swal("err.message");
+  //res.json(err.message);
+
+  if (err.status === 401) {
+    const email = req.body.email;
+    res.cookie("email",email,{expires:new Date(Date.now + 9000000)});
+    res.redirect("/session");
+  }
   next();
 });
 

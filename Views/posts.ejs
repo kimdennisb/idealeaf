@@ -2,112 +2,97 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:url" content="/admin/posts" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%- siteName %>" />
-  <meta property="og:site_name" content="<%- siteName %>" />
-  <meta property="og:image" content="/assets/icons/rel_icon.png" />
-  <meta property="og:image:alt" content="<%- siteName %>" />
-  <meta name="description" content="<%- siteDescription %>" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="/admin/posts" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
 
-  <!--Twitter meta tags-->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@kimdennisb" />
-  <meta name="twitter:description" content="<%- siteDescription %>" />
-  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
 
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
-  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
-  <title>
-    <%- siteName %> Admin
-  </title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <title>
+        <%- siteName %> Admin
+    </title>
 </head>
 <header class="header-outer">
-  <div class="header-inner">
-    <div class="header-content responsive-wrapper">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
 
-      <!--sidebar navbar-->
-      <div id="mySidenav" class="sidenav">
-        <%- include("partials/admin/sidenavigation.ejs"); -%>
-      </div>
+            <!--sidebar navbar-->
+            <div id="mySidenav" class="sidenav">
+                <%- include("partials/admin/sidenavigation.ejs"); -%>
+            </div>
 
-      <!--Toolbar-->
-      <div class="header-navigation">
-        <%- include("partials/toolbar.ejs"); -%>
-      </div>
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
 
-      <!--popup input-->
-      <div class="popup-input">
-        <input type="text" class="input" placeholder="Insert Script" name="script" required="">
-        <button type="submit" class="btn_save">Save</button>
-        <button class="btn_cancel">Cancel</button>
-      </div>
+            <!--popup input-->
+            <div class="popup-input">
+                <input type="text" class="input" placeholder="Insert Script" name="script" required="">
+                <button type="submit" class="btn_save">Save</button>
+                <button class="btn_cancel">Cancel</button>
+            </div>
+        </div>
     </div>
-  </div>
 </header>
 
 <body>
 
-  <div class="containerSearch">
-    <div class="searchContainer">
-      <i class="fa fa-search searchIcon"></i>
-      <input class="searchBox" type="search" name="search" placeholder="Search Posts..." />
+    <div class="containerSearch">
+        <div class="searchContainer">
+            <i class="fa fa-search searchIcon"></i>
+            <input class="searchBox" type="search" name="search" placeholder="Search Posts..." />
+        </div>
     </div>
-  </div>
 
-  <div class="body-content body-navigation">
-    <div class="control-section">
-      <table>
-        <tr>
-          <th><input type="checkbox" class="check-uncheckAll" /></th>
-          <th>Title</th>
-          <th>Created At</th>
-          <th>
-            <svg class="edit" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-              <title>Edit</title>
-              <path
-                d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z" />
-            </svg>
-          </th>
-          <th>
-            <svg class="remove" id="remove-post" width="20" height="20" viewBox="0 0 1792 1792"
-              xmlns="http://www.w3.org/2000/svg">
-              <title>Delete</title>
-              <path
-                d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z" />
-            </svg>
-          </th>
-        </tr>
-
-
-        <% for( var i=0;i < data.length;i++) { %>
-          <% const date=data[i].date %>
-            <%const year=date.getFullYear() %>
-              <%const month=date.getMonth() + 1 %>
-                <%const dt=date.getDate() %>
-                  <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August"
-                    , "September" , "October" , "November" , "December" ]; %>
+    <div class="body-content body-navigation">
+        <div class="control-section">
+            <table>
+                <thead>
                     <tr>
-                      <td><input type="checkbox" class="checkbox" id="select-<%=i%>" /></td>
-                      <td><label for="select-<%=i%>">
-                          <%= data[i].title %>
-                        </label></td>
-                      <td><label for="select-<%=i%>">
-                          <%- dt + " " + monthNames[month] + " " + year %>
-                        </label></td>
+                        <th><input type="checkbox" class="check-uncheckAll" /></th>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Created At</th>
+                        <th>
+                            <svg class="edit" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <title>Edit</title>
+                <path
+                  d="M491 1536l91-91-235-235-91 91v107h128v128h107zm523-928q0-22-22-22-10 0-17 7l-542 542q-7 7-7 17 0 22 22 22 10 0 17-7l542-542q7-7 7-17zm-54-192l416 416-832 832h-416v-416zm683 96q0 53-37 90l-166 166-416-416 166-165q36-38 90-38 53 0 91 38l235 234q37 39 37 91z" />
+              </svg>
+                        </th>
+                        <th>
+                            <svg class="remove" id="remove-post" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <title>Delete</title>
+                <path
+                  d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z" />
+              </svg>
+                        </th>
                     </tr>
-                    <% } %>
+                </thead>
+                <tbody></tbody>
 
-      </table>
+            </table>
+        </div>
+        <div id="spinner" hidden></div>
     </div>
-  </div>
-
+    <div class="pagination">
+        <div class="paginationtext-center"></div>
+    </div>
 </body>
 <script src="/assets/sidebarhelper.js"></script>
 <script src="/assets/update-deletehelper.js"></script>
-<script src="/assets/scriptsHandler.js"></script>
 
 </html>

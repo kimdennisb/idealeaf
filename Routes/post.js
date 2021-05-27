@@ -32,7 +32,7 @@ router.post("/signup", async (req, res, next) => {
     if (identity != null) {
       const error = new Error("User with that email address already exists!");
       next(error);
-    // console.log(identity);
+      // console.log(identity);
     }
   });
 
@@ -72,10 +72,13 @@ router.post("/signin", (req, res, next) => {
       // console.log(req.session, "user token session", theUser._id);
       // set cookie
       res.cookie("loggedIn", Math.random() * 123456789);
-      // console.log(req.session.referer);
+
       // attach role to the session object;
       req.session.role = theUser.role;
-      res.redirect(req.session.referer);
+
+      //redirect path
+      const redirect_to = req.session.redirect_to;
+      res.redirect(redirect_to);
     });
   } else {
     const err = new Error("All fields required.");
@@ -207,26 +210,29 @@ const uploadImage = multer({
 router.post("/articleimage", uploadImage.single("articleimage"), async (req, res, next) => {
   // console.log(req.file);
   const photo = req.file;
-  let imagesrcset;
-  const size = 95;
+  let imagesrcset = [];
+  const widthsize = 184;
+  const heightsize = 111;
   await sharp(photo.buffer)
-    .resize({ width: size, height: size })
+    .resize({ width: widthsize, height: heightsize })
     .jpeg({ quality: 80 })
     .toBuffer()
     .then((buffer) => {
-    // console.log(buffer);
-      const photoName = `${photo.originalname}-${size}`;
+      // console.log(buffer);
+      const photoName = `${photo.originalname}-${widthsize}`;
+      imagesrcset.push(photo.originalname);
       const returnedURL = storeImage({ photoName, buffer });
-      imagesrcset = `/image/${returnedURL}`;
+      imagesrcset.push(`/image/${returnedURL}`);
     })
     .catch((err) => {
       console.log(err);
       next(err);
     });
-  res.json(imagesrcset);
+    const id = imagesrcset.join();
+  res.json(id);
 });
 
-router.post("/photos", uploadImage.array("photo", 5), async (req, res, next) => {
+router.post("/admin/photos", uploadImage.array("photo", 5), async (req, res, next) => {
   // console.log(req.files);
 
   // iterate through the files array to perform file operations and return access IDS.
@@ -246,17 +252,17 @@ router.post("/photos", uploadImage.array("photo", 5), async (req, res, next) => 
     await Promise.all(
       sizes.map(async (size) => {
         // let me not delete this:)
-      /*  const image = await jimp.read(photo.buffer);
-        image.resize(size, jimp.AUTO);
-        image.quality(90);
-        image.getBuffer(jimp.AUTO, (err, buffer) => {
-          if (err) console.error(err);
-          console.log(buffer);
-          const photoName = `${photo.originalname}-${size}`;
-          const returnedURL = storeImage({ photoName, buffer });
-          // eslint-disable-next-line prefer-template
-          imagesrcsets.push("/image/" + returnedURL + " " + size + "w");
-        }); */
+        /*  const image = await jimp.read(photo.buffer);
+          image.resize(size, jimp.AUTO);
+          image.quality(90);
+          image.getBuffer(jimp.AUTO, (err, buffer) => {
+            if (err) console.error(err);
+            console.log(buffer);
+            const photoName = `${photo.originalname}-${size}`;
+            const returnedURL = storeImage({ photoName, buffer });
+            // eslint-disable-next-line prefer-template
+            imagesrcsets.push("/image/" + returnedURL + " " + size + "w");
+          }); */
 
         // using sharp(its faster)
         await sharp(photo.buffer)
@@ -278,12 +284,12 @@ router.post("/photos", uploadImage.array("photo", 5), async (req, res, next) => 
     );
 
     // build the srcset nicely
-    //  console.log(imagesrcsets);
+     // console.log(imagesrcsets,"imagesrcsets");
     const id = imagesrcsets.join();
     return id;
   }));
-    // res.status(201).json({accessIDS});
-  console.log(accessIDS);
+  // res.status(201).json({accessIDS});
+  // console.log(accessIDS);
   // accessIDS will be used to send  an http get request for them to be rendered.
   res.send(accessIDS);
 });
@@ -299,6 +305,7 @@ router.post("/article", (req, res) => {
     html: req.body.html,
     text: text,
     feature_image: req.body.feature_image,
+    feature_image_alt: req.body.feature_image_alt,
     visits: 0,
   };
   // eslint-disable-next-line new-cap
