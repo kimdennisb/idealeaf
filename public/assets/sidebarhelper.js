@@ -258,7 +258,7 @@ async function performSearch(parameter) {
                 const childdiv = document.createElement("div");
                 childdiv.classList = "article_title onlytext";
                 const a = document.createElement("a");
-                a.href = `/article/${myList[i].title}`;
+                a.href = `/article/${myList[i]._id}`;
                 a.target = "_self";
                 a.textContent = myList[i].title;
                 childdiv.appendChild(a);

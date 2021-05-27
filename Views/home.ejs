@@ -2,77 +2,77 @@
 <html lang="US">
 
 <head>
-  <title>Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="utf-8">
-  <meta property="og:url" content="/" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%- siteName %>" />
-  <meta property="og:site_name" content="<%- siteName %>" />
-  <meta property="og:image" content="/assets/icons/rel_icon.png" />
-  <meta property="og:image:alt" content="<%- siteName %>" />
-  <meta name="description" content="<%- siteDescription %>" />
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta property="og:url" content="/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
 
-  <!--Twitter meta tags-->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@kimdennisb" />
-  <meta name="twitter:description" content="<%- siteDescription %>" />
-  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
 
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
 </head>
 
 <body>
-  <header class="header-outer">
-    <div class="header-inner">
-      <div class="header-content responsive-wrapper">
+    <header class="header-outer">
+        <div class="header-inner">
+            <div class="header-content responsive-wrapper">
 
-        <!--sidebar navbar-->
-        <div id="myNav" class="overlay">
-          <%- include("partials/public/sidenavigation.ejs"); -%>
+                <!--sidebar navbar-->
+                <div id="myNav" class="overlay">
+                    <%- include("partials/public/sidenavigation.ejs"); -%>
+                </div>
+
+                <!--Toolbar-->
+                <div class="header-navigation">
+                    <%- include("partials/toolbar.ejs"); -%>
+                </div>
+
+            </div>
         </div>
-
-        <!--Toolbar-->
-        <div class="header-navigation">
-          <%- include("partials/toolbar.ejs"); -%>
-        </div>
-
-      </div>
-    </div>
-  </header>
-  <main class="main">
-    <div class="main-content responsive-wrapper">
-      <section class="widget">
-        <% for(let i=0;i < data.length;i++) { %>
-          <div>
-            <% if(!data[i].feature_image ) { %>
-              <% const date=data[i].date %>
-                <%const year=date.getFullYear() %>
-                  <%const month=date.getMonth() + 1 %>
-                    <%const dt=date.getDate() %>
-                      <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July"
+    </header>
+    <main class="main">
+        <div class="main-content responsive-wrapper">
+            <section class="widget">
+                <% for(let i=0;i < data.length;i++) { %>
+                    <div>
+                        <% if(!data[i].feature_image ) { %>
+                            <% const date=data[i].date %>
+                                <%const year=date.getFullYear() %>
+                                    <%const month=date.getMonth() + 1 %>
+                                        <%const dt=date.getDate() %>
+                                            <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July"
                         , "August" , "September" , "October" , "November" , "December" ]; %>
 
-                        <div class="article_title onlytext">
-                          <a href="article/<%= data[i]._id %>" target="_self">
-                            <h3>
-                              <%= data[i].title%>
-                            </h3>
-                            <div class="date-published">
-                              <%- dt + " " + monthNames[month] + " " + year %>
-                            </div>
-                          </a>
-                        </div>
-                        <% } else { %>
-                          <% const date=data[i].date %>
-                            <%const year=date.getFullYear() %>
-                              <%const month=date.getMonth() + 1 %>
-                                <%const dt=date.getDate() %>
-                                  <% const monthNames=["January", "February" , "March" , "April" , "May" , "June"
+                                                <div class="article_title onlytext">
+                                                    <a href="article/<%= data[i]._id %>" target="_self">
+                                                        <h3>
+                                                            <%= data[i].title%>
+                                                        </h3>
+                                                        <div class="date-published">
+                                                            <%- dt + " " + monthNames[month] + " " + year %>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <% } else { %>
+                                                    <% const date=data[i].date %>
+                                                        <%const year=date.getFullYear() %>
+                                                            <%const month=date.getMonth() + 1 %>
+                                                                <%const dt=date.getDate() %>
+                                                                    <% const monthNames=["January", "February" , "March" , "April" , "May" , "June"
                                     , "July" , "August" , "September" , "October" , "November" , "December" ]; %>
-                                    <div class="article_title">
-                                      <a href="article/<%= data[i].title.split(' ').join('-') %>" target="_self">
+                                                                        <div class="article_title">
+                                                                            <a href="article/<%= data[i]._id %>" target="_self">
                                         <img class="image" src="<%= data[i].feature_image %>" alt="<%= data[i].feature_image_alt %>" />
                                         <h3>
                                           <%= data[i].title%>
@@ -81,19 +81,19 @@
                                           <%- dt + " " + monthNames[month] + " " + year %>
                                         </div>
                                       </a>
-                                    </div>
-                                    <% } %>
-          </div>
-          <% } %>
-      </section>
+                                                                        </div>
+                                                                        <% } %>
+                    </div>
+                    <% } %>
+            </section>
+        </div>
+    </main>
+
+
+    <!--Go by pages-->
+    <div class="bottom-toolbar">
+        <a href="/page/1">MORE &#62</a>
     </div>
-  </main>
-
-
-  <!--Go by pages-->
-  <div class="bottom-toolbar">
-    <a href="/page/1">MORE &#62</a>
-  </div>
 </body>
 <script src="/assets/sidebarhelper.js"></script>
 
