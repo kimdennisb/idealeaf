@@ -23,8 +23,8 @@ require("dotenv").config();
 
 // don't show the log when it is test
 if (config.util.getEnv("NODE_ENV" !== "test")) {
-  // use morgan to log at command line
-  app.use(morgan("combined"));// 'combined' outputs the Apache style LOGs
+    // use morgan to log at command line
+    app.use(morgan("combined")); // 'combined' outputs the Apache style LOGs
 }
 
 const port = process.env.PORT || 3000;
@@ -33,13 +33,12 @@ const get = require("./Routes/get");
 const remove = require("./Routes/delete");
 const post = require("./Routes/post");
 const update = require("./Routes/update");
-const { Console } = require("console");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
 // making the static files available on /edit path
-app.use("/edit", express.static(path.join(__dirname, "public")));
+//app.use("/edit", express.static(path.join(__dirname, "public")));
 
 // setting the view engine and for server to look at the views folder
 app.set("views", path.join(__dirname, "Views"));
@@ -57,17 +56,17 @@ const conn = databaseConnection();
 
 // use sessions for tracking logins
 app.use(session({
-  secret: "work hard",
-  resave: true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: conn,
-  }),
+    secret: "work hard",
+    resave: true,
+    saveUninitialized: false,
+    store: new MongoStore({
+        mongooseConnection: conn,
+    }),
 }));
 // check if user has been authenticated
 app.use(
-  ["/admin", "/scripts", "/users", "/new", "/edit/:title", "/singlepost/:title"],
-  checkIfUserExists,
+    ["/admin/scripts", "/admin/posts", "/admin/users", "/admin/new", "/edit/:id", "/singlepost/:title"],
+    checkIfUserExists,
 );
 
 // use routes
@@ -89,22 +88,28 @@ app.use((req, res, next) => {
 // error handler
 // define as the last app.use callback
 app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  // res.json(err.message);
-  //res.json(err.message);
+    res.status(err.status || 500);
+    // res.json(err.message);
+    //res.json(err.message);
 
-  if (err.status === 401) {
-    const email = req.body.email;
-    res.cookie("email",email,{expires:new Date(Date.now + 9000000)});
-    res.redirect("/session");
-  }
-  next();
+    if (err.status === 401) {
+        const email = req.body.email;
+        res.cookie("email", email, { expires: new Date(Date.now + 9000000) });
+        res.redirect("/session");
+    }
+    next();
 });
-
+/*
 if (!module.parent) {
-  app.listen(port, () => {
-    console.log(`listening on the port ${port}`);
-  });
+    app.listen(port, () => {
+        console.log(`listening on the port ${port}`);
+    });
+}*/
+
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`listening on the port ${port}`);
+    });
 }
 
 module.exports = app; // for testing

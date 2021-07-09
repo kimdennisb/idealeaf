@@ -1,29 +1,30 @@
-/* eslint-disable import/newline-after-import */
 const express = require("express");
 const router = express.Router();
+const { htmlToText } = require("html-to-text");
 const postmodel = require("../Models/Post");
 
 // update the article
-router.put("/update", (req, res, next) => {
-  // console.log(req.body);
-  const title = req.body.title.split("-").join(" ");
-  // eslint-disable-next-line object-shorthand
-  postmodel.findOneAndUpdate({ title: title },
-    {
-      $set: {
-        body: req.body.body,
-      },
-    },
-    {
-      upsert: true,
-    // eslint-disable-next-line no-unused-vars
-    }).then((result) => {
-    // console.log(result);
-    res.json(result);
-  }).catch((error) => {
-    console.error(error);
-    next(error);
-  });
+router.put("/update/:id", (req, res, next) => {
+    const id = req.params.id;
+    const text = htmlToText(req.body.html);
+    const filter = { _id: id };
+    const update = {
+        $set: {
+            title: req.body.title,
+            html: req.body.html,
+            text: text,
+            feature_image: req.body.feature_image,
+            feature_image_alt: req.body.feature_image_alt,
+        }
+    }
+
+    postmodel.findOneAndUpdate(filter, update, { new: true, upsert: true }, (err, doc) => {
+        if (err) {
+            next(err);
+        }
+        //console.log(doc);
+        res.json(doc);
+    })
 });
 
 module.exports = router;

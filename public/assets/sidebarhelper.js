@@ -6,6 +6,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
+
 // navigation
 const redirect = document.querySelector(".site_icon");
 const searchIcon = document.querySelector(".search_icon");
@@ -184,7 +185,8 @@ async function performSearch(parameter) {
     if (widget) { widget.innerHTML = ""; }
     if (tbody) { tbody.innerHTML = ""; }
 
-    spinner.removeAttribute("hidden");
+
+    if (spinner) { spinner.removeAttribute("hidden"); }
 
     let stateX = await fetchData();
 
@@ -315,13 +317,12 @@ if (window.location.pathname.includes("/admin")) {
         const input = document.querySelector(".searchBox");
 
         const stateX = await fetchData();
-
         input.addEventListener("keyup", (ev) => {
 
             const text = ev.target.value;
             const pat = new RegExp(text, "i");
             let matchingsearch = stateX.querySet.filter((el) => {
-                return pat.test(el.title);
+                return pat.test(el.title || el.email || el.script);
             });
             // mutate object(creates a copy)
             const state = Object.assign({}, stateX, { querySet: matchingsearch });
@@ -386,20 +387,26 @@ function editAndRemoveButtonHandler() {
     // and if all checked make checkAll be true
     const noOfChecked = Array.prototype.filter.call(select.checkbox, (e) => e.checked);
     if (noOfChecked.length > 1) {
-        select.edit.style.opacity = "0.3";
         select.remove.style.opacity = "1";
-        select.edit.style.pointerEvents = "none";
         select.remove.style.pointerEvents = "fill";
+        if (select.edit) {
+            select.edit.style.pointerEvents = "none";
+            select.edit.style.opacity = "0.3";
+        }
     } else if (noOfChecked.length < 1) {
-        select.edit.style.opacity = "0.3";
         select.remove.style.opacity = "0.3";
-        select.edit.style.pointerEvents = "none";
         select.remove.style.pointerEvents = "none";
+        if (select.edit) {
+            select.edit.style.opacity = "0.3";
+            select.edit.style.pointerEvents = "none";
+        }
     } else {
-        select.edit.style.opacity = "1";
         select.remove.style.opacity = "1";
-        select.edit.style.pointerEvents = "fill";
         select.remove.style.pointerEvents = "fill";
+        if (select.edit) {
+            select.edit.style.opacity = "1";
+            select.edit.style.pointerEvents = "fill";
+        }
     }
     // eslint-disable-next-line no-nested-ternary
     (noOfChecked.length === select.checkbox.length) ? select.checkUncheckAll.checked = true: select.checkUncheckAll.checked = false;
@@ -423,7 +430,7 @@ function addCheckBoxClickEventListener() {
         all ? uncheckAll() : checkAll();
     };
 }
-
+/*
 const accessText = document.querySelector(".accessText");
 
 function toggleAccessHelper(elem, state, target, textNode) {
@@ -434,22 +441,28 @@ function toggleAccessHelper(elem, state, target, textNode) {
     if (elem) {
         elem.appendChild(a);
     }
-}
+}*/
 
 // check cookie if it exists
-(function() {
-    const cookie = document.cookie;
-    const decodedCookie = decodeURIComponent(cookie);
-    const boolean = decodedCookie.split("=")[0];
-    // console.log(boolean);
-    if (boolean === "loggedIn") {
+/*(function() {
+    
+     * can't remove the code,it's genius:)
+
+    const cookies = document.cookie;
+    const cookiesArray = cookies.split(";");
+    const cookieObject = cookiesArray.reduce((valuepair, value) => {
+
+        const [key, pair] = value.trim().split("=");
+        return ({...valuepair, [key]: pair })
+    }, {});
+    if (cookieObject.loggedIn) {
         // make toggle access be /logout
         toggleAccessHelper(accessText, "/logout", "_self", "logout");
     } else {
         // make toggle access be /login
         toggleAccessHelper(accessText, "/signin", "_self", "login");
     }
-}());
+}());*/
 
 (function() {
     const iconX = document.querySelector(".site_icon");
@@ -467,7 +480,9 @@ function toggleAccessHelper(elem, state, target, textNode) {
 const toggleAccess = document.querySelector(".accessicon");
 if (toggleAccess) {
     toggleAccess.onclick = function() {
-        accessText.style.visibility = accessText.style.visibility !== "visible" ? "visible" : "hidden";
+        const signin_signup_modal = document.querySelector(".signin-signup-modal")
+            //accessText.style.visibility = accessText.style.visibility !== "visible" ? "visible" : "hidden";
+        signin_signup_modal.style.visibility = signin_signup_modal.style.visibility !== "visible" ? "visible" : "hidden";
     };
 }
 

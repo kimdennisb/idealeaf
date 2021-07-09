@@ -5,94 +5,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
-/*
-// add script
-function addScript() {
-  const popup = document.querySelector(".popup-input");
-  const cancel = document.querySelector(".btn_cancel");
 
-  // distinguish between resize and onclick of the buttons and show popup so the width cannot be 0
-  // eslint-disable-next-line no-unused-expressions
-  (this.id === "injectscript") ? popup.style.display = "block" : null;
-
-  // get popup and window width.
-  const popupWidthCenter = (popup.clientWidth / 2);
-  const windowCenter = (window.innerWidth / 2);
-  const widthNum = (windowCenter - popupWidthCenter);
-
-  // convert width to a percentile & parse to string
-  const widthString = ((widthNum * 100) / window.innerWidth).toLocaleString();
-  popup.style.left = `${widthString}%`;
-
-  cancel.onclick = () => { popup.style.display = "none"; };
-
-  return `${widthString}%`;
-}
-const addScriptButton = document.querySelector("#injectscript");
-if (addScriptButton) {
-  addScriptButton.onclick = addScript;
-}
-
-// position the popup at the center on window resizing
-// eslint-disable-next-line func-names
-window.onresize = function () {
-  const popup = document.querySelector(".popup-input");
-  popup.style.left = addScript();
-};
-
-// grab input from the add script input and insert in header
-const insertScript = document.querySelector("input[type='text']");
-const saveScript = document.querySelector(".btn_save");
-
-const xhr = new XMLHttpRequest();
-saveScript.onclick = () => {
-  // store script in the database
-
-  // we open xhr here so that it can be used anytime on `click` event
-
-  xhr.open("POST", "/scriptToInject", true);
-  xhr.setRequestHeader("Accept", "application/json");
-  xhr.setRequestHeader("Content-type", "application/json");
-
-  const data = {
-    // eslint-disable-next-line quote-props
-    "scriptToInject": insertScript.value,
-  };
-
-  const scriptToInject = JSON.stringify(data);
-  //  console.log(scriptToInject);
-  xhr.send(scriptToInject);
-};
-xhr.onloadstart = function () {
-  console.log("started");
-};
-xhr.onloadend = function (e) {
-  console.log("ended", e.loaded);
-  window.location.reload(true);
-};
-// eslint-disable-next-line func-names
-window.onload = function () {
-  // fetch scripts
-  fetch("/getinjectedscripts", {
-    method: "GET",
-  })
-    .then((res) => {
-      if (res.ok) return res.json();
-    }).then((data) => {
-    // loop over the data received from the server and inject in the header and scripts section.
-      // const keys = Object.keys(data);
-      console.log(data);
-      for (const i in data) {
-        // console.log(data[i].url)
-        // build script
-        const script = document.createElement("script");
-        script.type = "text/javascript";
-        script.src = data[i].url;
-        document.querySelector("head").insertAdjacentElement("beforeend", script);
-      }
-    });
-};
-*/
 // saving progress ui
 
 const load = {
@@ -117,7 +30,7 @@ const load = {
         parentnode.replaceChild(checkmark, chilnode);
         setTimeout(() => { this.remove(); }, 1000);
     },
-    error: () => {
+    error() {
         const error = document.createElement("div");
         error.className = "error";
         const servererror = document.createElement("span");
@@ -133,60 +46,104 @@ const load = {
     },
 };
 
-function sendPostRequest(body, route) {
-    const xhr = new XMLHttpRequest();
+function sendRequest(params) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
 
-    // we open xhr here so that it can be used anytime on `click` event
+        const [method, route, body] = [arguments[0], arguments[1], arguments[2]];
 
-    xhr.open("POST", route, true);
-    xhr.setRequestHeader("Accept", "application/json");
-    xhr.setRequestHeader("Content-type", "application/json");
+        //DOWNLOAD EVENTS
 
-    const content = JSON.stringify(body);
-    xhr.send(content);
+        //Called when an XMLHttpRequest transaction starts transferring data
+        xhr.onloadstart = function() {
+            //console.log(`Loaded ${xhr.status} ${xhr.response}`);
+        };
 
-    xhr.onloadstart = function() {
-        // console.log(`Loaded ${xhr.status} ${xhr.response}`);
-        // progressBar.value = 0;
-        // percentile.innerText = "0%";
+        //Request has completed whether successfully(after load) or unsuccessfully(after abort or error).
+        xhr.onloadend = function(e) {
+            //console.log(e.loaded, xhr.status);
+            if (typeof body !== "undefined") {
+                if (xhr.status === 0) {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                } else {
+                    load.end();
+                }
+            }
+        };
 
-        // start progress overlay
-        load.start();
-    };
+        //called periodically with information when an XMLHttpRequest before success completely
+        xhr.onprogress = function(e) {
+            // console.log(`Received ${e.loaded} of ${e.total}`);
+            if (e.lengthComputable) {
+                // progressBar.max = e.total;
+                // progressBar.value = e.loaded;
+                // percentile.innerText = `${Math.floor((e.loaded / e.total) * 100)}%`;
+                if (typeof body !== "undefined") {
+                    load.start();
+                }
+            }
+        };
 
-    xhr.onloadend = function(e) {
-        // progressBar.value = e.loaded;
-        // percentile.innerText = "Published!";
-        /* Swal.fire(
-          'Published'
-        ); */
-        // end progress overlay
-        console.log(e);
-        // stopSavingProgress();
-        // window.location.reload(true);
-        // const spinnertext = document.querySelector(".spinner");
-        load.end();
-    };
-    xhr.onprogress = function(e) {
-        // console.log(`Received ${e.loaded} of ${e.total}`);
-        if (e.lengthComputable) {
-            // progressBar.max = e.total;
-            // progressBar.value = e.loaded;
-            // percentile.innerText = `${Math.floor((e.loaded / e.total) * 100)}%`;
-            // continue progress overlay
-            load.start();
+        //Called when the request encounters an error
+        xhr.onerror = function(e) {
+            reject({
+                status: this.status,
+                statusText: xhr.statusText
+            });
+        };
+
+        //Called when content is successfully fetched
+        xhr.onload = function() {
+            if (this.status >= 200 && this.status < 300) {
+                resolve(xhr.responseText);
+            } else {
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                })
+            }
         }
-    };
 
-    xhr.onerror = function(e) {
-        console.log(e);
-        /* Swal.fire(
-      "Error publishing article",
-    );
-  }; */
-        // show error
-        load.error();
-    };
+        //UPLOAD EVENTS(Register before send())
+
+        xhr.upload.onloadstart = function() { /*console.log(`Upload started`)*/ };
+        xhr.upload.onload = function() { /*console.log(`Upload completed`)*/ };
+        xhr.upload.onloadend = function(e) { /*console.log(`Upload completed for either error or success`)*/ };
+
+        xhr.upload.onerror = function(e) {
+            reject({
+                status: this.status,
+                statusText: xhr.statusText
+            })
+        }
+        xhr.upload.onprogress = function(e) {}
+
+
+        // we open xhr here(inside event) so that it can be used anytime on `click` event
+        xhr.open(method, route, true);
+
+        //xhr.timeout = 3000;
+
+        //Accept json response from server
+        xhr.setRequestHeader("Accept", "application/json");
+
+        if (typeof body !== "undefined") {
+            if (body instanceof FormData) {
+                xhr.send(body)
+            } else {
+                xhr.setRequestHeader("Content-Type", "application/json");
+                const content = JSON.stringify(body);
+                xhr.send(content);
+            }
+        } else {
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send();
+        }
+    })
+
 }
 
 // code injection
@@ -220,7 +177,11 @@ if (addscript) {
             const placeFooter = { script: s, placement: "footer" };
             scripts.push(placeFooter);
         });
-        sendPostRequest(scripts, "/injectcode");
+        sendRequest("POST", "/injectcode", scripts)
+            .catch((err) => {
+                load.error();
+                console.log(`Augh,there was an error!,${err.statusText}`);
+            })
     };
 }
 
@@ -235,51 +196,302 @@ if (typeof window.pell !== "undefined") {
             document.getElementById("html-output").textContent = html;
         },
         upload: {
-            api: "photos",
+            api: "/admin/photos",
         },
     });
-
+    window.editor = editor;
     if (window.location.href.includes("/edit")) {
-        //add data from the database to the editor
-        const div = document.createElement('div');
-        div.hidden = true;
-        div.innerText = '<%- data.html %>';
-
-        editor.content.innerHTML = '<%- data.html %>';
+        const id = window.location.href.split("/").pop();
+        sendRequest("GET", `/post/${id}`);
     }
 
 }
 
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+// Use a lookup table to find the index.
+const lookup = new Uint8Array(256);
+for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+}
 
+const Base64Binary = {
+    encode: function(arraybuffer) {
+        var bytes = new Uint8Array(arraybuffer),
+            i, len = bytes.length,
+            base64 = "";
+
+        for (i = 0; i < len; i += 3) {
+            base64 += chars[bytes[i] >> 2];
+            base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+            base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+            base64 += chars[bytes[i + 2] & 63];
+        }
+
+        if ((len % 3) === 2) {
+            base64 = base64.substring(0, base64.length - 1) + "=";
+        } else if (len % 3 === 1) {
+            base64 = base64.substring(0, base64.length - 2) + "==";
+        }
+
+        return base64;
+    },
+    decode: function(base64) {
+        var bufferLength = base64.length * 0.75,
+            len = base64.length,
+            i, p = 0,
+            encoded1, encoded2, encoded3, encoded4;
+
+        if (base64[base64.length - 1] === "=") {
+            bufferLength--;
+            if (base64[base64.length - 2] === "=") {
+                bufferLength--;
+            }
+        }
+
+        var arraybuffer = new ArrayBuffer(bufferLength),
+            bytes = new Uint8Array(arraybuffer);
+
+        for (i = 0; i < len; i += 4) {
+            encoded1 = lookup[base64.charCodeAt(i)];
+            encoded2 = lookup[base64.charCodeAt(i + 1)];
+            encoded3 = lookup[base64.charCodeAt(i + 2)];
+            encoded4 = lookup[base64.charCodeAt(i + 3)];
+
+            bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+            bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+            bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+        }
+
+        return arraybuffer;
+    }
+}
 
 // get content and send to database
-const button = document.querySelector("[title=\"Save\"]");
-const feature_image = document.querySelector(".articleimagemain");
-const feature_image_altName = document.querySelector(".aria-label");
+const button = document.querySelector(".publish");
+const feature_image = document.querySelector(".feature_image");
+const feature_image_altName = document.querySelector(".feature_image_aria-label");
 const tags = document.querySelector(".tags");
+
+function getEditorData() {
+    const article_html = window.pell.editorHTML();
+    const title = document.querySelector(".title");
+    const article_title = title.value || title.placeHeader;
+
+    // eslint-disable-next-line max-len
+    const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
+    const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+    const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
+    const article_feature_image_alt = feature_image_altName.ariaLabel;
+    const article_tags = tags.value;
+    const data = {
+        title: article_title,
+        html: article_html,
+        feature_image: article_feature_image,
+        feature_image_alt: article_feature_image_alt,
+        article_tags,
+    };
+    return data;
+}
+/**
+ * @param {Array} images Array
+ * @returns {Array} images Array
+ */
+function selectImagesWithBase64AsURL(images) {
+    return images.filter((image) => { return image.srcset === "" });
+}
+
+/**
+ * 
+ * @param {String} string 
+ * @returns {HTMLDocument} HTMLDocument
+ */
+function parseStringToHTML(string) {
+    const parser = new DOMParser();
+    return parser.parseFromString(string, "text/html");
+}
+
+/**
+ * 
+ * @returns {Array} Array imageFile(s)
+ */
+function getEditorImages() {
+    const editorData = getEditorData()
+        //parse html
+    const htmldoc = parseStringToHTML(editorData.html);
+    //get images
+    const postimages = htmldoc.querySelectorAll("img");
+    //convert nodelist to array if images present else return empty array; 
+    const arraypostimages = postimages.length === 0 ? [] : selectImagesWithBase64AsURL(Array.from(postimages));
+    return arraypostimages;
+}
+
+/**
+ * 
+ * @param {String} imagename 
+ * @returns Imagename
+ */
+function stripImageExtension(imagename) {
+    return imagename.split(".")[0];
+}
+
+/**
+ * 
+ * @param {File} imagefile with base64 encoding
+ * @returns File
+ */
+function createImageFileWithBufferFromImage(imagefile) {
+    const base64 = imagefile.src.split(",")[1];
+    const buffer = Base64Binary.decode(base64);
+    const imageName = stripImageExtension(imagefile.alt);
+    const imageType = imagefile.src.split(":")[1];
+    const imageFile = new File([buffer], imageName, { type: imageType })
+    return imageFile;
+}
+
+/**
+ * 
+ * @param {String} datasrc 
+ * @param {String} alt 
+ * @returns File
+ */
+function createImageFileWithBufferFromBase64(datasrc, alt) {
+    const base64 = datasrc.split(",")[1];
+    const buffer = Base64Binary.decode(base64);
+    const imageName = stripImageExtension(alt);
+    const imageType = datasrc.split(":")[1];
+    const imageFile = new File([buffer], imageName, { type: imageType });
+    return imageFile;
+}
+
+/**
+ * 
+ * @param {Array} imageFiles
+ * @returns FormData
+ */
+function appendImageFileToFormData(args) {
+    const imageFiles = args;
+    const formData = new window.FormData();
+    if (Array.isArray(imageFiles)) {
+        imageFiles.forEach((image, index) => {
+            formData.append("photo", image);
+        })
+    } else {
+        formData.append("photo", imageFiles)
+    }
+    return formData;
+}
 
 if (button) {
     button.addEventListener("click", () => {
-        const pre = document.querySelector("pre");
-        const title = document.getElementById("title");
-        let article_title;
-        let article_html;
-        title.value == "" ? article_title = title.placeholder : article_title = title.value;
-        pre.textContent == "" ? article_html = " " : article_html = pre.textContent;
 
-        // eslint-disable-next-line max-len
-        const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
-        const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-        const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
-        const article_feature_image_alt = feature_image_altName.ariaLabel;
-        const article_tags = tags.value;
-        const data = {
-            title: article_title,
-            html: article_html,
-            feature_image: article_feature_image,
-            feature_image_alt: article_feature_image_alt,
-            article_tags,
-        };
-        sendPostRequest(data, "/article");
+        const postimages = getEditorImages();
+        const { feature_image, feature_image_alt } = getEditorData();
+        const featureImage = document.querySelector(".feature_image");
+
+        if (window.location.href.includes("/edit")) {
+            const id = window.location.href.split("/").pop().trim().toString();
+            const editorData = getEditorData()
+            sendRequest("PUT", `/update/${id}`, editorData);
+        } else if (window.location.href.includes("/new")) {
+            if (postimages.length > 0 && feature_image.length > 0 && feature_image_alt.length > 0) {
+                const { feature_image, feature_image_alt } = getEditorData();
+                const imagefile = createImageFileWithBufferFromBase64(feature_image, feature_image_alt);
+                const fdFeatureImage = appendImageFileToFormData(imagefile);
+
+                const imagefiles = postimages.map((imagefile) => { return createImageFileWithBufferFromImage(imagefile) });
+                const fdPostImages = appendImageFileToFormData(imagefiles);
+
+                sendRequest(`POST`, `/articleimage`, fdFeatureImage)
+                    .then((featureimage) => {
+                        const { src } = JSON.parse(featureimage);
+                        featureImage.style.backgroundImage = `url(${src})`;
+                        return sendRequest(`POST`, `/admin/photos`, fdPostImages)
+                    })
+                    .then((articleimages) => {
+                        const imageresources = JSON.parse(articleimages);
+                        let editorimages = Array.from(document.querySelectorAll("img"));
+                        editorimages.forEach((x, index) => {
+                            x.srcset = imageresources[index].srcset
+                            x.src = imageresources[index].src;
+                            x.alt = imageresources[index].alt
+                            x.sizes = imageresources[index].sizes;
+                        });
+                        sendRequest(`POST`, `/article`, getEditorData())
+                    })
+                    .catch((err) => {
+                        load.error();
+                        console.log(`Augh,there was an error!,${err.statusText}`);
+                    })
+            } else if (postimages.length > 0) {
+
+                const imagefiles = postimages.map((imagefile) => { return createImageFileWithBufferFromImage(imagefile) });
+                const fdPostImages = appendImageFileToFormData(imagefiles);
+
+                sendRequest(`POST`, `/admin/photos`, fdPostImages)
+                    .then((articleimages) => {
+                        const imageresources = JSON.parse(articleimages);
+                        let editorimages = Array.from(document.querySelectorAll("img"));
+                        editorimages.forEach((x, index) => {
+                            x.srcset = imageresources[index].srcset
+                            x.src = imageresources[index].src;
+                            x.alt = imageresources[index].alt
+                            x.sizes = imageresources[index].sizes;
+                        });
+                        sendRequest(`POST`, `/article`, getEditorData());
+                    })
+                    .catch((err) => {
+                        load.error();
+                        console.log(`Augh,there was an error!,${err.statusText}`);
+                    })
+            } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
+                const { feature_image, feature_image_alt } = getEditorData();
+                const imagefile = createImageFileWithBufferFromBase64(feature_image, feature_image_alt);
+                const fdFeatureImage = appendImageFileToFormData(imagefile);
+
+                sendRequest(`POST`, `/articleimage`, fdFeatureImage)
+                    .then((featureimage) => {
+                        const { src } = JSON.parse(featureimage);
+                        featureImage.style.backgroundImage = `url(${src})`;
+                        sendRequest(`POST`, `/article`, getEditorData());
+                    })
+                    .catch((err) => {
+                        load.error();
+                        console.log(`Augh,there was an error!,${err.statusText}`);
+                    })
+            } else {
+                sendRequest(`POST`, `/article`, getEditorData())
+                    .catch((err) => {
+                        load.error();
+                        console.log(`Augh,there was an error!,${err.statusText}`);
+                    })
+            }
+        } else {
+            sendRequest(`POST`, `/getinjectedscripts`)
+                .then((scripts) => {
+                    console.log(scripts);
+                })
+                .catch((err) => {
+                    load.error();
+                    console.log(`Augh,there was an error!,${err.statusText}`);
+                })
+        }
     });
-}
+};
+
+//Fetch Scripts
+sendRequest(`GET`, `/getinjectedscripts`)
+    .then((data) => {
+        // loop over the data received from the server and inject in the header and footer section.
+        const scripts = JSON.parse(data)
+        for (const i in scripts) {
+            if (scripts[i].placement === "header") {
+                document.querySelector("head").insertAdjacentElement("beforeend", parseStringToHTML(scripts[i].script).head.firstElementChild);
+            } else {
+                document.querySelector("body").insertAdjacentElement("beforeend", parseStringToHTML(scripts[i].script).head.firstElementChild);
+            }
+        }
+    })
+    .catch((err) => {
+        load.error();
+        console.log(`Augh,there was an error!,${err.statusText}`);
+    })

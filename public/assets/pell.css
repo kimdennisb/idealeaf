@@ -1,89 +1,118 @@
-
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-.content {
-  box-sizing: border-box;
-  margin: 0 auto;
-  max-width: 430px;
-  height: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+.content,
+.taskbar {
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 430px;
+    height: 100%;
+    padding: 20px;
+    /*display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;*/
 }
 
 #html-output {
-  white-space: pre-wrap;
+    white-space: pre-wrap;
 }
+
 .pell {
-  border: 1px solid rgba(10, 10, 10, 0.1);
-  box-sizing: border-box; 
-width: 100%;
-padding-bottom: 18px;
+    border: 1px solid rgba(10, 10, 10, 0.1);
+    box-sizing: border-box;
+    width: 100%;
+    padding-bottom: 18px;
 }
 
 .pell-content {
-  box-sizing: border-box;
-  height: 100%;
-  outline: 0;
-  overflow-y: auto;
-  padding: 10px; 
+    box-sizing: border-box;
+    height: 100%;
+    outline: 0;
+    overflow-y: auto;
+    padding: 10px;
 }
 
+
+/*
 .pell-content img {
-  max-height: 1200px;
-  max-width: 350px;
+    max-height: 1200px;
+    max-width: 350px;
 }
+*/
+
 .pell-content:empty:before {
-  content: attr(data-placeholder);
-  position: absolute;
-  color: rgba(10, 10, 10, 0.4); 
+    content: attr(data-placeholder);
+    position: absolute;
+    color: rgba(10, 10, 10, 0.4);
 }
+
 .pell-content:empty:focus:before {
-  color: rgba(10, 10, 10, 0.1); 
+    color: rgba(10, 10, 10, 0.1);
 }
 
 .pell-actionbar {
-  background-color: #FFF;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  border-bottom: 1px solid rgba(10, 10, 10, 0.1);
-  position: absolute;
-  width: 180px;
+    background-color: lightgray;
+    /* display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(10, 10, 10, 0.1);
+    position: relative;
+    width: 180px;*/
 }
 
 .pell-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  height: 30px;
-  outline: 0;
-  width: 30px;
-  vertical-align: bottom; }
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    height: 30px;
+    outline: 0;
+    width: 30px;
+    vertical-align: bottom;
+}
 
 .pell-button-selected {
-  background-color: #F0F0F0; }
+    background-color: #F0F0F0;
+}
 
+.title {
+    outline: none;
+    resize: none;
+    width: 100%;
+    height: 5rem;
+}
+
+.taskbar {
+    position: relative;
+}
+
+.publish {
+    float: right;
+    cursor: pointer;
+}
+
+
+/*
 #pell-push {
-  outline: none;
-  border: 1px solid #333;
-border-radius: 3px;
-margin-top: 20px;
+    outline: none;
+    border: 1px solid #333;
+    border-radius: 3px;
+    margin-top: 20px;
 }
 
 #title {
-width: 100%;
-border-width: 0 0 0 0;
-outline: none;
-margin-bottom: 10px;
-font-size: x-large;
-background-color: #f2f5f7
+    width: 100%;
+    border-width: 0 0 0 0;
+    outline: none;
+    margin-bottom: 10px;
+    font-size: x-large;
+    background-color: #f2f5f7
 }
+*/
+
+
 /*
 ::placeholder#title {
 color: green;
@@ -100,60 +129,74 @@ text-align: center;
 #progress {
     margin-top: 10px;
 }*/
-details {
-  position: relative;
-  /*height: fit-content;
-  width: fit-content;*/
+
+
+/*details {
+    position: relative;
+    height: fit-content;
+  width: fit-content;
 }
+
 details[open] {
- /* height: fit-content;*/
+     height: fit-content;
 }
-details[open] > summary::-webkit-details-marker {
-  background: url(/assets/icons/minus.svg);
-  color: transparent;
-  position: absolute;
-  top: 80px;
-  left: -18px;
-}
-details[open] > summary {
-list-style-image: url(/assets/icons/minus.svg);
-position: absolute;
-top: 80px;
-left: -18px;
-}
-summary {
-  position: absolute;
+
+details[open]>summary::-webkit-details-marker {
+    background: url(/assets/icons/minus.svg);
+    color: transparent;
+    position: absolute;
     top: 80px;
     left: -18px;
-   list-style-image: url(/assets/icons/plus.svg);
-    z-index: 1000000;  
 }
-summary::-webkit-details-marker {
-  position: absolute;
-  top: 80px;
-  left: -18px;
-  background: url(/assets/icons/plus.svg);
-  color: transparent;
-}
-/* article sidebar settings */
-.article-settings {
-  position: fixed;
-  right: 0;
-  width: 0;
- /* flex-direction: column;*/
-  border: 1px solid rgba(10, 10, 10, 0.1);
-  margin: 20px;
-  overflow-x: hidden;
-  transition: 1s;
-}
-.article-settings.open {
-  width: 300px;
-}
-.article-settings label {
-  font-size: 12px;
-  font-weight: 600;
 
+details[open]>summary {
+    list-style-image: url(/assets/icons/minus.svg);
+    position: absolute;
+    top: 80px;
+    left: -18px;
 }
+
+summary {
+    position: absolute;
+    top: 80px;
+    left: -18px;
+    list-style-image: url(/assets/icons/plus.svg);
+    z-index: 1000000;
+}
+
+summary::-webkit-details-marker {
+    position: absolute;
+    top: 80px;
+    left: -18px;
+    background: url(/assets/icons/plus.svg);
+    color: transparent;
+}
+*/
+
+
+/* article sidebar settings */
+
+.article-settings {
+    position: fixed;
+    right: 0;
+    width: 0;
+    /* flex-direction: column;*/
+    border: 1px solid rgba(10, 10, 10, 0.1);
+    margin: 20px;
+    overflow-x: hidden;
+    transition: 1s;
+}
+
+.article-settings.open {
+    width: 300px;
+}
+
+.article-settings label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
 /*
 .article-settings label[for="articleimage"] {
 
@@ -161,32 +204,41 @@ summary::-webkit-details-marker {
 .article-settings label[for="articleimage"]:hover {
 cursor: pointer;
 }*/
-.articleimagemain {
-   display: flex;
-   position: relative;
-  width: 184px;
-  height: 111px;
-  justify-content: center;
-  align-items: center;
-  background-color: rgb(219, 215, 215);
-  margin: 0 76.5px 0 76.5px; 
+
+.feature_image {
+    display: flex;
+    position: relative;
+    width: 184px;
+    height: 111px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(219, 215, 215);
+    margin: 0 76.5px 0 76.5px;
 }
-.remove-image:hover, .articleimagemain:hover, .article-settings input:hover {
-  cursor: pointer;
+
+.remove-image:hover,
+.feature_image:hover,
+.article-settings input:hover {
+    cursor: pointer;
 }
+
 .remove-image {
-  position: absolute;
-  right: 0;
-  top: 0;
-  margin: 2px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 2px;
 }
-.imagetext {
-  position: absolute;
-  text-align: center;
+
+.feature_image_text {
+    position: absolute;
+    text-align: center;
 }
+
 .close {
-  display: none;
+    display: none;
 }
+
+
 /*
 .article-settings label[for="articleimage"] input {
 height: 95px;
@@ -194,28 +246,47 @@ width: 95px;
 background-color: #808080;
 display: none;
 }*/
+
 .article-settings input {
- border-radius: 2px;
-  margin: 10px 0;
-  padding: 9px 7px;
-  width: 100%;
+    border-radius: 2px;
+    margin: 10px 0;
+    padding: 9px 7px;
+    width: 100%;
 }
-.articleimagemain input {
-  opacity: 0;
+
+.feature_image input {
+    opacity: 0;
 }
+
 .settingsicon {
-  position: absolute;
-  height: 18px;
-  width: 18px;
-  right: 0;
-  top: 0;
-  margin: 20px 0 20px 20px;
-  background-image: url(/assets/icons/showarticlesettings.svg);
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    right: 0;
+    top: 0;
+    margin: 20px 0 20px 20px;
+    background-image: url(/assets/icons/showarticlesettings.svg);
 }
+
 .settingsicon.open {
-  background-image: url(/assets/icons/hidearticlesettings.svg); 
+    background-image: url(/assets/icons/hidearticlesettings.svg);
 }
 
 .settingsicon:hover {
-  cursor: pointer;
+    cursor: pointer;
+}
+
+
+/*make images not to be blurry
+
+img {
+    image-rendering: -moz-crisp-edges;
+}*/
+
+
+/*size images in editor*/
+
+img {
+    width: 370px;
+    height: 430px;
 }

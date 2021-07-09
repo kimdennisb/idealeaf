@@ -4,6 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#4CAF50" />
+
     <meta property="og:url" content="/admin/codeinjection" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="<%- siteName %>" />
@@ -20,6 +23,7 @@
 
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
     <title>
         <%- siteName %> Admin
     </title>
@@ -38,12 +42,6 @@
                 <%- include("partials/toolbar.ejs"); -%>
             </div>
 
-            <!--popup input-->
-            <div class="popup-input">
-                <input type="text" class="input" placeholder="Insert Script" name="script" required="">
-                <button type="submit" class="btn_save">Save</button>
-                <button class="btn_cancel">Cancel</button>
-            </div>
         </div>
     </div>
 </header>
@@ -65,6 +63,8 @@
     </div>
 
 </body>
+<script src="/assets/sidebarhelper.js"></script>
 <script src="/assets/requestsHandler.js"></script>
+<script src="/assets/update-deletehelper.js"></script>
 
 </html>

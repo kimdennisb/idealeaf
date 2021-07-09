@@ -2,66 +2,52 @@
 const express = require("express");
 const router = express.Router();
 const postmodel = require("../Models/Post");
-const scriptToInjectSchema = require("../Models/scriptToInject");
+const scriptToInject = require("../Models/scriptToInject");
 const user = require("../Models/User");
 
-// delete posts
-router.delete("/delete-posts", (req, res, next) => {
-    // res.body.header is sent through fetch request
-    // titles to delete
-    const ids = req.body.id;
-    // console.log(titles);
-    ids.forEach((element) => {
-        postmodel.findOneAndDelete({ _id: element }, (err, result) => {
+/**
+ * @returns array of deleted items
+ * @param {String} schema - Model of the schema to delete from.
+ * @param {Array} IDS - Array of unique ids
+ */
+async function deleteItems(schema, IDS) {
+    const deletedItems = [];
+    for (let i = 0; i < IDS.length; i++) {
+        await schema.findOneAndDelete({ _id: IDS[i] }, (err, result) => {
             if (err) {
                 next(err);
-                console.log(err);
             }
-            console.log(result);
-        });
-    });
-    res.json({ message: "An article was successfully deleted" });
+            deletedItems.push(result);
+        })
+    }
+    return deletedItems;
+}
+
+// delete posts
+router.delete("/delete-posts", async(req, res, next) => {
+    // res.body.header is sent through fetch request
+    // ids to delete
+    const ids = req.body.id;
+    const deleteditems = await deleteItems(postmodel, ids)
+    res.json({ message: "Article(s) successfully deleted", deleteditems });
 });
 
 // delete users
-router.delete("/delete-users", (req, res, next) => {
+router.delete("/delete-users", async(req, res, next) => {
     // res.body.header is sent through fetch request
-    // titles to delete
+    // ids to delete
     const users = req.body.header;
-    users.forEach((element) => {
-        user.findOne({ email: element }, (err, result) => {
-            if (err) {
-                next(err);
-                console.log(err);
-            }
-            console.log(result, element);
-            result.remove((error, result1) => {
-                if (error) throw error;
-                console.log("Successfully deleted", result1);
-            });
-        });
-    });
-    res.json({ message: "The user was successfully deleted" });
+    const deleteditems = await deleteItems(user, users)
+    res.json({ message: "User(s) successfully deleted", deleteditems });
 });
 
 // delete scripts
-router.delete("/delete-scripts", (req, res, next) => {
+router.delete("/delete-scripts", async(req, res, next) => {
     // res.body.header is sent through fetch request
     // titles to delete
     const scripts = req.body.header;
-    scripts.forEach((element) => {
-        scriptToInjectSchema.findOne({ url: element }, (err, result) => {
-            if (err) {
-                next(err);
-                console.log(err);
-            }
-            result.remove((error, result1) => {
-                if (error) throw error;
-                console.log("Successfully deleted", result1);
-            });
-        });
-    });
-    res.json({ message: "The script was successfully deleted" });
+    const deleteditems = await deleteItems(scriptToInject, scripts)
+    res.json({ message: "Script(s) successfully deleted", deleteditems });
 });
 
 module.exports = router;

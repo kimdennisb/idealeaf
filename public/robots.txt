@@ -1,0 +1,10 @@
+User-agent:*
+
+Disallow:/admin/new
+Disallow:/admin/posts
+Disallow:/admin/users
+Disallow:/admin/scripts
+Disallow:/admin/codeinjection
+Disallow:/signin
+Disallow:/signup
+

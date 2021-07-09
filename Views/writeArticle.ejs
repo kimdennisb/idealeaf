@@ -1,112 +1,180 @@
 <!DOCTYPE html>
-<html lang="US">
+<html lang="en">
 
 <head>
-  <title>Write new</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Write new Article</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta property="og:url" content="/new" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%- siteName %>" />
-  <meta property="og:site_name" content="<%- siteName %>" />
-  <meta property="og:image" content="/assets/icons/rel_icon.png" />
-  <meta property="og:image:alt" content="<%- siteName %>" />
-  <meta name="description" content="<%- siteDescription %>" />
+    <meta name="theme-color" content="#4CAF50" />
 
-  <!--Twitter meta tags-->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@kimdennisb" />
-  <meta name="twitter:description" content="<%- siteDescription %>" />
-  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:url" content="/admin/new" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
 
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" type="text/css" href="/assets/pell.css">
-  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
-  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
-  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
-  <script src="/assets/pell.js"></script>
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/assets/pell.css">
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+    <script src="/assets/pell.js"></script>
 
 </head>
 
 <body>
-  <div class="settingsicon">
-  </div>
-  <div class="article-settings">
-    <h3>Article settings</h3>
-    <form method="POST" action="/articleimage" enctype="multipart/form-data">
-      <div class="articleimagemain">
-        <label class="imagetext">Upload article image</label>
-        <input type="file" name="articleimage" accept="image/*" />
-        <svg class="remove-image" width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+    <div class="settingsicon">
+    </div>
+    <div class="article-settings">
+        <h3>Article settings</h3>
+        <form method="POST" action="/articleimage" enctype="multipart/form-data">
+            <div class="feature_image">
+                <label class="feature_image_text">Upload article image</label>
+                <input type="file" name="articleimage" accept="image/*" />
+                <svg class="remove-image" width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
           <title>Delete</title>
           <path
             d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z">
           </path>
         </svg>
-        <span class="aria-label" role="img" aria-label=""></span>
-      </div>
+                <span class="feature_image_aria-label" role="img" aria-label=""></span>
+            </div>
+        </form>
 
-    </form>
-
-    <label for="tags">
+        <label for="tags">
       Tags
       <input type="text" name="tags" class="tags" />
     </label>
-  </div>
-
-  <div class="content">
-    <div id="editor" class="pell"></div>
-
-    <div style="margin-top: 20px;display: none;">
-      <h3>HTML output:</h3>
-      <pre id="html-output"></pre>
     </div>
-  </div>
+    <div class="taskbar">
+        <button class="publish">
+            <svg width="18" height="18" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <title>Publish</title>
+                <path d="M1764 11q33 24 27 64l-256 1536q-5 29-32 45-14 8-31 8-11 0-24-5l-453-185-242 295q-18 23-49 23-13 0-22-4-19-7-30.5-23.5t-11.5-36.5v-349l864-1059-1069 925-395-162q-37-14-40-55-2-40 32-59l1664-960q15-9 32-9 20 0 36 11z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="content">
+        <div id="editor" class="pell"></div>
+    </div>
 
 </body>
 <script src="/assets/requestsHandler.js"></script>
 <script>
-  const settings = document.querySelector(".settingsicon");
-  const articlesettings = document.querySelector(".article-settings");
+    const settings = document.querySelector(".settingsicon");
+    const articlesettings = document.querySelector(".article-settings");
 
-  settings.onclick = function () {
-    articlesettings.classList.toggle("open");
-    this.classList.toggle("open");
-  }
-  const articleimage = document.querySelector(".articleimagemain");
-  const imagetext = document.querySelector(".imagetext");
-  const aria_label = document.querySelector(".aria-label");  
-  const removebackground = document.querySelector(".remove-image");
-  removebackground.classList.add("close");
-  document.querySelector("input").addEventListener("change", (e) => {
-    const image = e.target.files[0];
-    const fd = new window.FormData();
-    fd.append('articleimage', image);
-    fetch("/articleimage", {
-      method: "POST",
-      body: fd,
-    }).then((res) => {
-      if (res.ok) return res.json();
-    }).then((data) => {
-      console.log(data)
-      const imageData = data.split(",");
-      const [altName, url] = imageData;
-      imagetext.classList.add("close")
-      articleimage.style.backgroundImage = `url(${url})`;
-      aria_label.ariaLabel = altName;
-      removebackground.classList.remove("close");
-    }).catch((error) => {
-      console.log(error)
-    })
-  })
-  removebackground.onclick = function () {
-    articleimage.style.backgroundImage = "none"
-    imagetext.classList.remove("close")
-    this.classList.add("close");
-  }
+    settings.onclick = function() {
+        articlesettings.classList.toggle("open");
+        this.classList.toggle("open");
+    }
+    const articleimage = document.querySelector(".feature_image");
+    const imagetext = document.querySelector(".feature_image_text");
+    const aria_label = document.querySelector(".feature_image_aria-label");
+    const removebackground = document.querySelector(".remove-image");
+    removebackground.classList.add("close");
+    document.querySelector("input").addEventListener("change", async(e) => {
+        const image = e.target.files[0];
+        const fd = new window.FormData();
+        fd.append('articleimage', image);
+        /*    fetch("/articleimage", {
+                method: "POST",
+                body: fd,
+            }).then((res) => {
+                if (res.ok) return res.json();
+            }).then((data) => {
+                console.log(data)
+                const imageData = data.split(",");
+                const [altName, url] = imageData;
+                imagetext.classList.add("close")
+                articleimage.style.backgroundImage = `url(${url})`;
+                aria_label.ariaLabel = altName;
+                removebackground.classList.remove("close");
+            }).catch((error) => {
+                console.log(error)
+            })*/
+
+        const {
+            base64,
+            filename
+        } = await fileListToBase64(image);
+
+        const newWidth = 184;
+        const newHeight = 111;
+
+        resizeImage(base64, filename, newWidth, newHeight, onReady, onError);
+    });
+
+    removebackground.onclick = function() {
+        articleimage.style.backgroundImage = "none"
+        imagetext.classList.remove("close")
+        this.classList.add("close");
+    }
+
+    //convert image files to base64       
+    //returns object i.e {filename, promise of base64}.
+    async function fileListToBase64(file) {
+        function getBase64(file) {
+            const reader = new FileReader();
+            return new Promise((resolve) => {
+                reader.onload = (ev) => {
+                    resolve(ev.target.result);
+                }
+                reader.readAsDataURL(file);
+            })
+        }
+        const filename = file.name.split(".")[0];
+        const base64 = await getBase64(file);
+
+        return {
+            filename: filename,
+            base64: base64
+        }
+    }
+
+    function resizeImage(imageUrl, altName, newWidth, newHeight, onReady, onError) {
+        const image = document.createElement("img");
+        image.onload = function() {
+            const canvas = document.createElement("canvas");
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, newWidth, newHeight);
+            try {
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+                onReady(dataUrl, altName);
+            } catch (e) {
+                if (onError) {
+                    onError("Image saving error.");
+                }
+            }
+        };
+        image.onerror = function() {
+            if (onError) {
+                onError("Image loading error.");
+            }
+        };
+        image.src = imageUrl;
+    };
+
+    function onReady(dataUrl, altName) {
+        articleimage.style.backgroundImage = `url(${dataUrl})`;
+        imagetext.classList.add("close")
+        aria_label.ariaLabel = altName;
+        removebackground.classList.remove("close");
+    }
+
+    function onError(message) {
+        console.error(message);
+    }
 </script>
 
 </html>

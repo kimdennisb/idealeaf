@@ -40,7 +40,6 @@ function cookieParser(req, res, next) {
     if (cookie) {
         const values = cookie.split(";").reduce((total, item) => {
             const data = item.trim().split("=");
-            //console.log(total)    
             //adds data to total each time
             return {...total, [data[0]]: data[1] }
         }, {});
@@ -57,7 +56,7 @@ router.get("/session", cookieParser, (req, res) => {
         res.clearCookie("email");
         res.render("session.ejs", { siteName, siteDescription, filledEmail });
     } else {
-        res.redirect("/signin")
+        res.redirect("/signin");
     }
 
 })
@@ -129,7 +128,7 @@ router.get("/data", (req, res, next) => {
 // destroy session(deauthenticate user)
 router.get("/logout", (req, res, next) => {
     // delete cookie
-    res.clearCookie("loggedIn");
+    // res.clearCookie("loggedIn");
     if (req.session) {
         // delete session object
         req.session.destroy((err) => {
@@ -174,11 +173,10 @@ router.get("/getinjectedscripts", (req, res) => {
 });
 
 // edit article
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:id", (req, res, next) => {
     const id = req.params.id;
     postmodel.findOne({ _id: id }, (err, data) => {
-        if (err) res.send(500, err);
-        console.log(data);
+        if (err) { next(err) }
         res.render("editArticle.ejs", { data: data, siteName, siteDescription });
     });
 });
@@ -383,12 +381,12 @@ router.get("/reset/:token", (req, res, next) => {
 });
 
 // gets view for a single post
-router.get("/singlepost/:title", cacheMiddleware(30), (req, res, next) => {
-    const title = (req.params.title).split("-").join(" ");
-    postmodel.find({ title: title }, (err, post) => {
+router.get("/post/:id", cacheMiddleware(30), (req, res, next) => {
+    const id = req.params.id;
+    postmodel.findById({ _id: id }, (err, post) => {
         if (err) return next(err);
-        console.log(post[0]);
-        res.status(200).json(post[0]);
+        //console.log(post);
+        res.status(200).json(post);
     });
 });
 

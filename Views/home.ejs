@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="US">
+<html lang="en">
 
 <head>
-    <title>Home</title>
+    <title>
+        <%- siteName %>
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+
+    <meta name="theme-color" content="#4CAF50" />
+
     <meta property="og:url" content="/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="<%- siteName %>" />
@@ -21,6 +26,7 @@
 
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
 </head>
 
 <body>
@@ -96,5 +102,6 @@
     </div>
 </body>
 <script src="/assets/sidebarhelper.js"></script>
+<script src="/assets/requestsHandler.js"></script>
 
 </html>

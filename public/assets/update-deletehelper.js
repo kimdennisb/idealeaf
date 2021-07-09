@@ -41,22 +41,25 @@ const numArray = [1, 2, [3, 10, [11, 12]], [1, 2, [3, 4]], 5, 6];
   })(numArray);*/
 
 // get delete element and send ajax request
-remove.onclick = function() {
-    const select = selectEditRemoveAndCheckBox();
-    const checkedPost = Array.prototype.filter.call(select.checkbox, (item) => item.checked);
-    const _siblings = [];
+if (remove) {
+    remove.onclick = function() {
+        const select = selectEditRemoveAndCheckBox();
+        const checkedPost = Array.prototype.filter.call(select.checkbox, (item) => item.checked);
+        const _siblings = [];
 
-    checkedPost.forEach((post) => {
-        // console.log(post, post.id);
-        const titles = document.getElementById(post.id).parentElement.nextElementSibling;
-        const element = titles.firstChild.innerHTML.trim();
-        _siblings.push(element);
-    });
+        checkedPost.forEach((post) => {
+            // console.log(post, post.id);
+            const titles = document.getElementById(post.id).parentElement.nextElementSibling;
+            const element = titles.firstChild.innerHTML.trim();
+            _siblings.push(element);
+        });
 
-    // eslint-disable-next-line no-nested-ternary
-    (this.id === "remove-post") ? deleteHelper("/delete-posts", _siblings): (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings) :
-        deleteHelper("/delete-scripts", _siblings);
-};
+        // eslint-disable-next-line no-nested-ternary
+        (this.id === "remove-post") ? deleteHelper("/delete-posts", _siblings): (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings) :
+            deleteHelper("/delete-scripts", _siblings);
+    };
+}
+
 
 // update(edit) element
 if (edit) {
@@ -67,7 +70,6 @@ if (edit) {
         // get next element sibling
         const element = document.getElementById(checkedPost[0].id).parentElement.nextElementSibling;
         const editPathname = element.firstChild.innerHTML.trim();
-        //console.log(editPathname);
         // redirect to the edit page
         window.location.href = `/edit/${editPathname}`;
     };

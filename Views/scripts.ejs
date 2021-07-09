@@ -2,93 +2,88 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:url" content="/admin/scripts" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%- siteName %>" />
-  <meta property="og:site_name" content="<%- siteName %>" />
-  <meta property="og:image" content="/assets/icons/rel_icon.png" />
-  <meta property="og:image:alt" content="<%- siteName %>" />
-  <meta name="description" content="<%- siteDescription %>" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!--Twitter meta tags-->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@kimdennisb" />
-  <meta name="twitter:description" content="<%- siteDescription %>" />
-  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+    <meta name="theme-color" content="#4CAF50" />
 
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
-  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
+    <meta property="og:url" content="/admin/scripts" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
 
-  <title>
-    <%- siteName %> Admin
-  </title>
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+
+    <title>
+        <%- siteName %> Admin
+    </title>
 </head>
 <header class="header-outer">
-  <div class="header-inner">
-    <div class="header-content responsive-wrapper">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
 
-      <!--sidebar navbar-->
-      <div id="mySidenav" class="sidenav">
-        <%- include("partials/admin/sidenavigation.ejs"); -%>
-      </div>
+            <!--sidebar navbar-->
+            <div id="mySidenav" class="sidenav">
+                <%- include("partials/admin/sidenavigation.ejs"); -%>
+            </div>
 
-      <!--Top Toolbar-->
-      <div class="header-navigation">
-        <%- include("partials/toolbar.ejs"); -%>
-      </div>
+            <!--Top Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
 
-      <!--popup input-->
-      <div class="popup-input">
-        <input type="text" class="input" placeholder="Insert Script" name="script" required="">
-        <button type="submit" class="btn_save">Save</button>
-        <button class="btn_cancel">Cancel</button>
-      </div>
+        </div>
     </div>
-  </div>
 </header>
 
 <body>
 
-  <div class="containerSearch">
-    <div class="searchContainer">
-      <i class="fa fa-search searchIcon"></i>
-      <input class="searchBox" type="search" name="search" placeholder="Search Scripts..." />
+    <div class="containerSearch">
+        <div class="searchContainer">
+            <i class="fa fa-search searchIcon"></i>
+            <input class="searchBox" type="search" name="search" placeholder="Search Scripts..." />
+        </div>
     </div>
-  </div>
-  <div class="body-content body-navigation">
+    <div class="body-content body-navigation">
 
-
-    <div class="_allposts">
-      <div class="control-section">
-        <table>
-          <thead>
-            <tr>
-              <th><input type="checkbox" class="check-uncheckAll" /></th>
-              <th>URL</th>
-              <th>Created At</th>
-              <th style="display: none;"><i class="fa fa-pencil edit" style="margin-left: 2px;"></i></th>
-              <th>
-                <svg class="remove" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <div class="control-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="check-uncheckAll" /></th>
+                        <th>ID</th>
+                        <th>URL</th>
+                        <th>Created At</th>
+                        <th style="display: none;"><i class="fa fa-pencil edit" style="margin-left: 2px;"></i></th>
+                        <th>
+                            <svg class="remove" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                   <title>Delete</title>
                   <path
                     d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z" />
                 </svg>
-              </th>
-            </tr>
-          </thead>
-          <tbody></tbody>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
 
-        </table>
-      </div>
-      <div id="spinner" hidden></div>
+            </table>
+        </div>
+        <div id="spinner" hidden></div>
     </div>
     <div class="pagination">
-      <div class="paginationtext-center"></div>
+        <div class="paginationtext-center"></div>
     </div>
-  </div>
 
 </body>
 <script src="/assets/sidebarhelper.js"></script>

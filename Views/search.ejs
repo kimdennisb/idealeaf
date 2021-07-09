@@ -1,70 +1,73 @@
 <!DOCTYPE html>
-<html lang="US">
+<html lang="en">
 
 <head>
-  <title>Search</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="utf-8">
-  <meta property="og:url" content="/search" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="<%- siteName %>" />
-  <meta property="og:site_name" content="<%- siteName %>" />
-  <meta property="og:image" content="/assets/icons/rel_icon.png" />
-  <meta property="og:image:alt" content="<%- siteName %>" />
-  <meta name="description" content="<%- siteDescription %>" />
+    <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
 
-  <!--Twitter meta tags-->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:site" content="@kimdennisb" />
-  <meta name="twitter:description" content="<%- siteDescription %>" />
-  <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+    <meta name="theme-color" content="#4CAF50" />
 
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
-  <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet" />
+    <meta property="og:url" content="/search" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
 
 </head>
 
 <body>
-  <header class="header-outer">
-    <div class="header-inner">
-      <div class="header-content responsive-wrapper">
+    <header class="header-outer">
         <div class="header-inner">
-          <div class="header-content responsive-wrapper">
+            <div class="header-content responsive-wrapper">
+                <div class="header-inner">
+                    <div class="header-content responsive-wrapper">
 
-            <!--sidebar navbar-->
-            <div id="myNav" class="overlay">
-              <%- include("partials/public/sidenavigation.ejs"); -%>
+                        <!--sidebar navbar-->
+                        <div id="myNav" class="overlay">
+                            <%- include("partials/public/sidenavigation.ejs"); -%>
+                        </div>
+
+                        <!--Toolbar-->
+                        <div class="header-navigation">
+                            <%- include("partials/toolbar.ejs"); -%>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-
-            <!--Toolbar-->
-            <div class="header-navigation">
-              <%- include("partials/toolbar.ejs"); -%>
-            </div>
-
-          </div>
-        </div>
-      </div>
-  </header>
-  <main class="main">
-    <div class="main-content responsive-wrapper">
-      <div class="searchwidget">
-        <svg class="search_icon" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+    </header>
+    <main class="main">
+        <div class="main-content responsive-wrapper">
+            <div class="searchwidget">
+                <svg class="search_icon" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
           <g fill="none" stroke="#848F91">
             <path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4" stroke-width="2" />
             <circle cx="8" cy="8" r="7" stroke-width="2" />
           </g>
         </svg>
-        <input type="text" class="search" name="searchPosts" placeholder="Search Posts..." />
-      </div>
-      <section class="showwidget"></section>
-      <div id="spinner" hidden></div>
-    </div>
-  </main>
+                <input type="text" class="search" name="searchPosts" placeholder="Search Posts..." />
+            </div>
+            <section class="showwidget"></section>
+            <div id="spinner" hidden></div>
+        </div>
+    </main>
 
-  <div class="pagination">
-    <div class="paginationtext-center"></div>
-  </div>
+    <div class="pagination">
+        <div class="paginationtext-center"></div>
+    </div>
 
 </body>
 <script src="/assets/sidebarhelper.js"></script>
