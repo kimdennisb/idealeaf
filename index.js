@@ -38,6 +38,7 @@ const update = require("./Routes/update");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname, { dotfiles: 'allow' }));
 
 // making the static files available on /edit path
 //app.use("/edit", express.static(path.join(__dirname, "public")));
