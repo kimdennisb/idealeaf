@@ -10,6 +10,8 @@ const app = express();
 
 const bodyParser = require("body-parser");
 const path = require("path");
+const fs = require("fs");
+const https = require("https");
 const swal = require("sweetalert");
 // const ejs = require("ejs");
 const config = require("config");
@@ -100,17 +102,18 @@ app.use((err, req, res, next) => {
     next();
 });
 /*
+const httpsServer = https.createServer({
+        key: fs.readFileSync(path.join(__dirname, "cert", "key.pem")),
+        cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
+    },
+    app);*/
+
 if (!module.parent) {
     app.listen(port, () => {
         console.log(`listening on the port ${port}`);
     });
-}*/
-
-if (require.main === module) {
-    app.listen(port, () => {
-        console.log(`listening on the port ${port}`);
-    });
 }
+
 
 module.exports = app; // for testing
 

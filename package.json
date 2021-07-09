@@ -42,7 +42,7 @@
         "mocha": "^8.2.1"
     },
     "scripts": {
-        "start": "SET NODE_ENV=dev && nodemon server.js",
+        "start": "SET NODE_ENV=dev && nodemon index.js",
         "test": "mocha --timeout 10000",
         "lint:ejs": "ejslint views/editArticle.ejs"
     },
