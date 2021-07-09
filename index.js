@@ -12,7 +12,6 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
 const https = require("https");
-const http = require("http");
 const swal = require("sweetalert");
 // const ejs = require("ejs");
 const config = require("config");
@@ -114,12 +113,12 @@ const credentials = {
     ca: ca
 };
 
-const httpServer = http.createServer(app);
+//const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(80, () => {
+/*httpServer.listen(80, () => {
     console.log('HTTP Server running on port 80');
-});
+});*/
 
 httpsServer.listen(port, () => {
     console.log(`HTTPS Server running on port ${port}`);
