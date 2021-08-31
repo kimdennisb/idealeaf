@@ -20,7 +20,7 @@
         "jimp": "^0.13.0",
         "jsdom": "^16.4.0",
         "lodash": "^4.17.21",
-        "mailgun-js": "^0.22.0",
+        "mailgun-js": "^0.6.7",
         "memory-cache": "^0.2.0",
         "method-override": "^3.0.0",
         "mongodb": "^3.6.3",

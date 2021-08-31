@@ -1,6 +1,6 @@
 {
-    "devDBHost": "mongodb+srv://blog:blog@blog.1jmkk.mongodb.net/blog?retryWrites=true&w=majority",
-    "localDBHost": "mongodb://localhost/blog",
+    "devDBHost": "mongodb+srv://blog:blog@idealeaf.1jmkk.mongodb.net/idealeaf?retryWrites=true&w=majority",
+    "localDBHost": "mongodb://localhost/idealeaf",
     "siteName": "idealeaf",
     "description": "blog site:shows all the posts about us and ideas around us.Content is curated for everybody;tech reviews,how to guides"
 }

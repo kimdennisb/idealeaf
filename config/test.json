@@ -1,5 +1,5 @@
 {
-    "localDBHost": "mongodb://localhost/blog",
+    "localDBHost": "mongodb://localhost/idealeaf",
     "siteName": "idealeaf",
     "description": "blog site:shows all the posts about us and ideas around us.Content is curated for everybody;tech reviews,how to guides"
 }
