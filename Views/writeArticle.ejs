@@ -29,25 +29,42 @@
     <script src="/assets/pell.js"></script>
 
 </head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="mySidenav" class="sidenav">
+                <%- include("partials/admin/sidenavigation.ejs"); -%>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+
+        </div>
+    </div>
+</header>
 
 <body>
-    <div class="settingsicon">
-    </div>
+    <div class="settingsicon"></div>
     <div class="article-settings">
         <h3>Article settings</h3>
-        <form method="POST" action="/articleimage" enctype="multipart/form-data">
-            <div class="feature_image">
-                <label class="feature_image_text">Upload article image</label>
-                <input type="file" name="articleimage" accept="image/*" />
-                <svg class="remove-image" width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <div class="feature_image">
+            <div class="cover">
+                <img src="" alt="" class="coverimage hide">
+            </div>
+            <label class="feature_image_input_text" for="articleimageinput">Upload article image</label>
+            <input type="file" name="articleimageinput" id="articleimageinput" accept="image/*" />
+            <svg class="remove_feature_image" width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
           <title>Delete</title>
           <path
             d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z">
           </path>
         </svg>
-                <span class="feature_image_aria-label" role="img" aria-label=""></span>
-            </div>
-        </form>
+        </div>
+
 
         <label for="tags">
       Tags
@@ -67,114 +84,9 @@
     </div>
 
 </body>
+
+<script src="/assets/sidebarhelper.js"></script>
 <script src="/assets/requestsHandler.js"></script>
-<script>
-    const settings = document.querySelector(".settingsicon");
-    const articlesettings = document.querySelector(".article-settings");
-
-    settings.onclick = function() {
-        articlesettings.classList.toggle("open");
-        this.classList.toggle("open");
-    }
-    const articleimage = document.querySelector(".feature_image");
-    const imagetext = document.querySelector(".feature_image_text");
-    const aria_label = document.querySelector(".feature_image_aria-label");
-    const removebackground = document.querySelector(".remove-image");
-    removebackground.classList.add("close");
-    document.querySelector("input").addEventListener("change", async(e) => {
-        const image = e.target.files[0];
-        const fd = new window.FormData();
-        fd.append('articleimage', image);
-        /*    fetch("/articleimage", {
-                method: "POST",
-                body: fd,
-            }).then((res) => {
-                if (res.ok) return res.json();
-            }).then((data) => {
-                console.log(data)
-                const imageData = data.split(",");
-                const [altName, url] = imageData;
-                imagetext.classList.add("close")
-                articleimage.style.backgroundImage = `url(${url})`;
-                aria_label.ariaLabel = altName;
-                removebackground.classList.remove("close");
-            }).catch((error) => {
-                console.log(error)
-            })*/
-
-        const {
-            base64,
-            filename
-        } = await fileListToBase64(image);
-
-        const newWidth = 184;
-        const newHeight = 111;
-
-        resizeImage(base64, filename, newWidth, newHeight, onReady, onError);
-    });
-
-    removebackground.onclick = function() {
-        articleimage.style.backgroundImage = "none"
-        imagetext.classList.remove("close")
-        this.classList.add("close");
-    }
-
-    //convert image files to base64       
-    //returns object i.e {filename, promise of base64}.
-    async function fileListToBase64(file) {
-        function getBase64(file) {
-            const reader = new FileReader();
-            return new Promise((resolve) => {
-                reader.onload = (ev) => {
-                    resolve(ev.target.result);
-                }
-                reader.readAsDataURL(file);
-            })
-        }
-        const filename = file.name.split(".")[0];
-        const base64 = await getBase64(file);
-
-        return {
-            filename: filename,
-            base64: base64
-        }
-    }
-
-    function resizeImage(imageUrl, altName, newWidth, newHeight, onReady, onError) {
-        const image = document.createElement("img");
-        image.onload = function() {
-            const canvas = document.createElement("canvas");
-            canvas.width = newWidth;
-            canvas.height = newHeight;
-            const context = canvas.getContext("2d");
-            context.drawImage(image, 0, 0, newWidth, newHeight);
-            try {
-                const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-                onReady(dataUrl, altName);
-            } catch (e) {
-                if (onError) {
-                    onError("Image saving error.");
-                }
-            }
-        };
-        image.onerror = function() {
-            if (onError) {
-                onError("Image loading error.");
-            }
-        };
-        image.src = imageUrl;
-    };
-
-    function onReady(dataUrl, altName) {
-        articleimage.style.backgroundImage = `url(${dataUrl})`;
-        imagetext.classList.add("close")
-        aria_label.ariaLabel = altName;
-        removebackground.classList.remove("close");
-    }
-
-    function onError(message) {
-        console.error(message);
-    }
-</script>
+<script src="/assets/coverImage.js"></script>
 
 </html>

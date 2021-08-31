@@ -13,12 +13,14 @@ const config = require("config");
 const siteName = config.siteName;
 const siteDescription = config.description;
 const cacheMiddleware = require("../Cache/cache");
+const dateFormat = require("../Public/assets/formatDate");
 const postmodel = require("../Models/Post");
 const databaseConnection = require("../Database/database");
 const ObjectID = mongodb.ObjectID;
 const scriptToInjectModel = require("../Models/scriptToInject");
 const user = require("../Models/User");
 const checkRolesExisted = require("../Middlewares/checkRolesExisted");
+const formatDate = require("../Public/assets/formatDate");
 
 // call database function
 const conn = databaseConnection();
@@ -173,7 +175,7 @@ router.get("/getinjectedscripts", (req, res) => {
 });
 
 // edit article
-router.get("/edit/:id", (req, res, next) => {
+router.get("/admin/edit/:id", (req, res, next) => {
     const id = req.params.id;
     postmodel.findOne({ _id: id }, (err, data) => {
         if (err) { next(err) }
@@ -226,7 +228,6 @@ router.get("/article/:IDOfTheArticle", cacheMiddleware(30), (req, res, next) => 
         if (err) {
             return next(err);
         }
-        // console.log(article);
         const {
             // eslint-disable-next-line camelcase
             id,
@@ -235,7 +236,8 @@ router.get("/article/:IDOfTheArticle", cacheMiddleware(30), (req, res, next) => 
             text,
             feature_image,
             visits,
-            date,
+            createdAt,
+            updatedAt
         } = article;
 
         const hostName = req.headers.host;
@@ -243,7 +245,8 @@ router.get("/article/:IDOfTheArticle", cacheMiddleware(30), (req, res, next) => 
         const featureimage = feature_image;
         const siteURL = `${hostName}/article/${IDOfTheArticle}`;
         const description = htmlToText(html, { wordWrap: 130, baseElement: "p" });
-
+        const createdAtDate = formatDate(createdAt);
+        const updatedAtDate = formatDate(updatedAt);
         // BUILD THE RESPONSE NICELY
         const cleanArticle = {
             id,
@@ -253,7 +256,8 @@ router.get("/article/:IDOfTheArticle", cacheMiddleware(30), (req, res, next) => 
             description,
             featureimage,
             siteURL,
-            date,
+            createdAtDate,
+            updatedAtDate,
             siteName,
             visits,
         };
@@ -264,7 +268,7 @@ router.get("/article/:IDOfTheArticle", cacheMiddleware(30), (req, res, next) => 
         // console.log(title);
         // console.log(visits);
         // eslint-disable-next-line camelcase
-        (feature_image == "") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle }): res.render("viewArticle", { data: cleanArticle });
+        (feature_image == "") ? res.render("viewArticleWithoutOGImage", { data: cleanArticle, siteName }): res.render("viewArticle", { data: cleanArticle, siteName });
     });
 });
 
@@ -283,6 +287,7 @@ router.get("/", cacheMiddleware(30), (req, res, next) => {
                     if (err) return next(err);
                     // res.json(data) -during testing
                     const siteURL = req.headers.host;
+                    console.log(data)
                     res.render("home.ejs", {
                         data: data,
                         siteDescription,

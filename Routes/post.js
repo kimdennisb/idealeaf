@@ -317,7 +317,6 @@ router.post("/article", (req, res, next) => {
 });
 
 router.post("/injectcode", (req, res, next) => {
-    console.log(req.body);
     req.body.forEach((script) => {
         const scriptToInject = new Injectcode({
             script: script.script,

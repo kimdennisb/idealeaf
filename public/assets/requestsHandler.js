@@ -6,29 +6,35 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
 
-// saving progress ui
+// saving progress and error ui
 
 const load = {
-    remove() {
-        const parentnode = document.querySelector(".viewport");
+    createLoaderView() {
+        const loaderView = document.createElement("div");
+        loaderView.className = "loaderview";
+        return loaderView;
+    },
+    removeLoaderView() {
+        const parentnode = document.querySelector(".loaderview");
         parentnode.parentElement.removeChild(parentnode);
     },
-    start: () => {
+    start() {
         const parentviewport = document.querySelector("body");
-        const viewPort = document.createElement("div");
-        const spinner = document.createElement("div");
-        viewPort.className = "viewport";
-        spinner.className = "spinner";
-        viewPort.appendChild(spinner);
-        parentviewport.appendChild(viewPort);
+        if (!document.querySelector(".loaderview")) {
+            const loaderView = this.createLoaderView();
+            const spinner = document.createElement("div");
+            spinner.className = "spinner";
+            loaderView.appendChild(spinner);
+            parentviewport.appendChild(loaderView);
+        }
     },
     end() {
         const checkmark = document.createElement("div");
         checkmark.className = "checkmark";
-        const parentnode = document.querySelector(".viewport");
+        const parentnode = document.querySelector(".loaderview");
         const chilnode = parentnode.firstChild;
         parentnode.replaceChild(checkmark, chilnode);
-        setTimeout(() => { this.remove(); }, 1000);
+        setTimeout(() => { this.removeLoaderView(); }, 1000);
     },
     error() {
         const error = document.createElement("div");
@@ -39,10 +45,17 @@ const load = {
         crossmark.className = "crossmark";
         error.appendChild(crossmark);
         error.appendChild(servererror);
-        const parentnode = document.querySelector(".viewport");
-        const chilnode = parentnode.firstChild;
-        parentnode.replaceChild(error, chilnode);
-        setTimeout(() => { this.remove(); }, 1000);
+        const parentnode = document.querySelector(".loaderview");
+        if (parentnode) {
+            const chilnode = parentnode.firstChild;
+            parentnode.replaceChild(error, chilnode);
+            setTimeout(() => { this.removeLoaderView(); }, 1000);
+        } else {
+            const parentviewport = document.querySelector("body");
+            parentviewport.appendChild(error);
+            setTimeout(() => { this.removeLoaderView(); }, 1000);
+        }
+
     },
 };
 
@@ -69,7 +82,7 @@ function sendRequest(params) {
                         statusText: xhr.statusText
                     });
                 } else {
-                    load.end();
+                    //load.end();
                 }
             }
         };
@@ -178,6 +191,9 @@ if (addscript) {
             scripts.push(placeFooter);
         });
         sendRequest("POST", "/injectcode", scripts)
+            .then((uploadedscripts) => {
+                load.end();
+            })
             .catch((err) => {
                 load.error();
                 console.log(`Augh,there was an error!,${err.statusText}`);
@@ -192,12 +208,13 @@ if (typeof window.pell !== "undefined") {
         element: document.getElementById("editor"),
         defaultParagraphSeparator: "p",
         placeholder: "Type something...",
-        onChange(html) {
+        /*onChange(html) {
             document.getElementById("html-output").textContent = html;
         },
         upload: {
             api: "/admin/photos",
-        },
+        },*/
+        imageUpload: {}
     });
     window.editor = editor;
     if (window.location.href.includes("/edit")) {
@@ -268,7 +285,7 @@ const Base64Binary = {
 
 // get content and send to database
 const button = document.querySelector(".publish");
-const feature_image = document.querySelector(".feature_image");
+const feature_image = document.querySelector(".coverimage");
 const feature_image_altName = document.querySelector(".feature_image_aria-label");
 const tags = document.querySelector(".tags");
 
@@ -276,12 +293,14 @@ function getEditorData() {
     const article_html = window.pell.editorHTML();
     const title = document.querySelector(".title");
     const article_title = title.value || title.placeHeader;
-
-    // eslint-disable-next-line max-len
-    const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
-    const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
-    const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
-    const article_feature_image_alt = feature_image_altName.ariaLabel;
+    const article_feature_image = feature_image.getAttribute("src");
+    const article_feature_image_alt = feature_image.alt;
+    /*
+        // eslint-disable-next-line max-len
+        const feature_image_style = feature_image.currentStyle || window.getComputedStyle(feature_image, false);
+        const feature_image_url = feature_image_style.backgroundImage.slice(4, -1).replace(/['"]/g, "");
+        const article_feature_image = (feature_image_url.length != "" ? feature_image_url : "");
+        const article_feature_image_alt = feature_image_altName.ariaLabel;*/
     const article_tags = tags.value;
     const data = {
         title: article_title,
@@ -292,6 +311,7 @@ function getEditorData() {
     };
     return data;
 }
+
 /**
  * @param {Array} images Array
  * @returns {Array} images Array
@@ -315,8 +335,8 @@ function parseStringToHTML(string) {
  * @returns {Array} Array imageFile(s)
  */
 function getEditorImages() {
-    const editorData = getEditorData()
-        //parse html
+    const editorData = getEditorData();
+    //parse html
     const htmldoc = parseStringToHTML(editorData.html);
     //get images
     const postimages = htmldoc.querySelectorAll("img");
@@ -365,7 +385,8 @@ function createImageFileWithBufferFromBase64(datasrc, alt) {
 
 /**
  * 
- * @param {Array} imageFiles
+ * @param {Array} imageFiles 
+ * @param imageFile
  * @returns FormData
  */
 function appendImageFileToFormData(args) {
@@ -381,99 +402,155 @@ function appendImageFileToFormData(args) {
     return formData;
 }
 
-if (button) {
-    button.addEventListener("click", () => {
+const ArticleState = {
+    title: "",
+    html: "",
+    feature_image: "",
+    feature_image_alt: "",
+    article_tags: "",
+    setTitle: function(string) {
+        this.title = string;
+    },
+    setHTML: function(string) {
+        this.html = string;
+    },
+    setFeatureImage: function(string) {
+        this.feature_image = string;
+    },
+    setFeatureImageAlt: function(string) {
+        this.feature_image_alt = string;
+    },
+    setArticleTags: function(string) {
+        this.article_tags = string;
+    }
+}
 
-        const postimages = getEditorImages();
-        const { feature_image, feature_image_alt } = getEditorData();
-        const featureImage = document.querySelector(".feature_image");
+ArticleState.getArticleData = function() {
+    const data = {
+        title: this.title,
+        html: this.html,
+        feature_image: this.feature_image,
+        feature_image_alt: this.feature_image_alt,
+        article_tags: this.article_tags
+    };
+    return data;
+}
+
+ArticleState.saveFeatureImage = async function() {
+    const { feature_image, feature_image_alt } = getEditorData();
+    const imagefile = createImageFileWithBufferFromBase64(feature_image, feature_image_alt);
+    const fdFeatureImage = appendImageFileToFormData(imagefile);
+
+    await sendRequest(`POST`, `/articleimage`, fdFeatureImage)
+        .then((featureimage) => {
+            const { src } = JSON.parse(featureimage);
+            this.setFeatureImage(src);
+            this.setFeatureImageAlt(feature_image_alt);
+        })
+
+    return this;
+}
+
+ArticleState.saveEditorImages = async function() {
+    const postimages = getEditorImages();
+    const imagefiles = postimages.map((imagefile) => { return createImageFileWithBufferFromImage(imagefile) });
+    const fdPostImages = appendImageFileToFormData(imagefiles);
+
+    await sendRequest(`POST`, `/admin/photos`, fdPostImages)
+        .then((articleimages) => {
+            const imageresources = JSON.parse(articleimages);
+            let editorimages = Array.from(document.querySelector("div [contenteditable=\"true\"]").getElementsByTagName("img"));
+            editorimages.forEach((x, index) => {
+                x.srcset = imageresources[index].srcset
+                x.src = imageresources[index].src;
+                x.alt = imageresources[index].alt
+                x.sizes = imageresources[index].sizes;
+            });
+
+        })
+    return this;
+}
+
+ArticleState.saveArticle = async function() {
+    this.setTitle(getEditorData().title);
+    this.setHTML(window.pell.editorHTML());
+    await sendRequest(`POST`, `/article`, this.getArticleData())
+        .then((uploadedArticle) => {
+            load.end();
+        })
+        .catch((err) => {
+            load.error();
+        })
+    return this;
+}
+
+ArticleState.updateArticle = async function() {
+    this.setTitle(getEditorData().title);
+    this.setHTML(window.pell.editorHTML());
+    const id = window.location.href.split("/").pop().trim().toString();
+
+    await sendRequest(`PUT`, `/update/${id}`, this.getArticleData())
+        .then((updatedArticle) => {
+            load.end();
+        })
+        .catch((err) => {
+            load.error();
+        })
+    return this;
+}
+
+async function saveArticle_() {
+    const postimages = getEditorImages();
+    const { feature_image, feature_image_alt } = getEditorData();
+    if (postimages.length > 0 && feature_image.length > 0 && feature_image_alt.length > 0) {
+        await ArticleState.saveFeatureImage();
+        await ArticleState.saveEditorImages();
+        await ArticleState.saveArticle();
+
+    } else if (postimages.length > 0) {
+        await ArticleState.saveEditorImages();
+        await ArticleState.saveArticle();
+
+    } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
+        await ArticleState.saveFeatureImage()
+        await ArticleState.saveArticle();
+
+    } else {
+        await ArticleState.saveArticle();
+    }
+}
+
+async function updateArticle_() {
+    const postimages = getEditorImages();
+    const { feature_image, feature_image_alt } = getEditorData();
+    if (postimages.length > 0 && feature_image.length > 0 && feature_image_alt.length > 0) {
+        await ArticleState.saveFeatureImage();
+        await ArticleState.saveEditorImages();
+        await ArticleState.updateArticle();
+
+    } else if (postimages.length > 0) {
+        await ArticleState.saveEditorImages();
+        await ArticleState.updateArticle();
+
+    } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
+        await ArticleState.saveFeatureImage()
+        await ArticleState.updateArticle();
+
+    } else {
+        await ArticleState.updateArticle();
+
+    }
+}
+
+if (button) {
+    button.addEventListener("click", async() => {
 
         if (window.location.href.includes("/edit")) {
-            const id = window.location.href.split("/").pop().trim().toString();
-            const editorData = getEditorData()
-            sendRequest("PUT", `/update/${id}`, editorData);
+            await updateArticle_();
         } else if (window.location.href.includes("/new")) {
-            if (postimages.length > 0 && feature_image.length > 0 && feature_image_alt.length > 0) {
-                const { feature_image, feature_image_alt } = getEditorData();
-                const imagefile = createImageFileWithBufferFromBase64(feature_image, feature_image_alt);
-                const fdFeatureImage = appendImageFileToFormData(imagefile);
-
-                const imagefiles = postimages.map((imagefile) => { return createImageFileWithBufferFromImage(imagefile) });
-                const fdPostImages = appendImageFileToFormData(imagefiles);
-
-                sendRequest(`POST`, `/articleimage`, fdFeatureImage)
-                    .then((featureimage) => {
-                        const { src } = JSON.parse(featureimage);
-                        featureImage.style.backgroundImage = `url(${src})`;
-                        return sendRequest(`POST`, `/admin/photos`, fdPostImages)
-                    })
-                    .then((articleimages) => {
-                        const imageresources = JSON.parse(articleimages);
-                        let editorimages = Array.from(document.querySelectorAll("img"));
-                        editorimages.forEach((x, index) => {
-                            x.srcset = imageresources[index].srcset
-                            x.src = imageresources[index].src;
-                            x.alt = imageresources[index].alt
-                            x.sizes = imageresources[index].sizes;
-                        });
-                        sendRequest(`POST`, `/article`, getEditorData())
-                    })
-                    .catch((err) => {
-                        load.error();
-                        console.log(`Augh,there was an error!,${err.statusText}`);
-                    })
-            } else if (postimages.length > 0) {
-
-                const imagefiles = postimages.map((imagefile) => { return createImageFileWithBufferFromImage(imagefile) });
-                const fdPostImages = appendImageFileToFormData(imagefiles);
-
-                sendRequest(`POST`, `/admin/photos`, fdPostImages)
-                    .then((articleimages) => {
-                        const imageresources = JSON.parse(articleimages);
-                        let editorimages = Array.from(document.querySelectorAll("img"));
-                        editorimages.forEach((x, index) => {
-                            x.srcset = imageresources[index].srcset
-                            x.src = imageresources[index].src;
-                            x.alt = imageresources[index].alt
-                            x.sizes = imageresources[index].sizes;
-                        });
-                        sendRequest(`POST`, `/article`, getEditorData());
-                    })
-                    .catch((err) => {
-                        load.error();
-                        console.log(`Augh,there was an error!,${err.statusText}`);
-                    })
-            } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
-                const { feature_image, feature_image_alt } = getEditorData();
-                const imagefile = createImageFileWithBufferFromBase64(feature_image, feature_image_alt);
-                const fdFeatureImage = appendImageFileToFormData(imagefile);
-
-                sendRequest(`POST`, `/articleimage`, fdFeatureImage)
-                    .then((featureimage) => {
-                        const { src } = JSON.parse(featureimage);
-                        featureImage.style.backgroundImage = `url(${src})`;
-                        sendRequest(`POST`, `/article`, getEditorData());
-                    })
-                    .catch((err) => {
-                        load.error();
-                        console.log(`Augh,there was an error!,${err.statusText}`);
-                    })
-            } else {
-                sendRequest(`POST`, `/article`, getEditorData())
-                    .catch((err) => {
-                        load.error();
-                        console.log(`Augh,there was an error!,${err.statusText}`);
-                    })
-            }
+            await saveArticle_();
         } else {
-            sendRequest(`POST`, `/getinjectedscripts`)
-                .then((scripts) => {
-                    console.log(scripts);
-                })
-                .catch((err) => {
-                    load.error();
-                    console.log(`Augh,there was an error!,${err.statusText}`);
-                })
+
         }
     });
 };
@@ -494,4 +571,4 @@ sendRequest(`GET`, `/getinjectedscripts`)
     .catch((err) => {
         load.error();
         console.log(`Augh,there was an error!,${err.statusText}`);
-    })
+    });

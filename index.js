@@ -24,12 +24,12 @@ const checkIfUserExists = require("./Middlewares/checkIfUserExists");
 require("dotenv").config();
 
 // don't show the log when it is test
-if (config.util.getEnv("NODE_ENV" !== "test")) {
+if (config.util.getEnv("NODE_ENV") !== "test") {
     // use morgan to log at command line
     app.use(morgan("combined")); // 'combined' outputs the Apache style LOGs
 }
 
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 3000;
 
 const get = require("./Routes/get");
 const remove = require("./Routes/delete");

@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
+
 // get checkbox elements for  the posts and script sections
 function selectEditRemoveAndCheckBox() {
     const checkbox = document.querySelectorAll(".checkbox");
@@ -48,10 +49,10 @@ if (remove) {
         const _siblings = [];
 
         checkedPost.forEach((post) => {
-            // console.log(post, post.id);
-            const titles = document.getElementById(post.id).parentElement.nextElementSibling;
-            const element = titles.firstChild.innerHTML.trim();
-            _siblings.push(element);
+            //console.log(post, post.id);
+            const dataID = document.getElementById(post.id).getAttribute("data-id");
+            //const element = titles.firstChild.innerHTML.trim();
+            _siblings.push(dataID);
         });
 
         // eslint-disable-next-line no-nested-ternary
@@ -68,10 +69,9 @@ if (edit) {
         // returns a nodeList
         const checkedPost = Array.prototype.filter.call(select.checkbox, (item) => item.checked);
         // get next element sibling
-        const element = document.getElementById(checkedPost[0].id).parentElement.nextElementSibling;
-        const editPathname = element.firstChild.innerHTML.trim();
+        const dataID = document.getElementById(checkedPost[0].id).getAttribute("data-id");
         // redirect to the edit page
-        window.location.href = `/edit/${editPathname}`;
+        window.location.href = `/admin/edit/${dataID}`;
     };
 }
 

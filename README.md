@@ -1,24 +1,26 @@
-# mypost
+### idealeaf
 
-# Replace res.send() with res.json() methods with necessary arguments for testing purposes
-//{
-    "DBHost": "mongodb+srv://mypost:mypost@mypost.5vcao.mongodb.net/mypost?retryWrites=true&w=majority"
-}
+Idealeaf is a minimal blog content management cms built with:
+ * Node js(Express js)
+ * Ejs
+ * MongoDB
 
-        <% for( var i=0;i < data.length;i++) { %>
-          <% const date=data[i].date %>
-            <%const year=date.getFullYear() %>
-              <%const month=date.getMonth() + 1 %>
-                <%const dt=date.getDate() %>
-                  <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August"
-                    , "September" , "October" , "November" , "December" ]; %>
-                    <tr>
-                      <td><input type="checkbox" class="checkbox" id="select-<%=i%>" /></td>
-                      <td><label for="select-<%=i%>">
-                          <%= data[i].title %>
-                        </label></td>
-                      <td><label for="select-<%=i%>">
-                          <%- dt + " " + monthNames[month] + " " + year %>
-                        </label></td>
-                    </tr>
-                    <% } %>
+## Getting started
+You need to have **Node js** and **MongoDB** installed
+
+## Installing
+* Clone the project or unzip the downloaded repository
+* CD into the root directory and *npm install* to download the dependencies
+* Run the command line as an administrator
+* Start MongoDB locally with *net start mongodb*
+* Run the server locally with *npm run local*
+* Access the */admin* route and create admin access privilege
+
+## Commands
+1. npm run local - Starts the server locally
+2. npm start - Starts the server in prodution
+3. npm test - Perform tests
+4. npm run lint:ejs - Lint some ejs template
+
+## Deploy
+Deploy on heroku and MongoDB

@@ -32,7 +32,7 @@ body {
     height: 100%;
     outline: 0;
     overflow-y: auto;
-    padding: 10px;
+    padding: 0 10px 0 10px;
 }
 
 
@@ -180,8 +180,8 @@ summary::-webkit-details-marker {
     position: fixed;
     right: 0;
     width: 0;
-    /* flex-direction: column;*/
-    border: 1px solid rgba(10, 10, 10, 0.1);
+    /* flex-direction: column;
+    border: 1px solid red;*/
     margin: 20px;
     overflow-x: hidden;
     transition: 1s;
@@ -189,6 +189,7 @@ summary::-webkit-details-marker {
 
 .article-settings.open {
     width: 300px;
+    border: 1px solid rgba(10, 10, 10, 0.1);
 }
 
 .article-settings label {
@@ -216,22 +217,38 @@ cursor: pointer;
     margin: 0 76.5px 0 76.5px;
 }
 
-.remove-image:hover,
+.remove_feature_image:hover,
 .feature_image:hover,
 .article-settings input:hover {
     cursor: pointer;
 }
 
-.remove-image {
+.remove_feature_image {
     position: absolute;
     right: 0;
     top: 0;
     margin: 2px;
 }
 
-.feature_image_text {
+.feature_image_input_text {
     position: absolute;
     text-align: center;
+}
+
+.cover {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.coverimage.hide {
+    visibility: hidden;
+}
+
+.coverimage {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .close {
@@ -263,8 +280,8 @@ display: none;
     height: 18px;
     width: 18px;
     right: 0;
-    top: 0;
-    margin: 20px 0 20px 20px;
+    top: 60px;
+    margin: 20px 20px 20px 20px;
     background-image: url(/assets/icons/showarticlesettings.svg);
 }
 
@@ -286,7 +303,30 @@ img {
 
 /*size images in editor*/
 
+
+/*
 img {
     width: 370px;
     height: 430px;
+}*/
+
+
+/*
+.editorimage {
+    position: relative;
+    width: 370px;
+    height: 180px;
+}
+
+.editorimage>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+*/
+
+div[contenteditable='true'] img {
+    width: 370px;
+    height: 150px;
+    object-fit: contain;
 }

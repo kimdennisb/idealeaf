@@ -9,12 +9,12 @@
 /* eslint-disable no-nested-ternary */
 (function(global, factory) {
     // debugging
-    // console.log(global,factory)
+    // console.log(global, factory)
     typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
         typeof define === "function" && define.amd ? define(["exports"], factory) :
         (factory((global.pell = {})));
 }(this, ((exports) => {
-    //console.log(exports);
+    // console.log(exports);
     // eslint-disable-next-line no-unused-vars
     const _extends = Object.assign || function(target) {
         for (let i = 1; i < arguments.length; i++) {
@@ -235,14 +235,17 @@
             const filenamebase64 = {
                 [filename]: base64
             }
-
             return {...total, ...filenamebase64 }
         }, {});
         return base64imagedata;
     }
 
     const initUploadImageInput = function initUploadImageInput(settings) {
-        const uploadAPI = settings.upload && settings.upload.api;
+
+        const contentEditable = settings.element.content;
+
+        //const uploadAPI = settings.upload && settings.upload.api;
+        const uploadAPI = settings.imageUpload
         if (uploadAPI) {
             const input = document.createElement("input");
             input.type = "file";
@@ -251,9 +254,16 @@
             input.accept = "image/*";
             input.multiple = true;
             addEventListener(input, "change", async(e) => {
+                const keyboard = new KeyboardEvent("keydown", {
+                    key: "Enter",
+                    bubbles: true,
+                    cancelable: true,
+                    keyCode: 13
+                });
+
+                contentEditable.dispatchEvent(keyboard);
 
                 const images = e.target.files;
-
                 /* console.log(images)
                  const fd = new window.FormData();
                  // fd.append('pell-upload-image',image);
@@ -264,9 +274,15 @@
                 const arrayOfBase64 = await fileListToBase64(images);
                 const filenames = Object.keys(arrayOfBase64);
                 for (let i = 0; i < filenames.length; i++) {
-                    const base64 = await arrayOfBase64[filenames[i]]
-                    const image = `<img src=${base64} alt="${filenames[i]}" >`
-                    exec("insertHTML", image)
+                    const base64 = await arrayOfBase64[filenames[i]];
+                    const image = `<img src=${base64} alt=${filenames[i]} >`;
+                    console.log(`Already dispatched`)
+                        /*const image = new Image();
+                        image.src = base64;
+                        image.alt = filenames[i];
+                        const span = createElement('span');
+                        span.appendChild(image);*/
+                    exec("insertHTML", image);
                 }
 
 
@@ -377,12 +393,13 @@
         // listener for any input to the content-editable section
         content.oninput = function(_ref) {
             const { firstChild } = _ref.target;
-            // console.log(_ref.target.firstChild, firstChild.nodeType, content.innerHTML);
+            //console.log(_ref.target.firstChild, firstChild.nodeType, content.innerHTML);
 
             if (firstChild && firstChild.nodeType === 3) exec(formatBlock, `<${defaultParagraphSeparator}>`);
             else if (content.innerHTML === "<br>") content.innerHTML = "";
-            //console.log(content.innerHTML);
-            settings.onChange(content.innerHTML);
+
+            //console.log(content.innerHTML, content.innerHTML === "<br>");
+            // settings.onChange(content.innerHTML);
         };
         content.onkeydown = function(event) {
             if (event.key === "Enter" && queryCommandValue(formatBlock) === "blockquote") {

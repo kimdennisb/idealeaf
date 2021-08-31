@@ -1,4 +1,5 @@
 /* eslint-disable prefer-destructuring */
+
 const mongoose = require("mongoose");
 // const MongoClient = require("mongodb").MongoClient;
 // const fs = require("fs");
@@ -6,50 +7,73 @@ const mongoose = require("mongoose");
 const config = require("config");
 const Role = require("../Models/Role");
 
+require("dotenv").config();
+
+setUpRoles();
+
 // database options
 const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 };
 
+const databaseUrl = function() {
+    if (config.util.getEnv("NODE_ENV").trim() === "local") {
+        return config.localDBHost;
+    } else {
+        return config.devDBHost;
+    }
+}
+
+const url = databaseUrl();
+let connectionInstance;
+
 const databaseConnection = () => {
-  mongoose.connect(config.DBHost, options)
-    .then(() => {
-      console.log("Successfully connected to MongoDB");
-      // eslint-disable-next-line no-use-before-define
-      setUpRoles();
-    })
-    .catch((error) => {
-      console.log(`Connection to MongoDB error ${error}`);
-      process.exit();
-    });
-  const conn = mongoose.connection;
-  //  conn.on("error", console.error.bind(console, "connection error"));
-  return conn;
+    //singleton connection to mongoDB
+    if (connectionInstance) {
+        return connectionInstance;
+    }
+
+    mongoose.connect(url, options)
+        .then(() => {
+            console.log(`Successfully connected to MongoDB`);
+        })
+        .catch((error) => {
+            console.log(`Connection to MongoDB error ${error}`);
+            process.exit();
+        });
+
+    mongoose.connection.on("error", console.error.bind(console, "connection error"));
+
+    connectionInstance = mongoose.connection;
+
+    return mongoose.connection;
 };
 
 function setUpRoles() {
-  Role.estimatedDocumentCount((error, count) => {
-    if (!error && count === 0) {
-    // add User role
-      new Role({
-        name: "User",
-      }).save((err) => {
-        if (err) {
-          console.log("Error", err);
+    Role.estimatedDocumentCount((error, count) => {
+        if (!error && count === 0) {
+            // add Admin role
+            new Role({
+                name: "Admin",
+            }).save((err) => {
+                if (err) {
+                    console.log("Error", err);
+                }
+                console.log("Added Admin to roles collection");
+            });
+        } else {
+            // add User role
+            new Role({
+                name: "User",
+            }).save((err) => {
+                if (err) {
+                    console.log("Error", err);
+                }
+                console.log("Added User to roles collection");
+            });
         }
-        console.log("Added User to roles collection");
-      });
-      // add Admin role
-      new Role({
-        name: "Admin",
-      }).save((err) => {
-        if (err) {
-          console.log("Error", err);
-        }
-        console.log("Added Admin to roles collection");
-      });
-    }
-  });
+    });
 }
+
 module.exports = databaseConnection;

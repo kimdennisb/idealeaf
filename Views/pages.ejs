@@ -54,7 +54,7 @@
                 <% for(let i=0;i < data.length;i++) { %>
                     <div>
                         <% if(!data[i].feature_image ) { %>
-                            <% const date=data[i].date %>
+                            <% const date=new Date(data[i].createdAt) %>
                                 <%const year=date.getFullYear() %>
                                     <%const month=date.getMonth() + 1 %>
                                         <%const dt=date.getDate() %>
@@ -71,7 +71,7 @@
                                                     </a>
                                                 </div>
                                                 <% } else { %>
-                                                    <% const date=data[i].date %>
+                                                    <% const date=new Date(data[i].createdAt) %>
                                                         <%const year=date.getFullYear() %>
                                                             <%const month=date.getMonth() + 1 %>
                                                                 <%const dt=date.getDate() %>

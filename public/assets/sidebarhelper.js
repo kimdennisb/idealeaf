@@ -269,28 +269,24 @@ async function performSearch(parameter) {
             } else {
                 const tr = document.createElement("tr");
                 const td1 = document.createElement("td");
-                const td2 = document.createElement("td");
                 const td3 = document.createElement("td");
                 const td4 = document.createElement("td");
                 const input = document.createElement("input");
                 input.type = "checkbox";
                 input.className = "checkbox";
                 input.id = `select-${i}`;
+                input.setAttribute("data-id", myList[i]._id)
                 td1.appendChild(input);
-                const label1 = document.createElement("label");
-                label1.htmlFor = `select-${i}`;
-                label1.textContent = myList[i]._id;
-                td2.appendChild(label1);
                 const label2 = document.createElement("label");
                 label2.htmlFor = `select-${i}`;
                 label2.textContent = myList[i].title || myList[i].email || myList[i].script;
                 td3.appendChild(label2);
                 const label3 = document.createElement("label");
+                const date = new Date(myList[i].createdAt).toDateString();
                 label3.htmlFor = `select-${i}`;
-                label3.textContent = myList[i].date || myList[i].createdAt;
+                label3.textContent = date;
                 td4.appendChild(label3);
                 tr.appendChild(td1);
-                tr.appendChild(td2);
                 tr.appendChild(td3);
                 tr.appendChild(td4);
                 tbody.appendChild(tr)
@@ -310,7 +306,7 @@ if (window.location.pathname.includes("/admin")) {
  * live search posts/scripts/users in admin
  */
 
-if (window.location.pathname.includes("/admin")) {
+if (window.location.pathname.includes("/admin") && (!window.location.pathname.includes("/admin/new"))) {
     (async function() {
 
 
@@ -481,7 +477,6 @@ const toggleAccess = document.querySelector(".accessicon");
 if (toggleAccess) {
     toggleAccess.onclick = function() {
         const signin_signup_modal = document.querySelector(".signin-signup-modal")
-            //accessText.style.visibility = accessText.style.visibility !== "visible" ? "visible" : "hidden";
         signin_signup_modal.style.visibility = signin_signup_modal.style.visibility !== "visible" ? "visible" : "hidden";
     };
 }

@@ -2,7 +2,7 @@
     "name": "blog",
     "version": "1.0.0",
     "description": "blog app",
-    "main": "app.js",
+    "main": "index.js",
     "dependencies": {
         "@babel/core": "^7.12.10",
         "bcryptjs": "^2.4.3",
@@ -43,8 +43,9 @@
     },
     "scripts": {
         "start": "SET NODE_ENV=dev && nodemon index.js",
+        "local": "SET NODE_ENV=local && nodemon index.js",
         "test": "mocha --timeout 10000",
-        "lint:ejs": "ejslint views/editArticle.ejs"
+        "lint:ejs": "ejslint views/home.ejs"
     },
     "author": "Dennis Kim",
     "license": "ISC"

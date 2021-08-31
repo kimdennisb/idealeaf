@@ -2,13 +2,31 @@
 <html lang="en">
 
 <head>
-        <%- include("partials/header.ejs"); -%>
+    <%- include("partials/header.ejs"); -%>
 </head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="myNav" class="overlay">
+                <%- include("partials/public/sidenavigation.ejs"); -%>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+
+        </div>
+    </div>
+</header>
 
 <body>
-        <article class="widget">
-                <%- include("partials/section.ejs"); -%>
-        </article>
+    <article class="widget">
+        <%- include("partials/section.ejs"); -%>
+    </article>
 </body>
+<script src="/assets/sidebarhelper.js"></script>
 
 </html>

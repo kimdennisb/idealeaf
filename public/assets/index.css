@@ -1004,6 +1004,12 @@ summary:hover {
     font-size: 16px;
 }
 
+#manage span,
+#settings span {
+    display: inline-block;
+    vertical-align: top;
+}
+
 @media screen and (max-height: 450px) {
     .sidenav {
         padding-top: 15px;
@@ -1079,7 +1085,7 @@ th {
 
 /*saving spinner*/
 
-.viewport {
+.loaderview {
     position: absolute;
     width: 100%;
     height: 100%;
