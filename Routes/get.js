@@ -20,7 +20,7 @@ const ObjectID = mongodb.ObjectID;
 const scriptToInjectModel = require("../Models/scriptToInject");
 const user = require("../Models/User");
 const checkRolesExisted = require("../Middlewares/checkRolesExisted");
-const formatDate = require("../Public/assets/formatDate");
+//const formatDate = require("../Public/assets/formatDate.js");
 
 // call database function
 const conn = databaseConnection();
@@ -212,6 +212,16 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
             });
         });
 });
+
+function formatDate(isodate) {
+    console.log(typeof isodate, isodate instanceof Date)
+    const DateInstance = new Date(isodate);
+    const year = DateInstance.getFullYear();
+    const month = DateInstance.getMonth();
+    const date = DateInstance.getDate();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return `${date} ${monthNames[month]} ${year}`;
+}
 
 // view specific article
 
