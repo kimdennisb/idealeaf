@@ -823,7 +823,7 @@ textarea {
 /* pagination elements */
 
 .paginationtext-center {
-    margin-top: 1em;
+    padding-top: 1em;
     text-align: center;
 }
 

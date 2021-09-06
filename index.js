@@ -103,7 +103,7 @@ app.use((err, req, res, next) => {
     next();
 });
 
-const privateKey = fs.readFileSync(path.join(__dirname, "cert", "privkey.pem"), "utf-8");
+/*const privateKey = fs.readFileSync(path.join(__dirname, "cert", "privkey.pem"), "utf-8");
 const certificate = fs.readFileSync(path.join(__dirname, "cert", "cert.pem"), "utf-8");
 const ca = fs.readFileSync(path.join(__dirname, "cert", "chain.pem"), "utf-8");
 
@@ -111,18 +111,20 @@ const credentials = {
     key: privateKey,
     cert: certificate,
     ca: ca
-};
+};*/
 
 //const httpServer = http.createServer(app);
-const httpsServer = https.createServer(credentials, app);
+//const httpsServer = https.createServer(credentials, app);
 
 /*httpServer.listen(80, () => {
     console.log('HTTP Server running on port 80');
 });*/
 
+/*
 httpsServer.listen(port, () => {
     console.log(`HTTPS Server running on port ${port}`);
 });
+*/
 
 /*
 const httpsServer = https.createServer({
@@ -130,13 +132,14 @@ const httpsServer = https.createServer({
         cert: fs.readFileSync(path.join(__dirname, "cert", "cert.pem")),
     },
     app);*/
-/*
+
+
 if (!module.parent) {
     app.listen(port, () => {
         console.log(`listening on the port ${port}`);
     });
 }
-*/
+
 module.exports = app; // for testing
 
 /** **********
