@@ -11,7 +11,7 @@ You need to have **Node js** and **MongoDB** installed
 ## Installing
 * Clone the project or unzip the downloaded repository
 * CD into the root directory and *npm install* to download the dependencies
-* cp .env.example .env and cp config.example config
+* copy .env.example to a .env file and cp config.example to a config folder
 * Now add your credentials to the .env file and files in config folder
 * Run the command line as an administrator
 * Start MongoDB locally with *net start mongodb*
