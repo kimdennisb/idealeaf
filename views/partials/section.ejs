@@ -1,0 +1,23 @@
+<article class="single post clear-fix">
+    <header class="post-header">
+        <h1 class="post-title">
+            <%- data.title %>
+        </h1>
+    </header>
+    <div class="post-meta">
+        <span class="post-meta-date">
+            <% const date=new Date(data.createdAt) %>
+            <%const year=date.getFullYear() %>
+                <%const month=date.getMonth() + 1 %>
+                    <%const dt=date.getDate() %>
+                        <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July" , "August"
+        , "September" , "October" , "November" , "December" ]; %>
+        <%- data.createdAtDate %>
+        </span>
+    </div>
+    <div class="post-inner">
+        <div class="post-content">
+            <%- data.html %>
+        </div>
+    </div>
+</article>

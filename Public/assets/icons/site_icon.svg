@@ -1,0 +1,32 @@
+<svg  id="icon" xmlns="http://www.w3.org/2000/svg" width="200" height="50" viewBox="0 0 200 50" style="background-color:green" >
+ <g>
+  <text xml:space="preserve" 
+        text-anchor="middle"
+        font-family="Helvetica, Arial, sans-serif" 
+       
+        id="svg" 
+        x="0"
+        y="25"  
+        stroke-width="0" 
+        stroke="#000" 
+        fill="#000">
+        blog
+  </text>
+ </g>
+</svg>
+
+<!--
+      svg.width = width of the svg
+      svg.height = height of the svg
+      text.x = x coordinate of the starting point of the text baseline
+      text.y = y coordinate of the starting point of the text baseline
+
+      viewBox is used to scale the svg,the format is: viewBox = "min-x min-y width height" "zooming in and out"
+      min-x - makes the svg move on the horizontal axis
+      min-y - makes the svg move on the vertical axis
+      width - set the width of the viewBox
+      height - set the height of the viewBox
+
+      min-x and min-y are for panning while width and height are for zooming
+
+-->

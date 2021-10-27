@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <meta name="theme-color" content="#4CAF50" />
+
+    <meta property="og:url" content="/signup" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <header class="header">
+            <a href="#" class="logo">
+                <!--whatspost logo-->
+            </a>
+            <h1>Sign up to
+                <%- siteName %>
+            </h1>
+        </header>
+
+        <form class="form" method="POST" action="/signup">
+            <label for="username">
+                Username
+                <input class="field form-control " type="text" name="username" id="username" autofocus="autofocus" required>
+                <div class="message" id="m1" hidden>
+                    <div class="m-1">
+                    </div>
+                </div>
+            </label>
+            <label for="user">
+        Email address <span><a href="/signin">Already have an account?</a></span>
+        <input class="field form-control " type="text" name="email" id="user" autofocus required>
+        <div class="message" id="m2" hidden>
+            <div class="m-2">
+            </div>
+        </div>
+      </label>
+            <label for="password">
+        Password
+        <input class="field" type="password" name="password" id="password" autofocus="autofocus" required>
+
+      </label>
+            <label for="password">
+        Confirm Password
+        <input class="field" type="password" name="passwordConf" id="password" autofocus="autofocus" required>
+                <div class="message" id="m3" hidden>
+            <div class="m-3">
+            </div>
+        </div>
+      </label>
+
+            <input class="button" type="submit" value="Sign Up">
+        </form>
+    </div>
+
+</body>
+<script src="/assets/scripts/sendRequests.js"></script>
+<script src="/assets/scripts/usernameEmailPasswordCheck.js"></script>
+
+</html>
