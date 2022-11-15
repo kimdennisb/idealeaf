@@ -17,134 +17,126 @@ const _ = require("lodash");
 const crypto = require("crypto");
 const { htmlToText } = require("html-to-text");
 const validator = require("email-validator");
-const Mailgun = require("mailgun-js");
+const Mailgun = require("mailgun.js");
+const formData = require("form-data");
 const mailgunDomain = "sandboxd4f3f52e209e4038a6fe654dc393a82c.mailgun.org";
 const api_key = process.env.MAILGUN_API_KEY;
-const mg = new Mailgun({ apiKey: api_key, domain: mailgunDomain });
-const postmodel = require("../Models/Post");
-const user = require("../Models/User");
-const Injectcode = require("../Models/scriptToInject");
+const mailg = new Mailgun(formData);
+const mg = mailg.client({ username: mailgunDomain, key: api_key });
+const postModel = require("../Models/Post");
+const userModel = require("../Models/User");
+const scriptToInjectModel = require("../Models/scriptToInject");
 const applyRole = require("../Helpers/determineRole");
 const storeImage = require("../Helpers/imageUpload");
 const usernameRegexConvention = require("../Helpers/userNameConvention");
 
 // sign up user
-router.post("/signup", async(req, res, next) => {
-    // check if user with the email address exists,if exists notify else proceed to sign up
-    user.findOne({ email: req.body.email }, (err, identity) => {
-        if (identity != null) {
-            const error = new Error("User with that email address already exists!");
-            next(error);
-        }
-    });
+router.post("/signup", async (req, res, next) => {
+  const userData = await applyRole(req);
 
-    // confirm that user typed same password twice
-    if (req.body.password !== req.body.passwordConf) {
-        const err = new Error("Passwords do not match.");
-        err.status = 400;
-        res.send("passwords don`t match");
-        return next(err);
+  userModel.create(userData, (error, UniqueUser) => {
+    if (error) {
+      return next(error);
     }
-
-    const userData = await applyRole(req);
-
-    user.create(userData, (error, UniqueUser) => {
-        if (error) {
-            return next(error);
-        }
-        console.log(req.session);
-        // attach user id to req.session.userId object
-        req.session.userId = UniqueUser._id;
-        // console.log(UniqueUser._id);
-        // redirect to referer
-        return res.redirect("back");
-    });
+    //console.log(req.session);
+    // attach user id to req.session.userId object
+    req.session.userId = UniqueUser._id;
+    // console.log(UniqueUser._id);
+    // redirect to referer
+    return res.redirect("back");
+  });
 });
 
 // check signup username,email and password
 router.post("/signup/check", (req, res, next) => {
-    const query = req.query.q;
-    const data = req.body.q;
-    (query === "username") ? (
-        //check username against rules
-        user.find({ "username": data }, (err, theuser) => {
-            if (err) {
-                next(err);
-            }
+  const query = req.query.q;
+  const data = req.body.q;
+  query === "username"
+    ? //check username against rules
+      userModel.find({ username: data }, (err, theuser) => {
+        if (err) {
+          next(err);
+        }
 
-            if (!usernameRegexConvention(data)) { return res.status(200).json({ message: "InvalidUsername" }) }
+        if (!usernameRegexConvention(data)) {
+          return res.status(200).json({ message: "InvalidUsername" });
+        }
 
-            if (theuser.length === 0) return res.status(200).json({ message: "200Username" });
-            if (theuser.length != 0) return res.status(200).json({ message: "404Username" });
-        })
-    ) : (query === "email") ? (
-        user.find({ "email": data }, (err, theuser) => {
-            if (err) {
-                next(err);
-            }
+        if (theuser.length === 0)
+          return res.status(200).json({ message: "200Username" });
+        if (theuser.length != 0)
+          return res.status(200).json({ message: "404Username" });
+      })
+    : query === "email"
+    ? userModel.find({ email: data }, (err, theuser) => {
+        if (err) {
+          next(err);
+        }
 
-            if (theuser.length === 0 && validator.validate(data)) {
-                return res.status(200).json({ message: "200Email" });
-            } else {
-                return res.status(200).json({ message: "InvalidEmail" });
-            }
-        })
-    ) : (query === "password") ? (
-        //check password against rules
-        console.log(`none`)
-    ) : null
-
+        if (theuser.length === 0 && validator.validate(data)) {
+          return res.status(200).json({ message: "200Email" });
+        } else {
+          return res.status(200).json({ message: "InvalidEmail" });
+        }
+      })
+    : query === "password"
+    ? //check password against rules
+      console.log(`/*do nothing for password */`)
+    : null;
 });
 
 // sign in user
 router.post("/signin", (req, res, next) => {
-    if (req.body.email && req.body.password) {
-        user.authenticate(req.body.email, req.body.password, (error, theUser) => {
-            if (error || !theUser) {
-                const err = new Error("Wrong email or password.");
-                err.status = 401;
-                return next(err);
-            }
-            req.session.userId = theUser._id;
-            // console.log(req.session, "user token session", theUser._id);
-            // set cookie
-            //res.cookie("loggedIn", Math.random() * 123456789);
+  if (req.body.email && req.body.password) {
+    userModel.authenticate(
+      req.body.email,
+      req.body.password,
+      (error, theUser) => {
+        if (error || !theUser) {
+          const err = new Error("Wrong email or password.");
+          err.status = 401;
+          return next(err);
+        }
+        req.session.userId = theUser._id;
+        // console.log(req.session, "user token session", theUser._id);
+        // set cookie
+        //res.cookie("loggedIn", Math.random() * 123456789);
 
-            // attach role to the session object;
-            req.session.role = theUser.role;
+        // attach role to the session object;
+        req.session.role = theUser.role;
 
-            //redirect path
-            const redirect_to = req.session.redirect_to;
-            res.redirect(redirect_to);
-        });
-    } else {
-        const err = new Error("All fields required.");
-        err.status = 400;
-        return next(err);
-    }
+        //redirect path
+        const redirect_to = req.session.redirect_to;
+        res.redirect(redirect_to);
+      }
+    );
+  } else {
+    const err = new Error("All fields required.");
+    err.status = 400;
+    return next(err);
+  }
 });
 
 // reset password
 router.post("/forgot-password", (req, res, next) => {
-    const { email } = req.body;
+  const { email } = req.body;
 
-    // find user with this email address
-    user.findOne({ email: email })
-        .then(async(person) => {
-            if (!person) {
-                const err = new Error("No user with that email address.");
-                err.status = 404;
-                return next(err);
-            }
-            // token is sent to the forgot password form
-            const token = crypto.randomBytes(32).toString("hex");
+  // find user with this email address
+  userModel.findOne({ email: email }).then(async (person) => {
+    if (!person) {
+      const err = new Error("No user with that email address.");
+      err.status = 404;
+      return next(err);
+    }
+    // token is sent to the forgot password form
+    const token = crypto.randomBytes(32).toString("hex");
 
-            const userEmail = person.email;
-            const data = {
-                from: `noreply@${siteName}.com`,
-                to: userEmail,
-                subject: "Reset Password",
-                html: `<table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0" align="center" border-collapse="0" cellspacing="0">
+    const userEmail = person.email;
+    const data = {
+      from: `noreply@${siteName}.com`,
+      to: [userEmail],
+      subject: "Reset Password",
+      html: `<table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0" align="center" border-collapse="0" cellspacing="0">
 <tbody><tr>
     <td style="height:80px;">&nbsp;</td>
 </tr>
@@ -183,60 +175,63 @@ router.post("/forgot-password", (req, res, next) => {
     <td style="height:80px;">&nbsp;</td>
 </tr>
 </tbody></table>`,
+    };
 
-            };
+    const filter = { email: email };
+    const update = {
+      $set: {
+        resetLink: token,
+      },
+    };
 
-            const filter = { email: email };
-            const update = {
-                $set: {
-                    resetLink: token
-                }
-            }
-
-            user.findOneAndUpdate(filter, update, { new: true, upsert: true }, (err, success) => {
-                if (err) next(err);
-                mg.messages().send(data, (error, body) => {
-                    if (error) next(error);
-                    return res.json(body);
-                });
-            })
-        });
+    userModel.findOneAndUpdate(
+      filter,
+      update,
+      { new: true, upsert: true },
+      (err, success) => {
+        if (err) next(err);
+        mg.messages
+          .create(mailgunDomain, data)
+          .then((msg) => res.json(msg))
+          .catch((err) => console.error(err));
+      }
+    );
+  });
 });
 
 // reset password
 router.post("/reset/:token", (req, res, next) => {
-    const query = {
-        resetLink: req.params.token,
-    };
+  const query = {
+    resetLink: req.params.token,
+  };
 
-    // find user with this token
-    // eslint-disable-next-line no-unused-vars
-    user.findOne(query, (err, theuser) => {
-        if (!theuser) {
-            res.json({ message: "Password reset token is invalid or has expired." });
-        }
+  // find user with this token
+  // eslint-disable-next-line no-unused-vars
+  userModel.findOne(query, (err, theuser) => {
+    if (!theuser) {
+      res.json({ message: "Password reset token is invalid or has expired." });
+    }
 
-        // if found,update the collection
-        const myquery = { resetLink: req.params.token };
+    // if found,update the collection
+    const myquery = { resetLink: req.params.token };
 
-        user.findOne(myquery, (error, result) => {
+    userModel.findOne(myquery, (error, result) => {
+      if (err) return next(error);
+      const obj = {
+        password: req.body.password,
+        resetLink: "",
+      };
 
-            if (err) return next(error);
-            const obj = {
-                password: req.body.password,
-                resetLink: "",
-            };
+      // update user
+      _.assign(result, obj);
 
-            // update user
-            _.assign(result, obj);
-
-            // eslint-disable-next-line no-shadow
-            result.save((err) => {
-                if (err) return next(err);
-                res.json({ message: `Password reset successfully` });
-            });
-        });
+      // eslint-disable-next-line no-shadow
+      result.save((err) => {
+        if (err) return next(err);
+        res.json({ message: `Password reset successfully` });
+      });
     });
+  });
 });
 
 /**
@@ -250,8 +245,8 @@ router.post("/reset/:token", (req, res, next) => {
 
 const storage = multer.memoryStorage();
 const uploadImage = multer({
-    storage: storage,
-    /*limits: {
+  storage: storage,
+  /*limits: {
         fields: 12,
         fileSize: 1024 * 1024 * 10,
         files: 12,
@@ -260,7 +255,10 @@ const uploadImage = multer({
 });
 
 // article image
-router.post("/articleimage", uploadImage.single("photo"), async(req, res, next) => {
+router.post(
+  "/articleimage",
+  uploadImage.single("photo"),
+  async (req, res, next) => {
     const photo = req.file;
 
     let imageattributes = {};
@@ -271,57 +269,63 @@ router.post("/articleimage", uploadImage.single("photo"), async(req, res, next) 
     let resizedimagehref = "";
 
     await sharp(photo.buffer)
-        .resize({ width: widthsize, height: heightsize })
-        .jpeg({ quality: 90 })
-        .toBuffer()
-        .then((buffer) => {
-            const photoName = `${photo.originalname}-${widthsize}`;
-            const returnedURL = storeImage({ photoName, buffer });
-            resizedimagehref = `/image/${returnedURL}`;
-        })
-        .catch((err) => {
-            next(err);
-        });
+      .resize({ width: widthsize, height: heightsize })
+      .jpeg({ quality: 90 })
+      .toBuffer()
+      .then((buffer) => {
+        const photoName = `${photo.originalname}-${widthsize}`;
+        const returnedURL = storeImage({ photoName, buffer });
+        resizedimagehref = `/image/${returnedURL}`;
+      })
+      .catch((err) => {
+        next(err);
+      });
     imageattributes.src = resizedimagehref;
 
     res.json(imageattributes);
-});
+  }
+);
 
-router.post("/admin/photos", uploadImage.array("photo", 5), async(req, res, next) => {
-    const accessIDS = await Promise.all(req.files.map(async(photo) => {
+router.post(
+  "/admin/photos",
+  uploadImage.array("photo", 5),
+  async (req, res, next) => {
+    const accessIDS = await Promise.all(
+      req.files.map(async (photo) => {
         if (!photo.originalname) {
-            return res.status(400).json({ message: "No photo name in request file" })
+          return res
+            .status(400)
+            .json({ message: "No photo name in request file" });
         }
         // sizes to use to resize images
-        const sizes = [239, 319, 468, 512, 612, 687]
+        const sizes = [239, 319, 468, 512, 612, 687];
         const imageattributes = {};
 
         // enable alt images
         imageattributes.alt = photo.originalname;
 
         const resizedimagehrefs = await Promise.all(
-            sizes.map(async(size) => {
+          sizes.map(async (size) => {
+            let resizedimagehref = "";
 
-                let resizedimagehref = "";
-
-                //image width to height ratio is 16:9
-                await sharp(photo.buffer)
-                    .resize({
-                        width: size,
-                        height: Math.floor(size * 0.5625)
-                    })
-                    .jpeg({ quality: 80 })
-                    .toBuffer()
-                    .then((buffer) => {
-                        const photoName = `${photo.originalname}-${size}`;
-                        const returnedURL = storeImage({ photoName, buffer });
-                        resizedimagehref = `/image/${returnedURL} ${size}w`;
-                    })
-                    .catch((err) => {
-                        next(err);
-                    });
-                return resizedimagehref;
-            }),
+            //image width to height ratio is 16:9
+            await sharp(photo.buffer)
+              .resize({
+                width: size,
+                height: Math.floor(size * 0.5625),
+              })
+              .jpeg({ quality: 80 })
+              .toBuffer()
+              .then((buffer) => {
+                const photoName = `${photo.originalname}-${size}`;
+                const returnedURL = storeImage({ photoName, buffer });
+                resizedimagehref = `/image/${returnedURL} ${size}w`;
+              })
+              .catch((err) => {
+                next(err);
+              });
+            return resizedimagehref;
+          })
         );
 
         //build responsive images
@@ -329,17 +333,25 @@ router.post("/admin/photos", uploadImage.array("photo", 5), async(req, res, next
         const sizescondition = `(min-width: 1460px) 612px, (min-width: 860px) calc(38.97vw + 51px), (min-width: 800px) 65vw, (min-width: 620px) 87.5vw, calc(88vw - 60px)`;
         const srcset = resizedimagehrefs.toString();
         const src = resizedimagehrefs[1];
-        const _ = { sizes: sizescondition, srcset: srcset, src: src }
-        return {...imageattributes, ..._ };
-    }));
+        const _ = { sizes: sizescondition, srcset: srcset, src: src };
+        return { ...imageattributes, ..._ };
+      })
+    );
 
     res.send(accessIDS);
-});
+  }
+);
 
-router.post("/admin/images", uploadImage.array("photo", 3), async(req, res, next) => {
-    const accessIDS = await Promise.all(req.files.map(async(photo) => {
+router.post(
+  "/admin/images",
+  uploadImage.array("photo", 3),
+  async (req, res, next) => {
+    const accessIDS = await Promise.all(
+      req.files.map(async (photo) => {
         if (!photo.originalname) {
-            return res.status(400).json({ message: "No photo name in request file" })
+          return res
+            .status(400)
+            .json({ message: "No photo name in request file" });
         }
 
         const imageattributes = {};
@@ -352,56 +364,59 @@ router.post("/admin/images", uploadImage.array("photo", 3), async(req, res, next
         const returnedURL = storeImage({ photoName, buffer });
 
         const _ = { src: returnedURL };
-        return {...imageattributes, ..._ };
-    }));
+        return { ...imageattributes, ..._ };
+      })
+    );
     res.send(accessIDS);
-});
+  }
+);
 
 // eslint-disable-next-line max-len
 // const _searchImageRegex = /<img\b(?=\s)(?=(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*?\ssrc=['"]([^"]*)['"]?)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"\s]*)*"\s?\/?>/;
 
 router.post("/article", (req, res, next) => {
-    const text = htmlToText(req.body.html);
-    const article = {
-        title: req.body.title,
-        html: req.body.html,
-        text: text,
-        feature_image: req.body.feature_image,
-        feature_image_alt: req.body.feature_image_alt,
-        visits: 0,
-    };
-    // eslint-disable-next-line new-cap
-    const post = new postmodel(article);
+  const text = htmlToText(req.body.html);
+  const article = {
+    title: req.body.title,
+    html: req.body.html,
+    text: text,
+    feature_image: req.body.feature_image,
+    feature_image_alt: req.body.feature_image_alt,
+    visits: 0,
+  };
+  // eslint-disable-next-line new-cap
+  const post = new postModel(article);
 
-    post.save((err, item) => {
-        if (err) {
-            next(err);
-            res.json(err);
-        } else {
-            // if no errors,send it back to client
-            res.status(200).json({ item: item });
-        }
-    });
+  post.save((err, item) => {
+    if (err) {
+      next(err);
+      res.json(err);
+    } else {
+      // if no errors,send it back to client
+      res.status(200).json({ item: item });
+    }
+  });
 });
 
 router.post("/injectcode", (req, res, next) => {
-    req.body.forEach((script) => {
-        const scriptToInject = new Injectcode({
-            script: script.script,
-            placement: script.placement,
-        });
-
-        if (script.script.length > 1) {
-            scriptToInject.save((err, item) => {
-                if (err) {
-                    next(err);
-                } else {}
-            });
-        } else {
-            return null;
-        }
+  req.body.forEach((script) => {
+    const scriptToInject = new scriptToInjectModel({
+      script: script.script,
+      placement: script.placement,
     });
-    res.json({ message: " Script successfully added!" });
+
+    if (script.script.length > 1) {
+      scriptToInject.save((err, item) => {
+        if (err) {
+          next(err);
+        } else {
+        }
+      });
+    } else {
+      return null;
+    }
+  });
+  res.json({ message: " Script successfully added!" });
 });
 
 // export the router
