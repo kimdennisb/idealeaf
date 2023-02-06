@@ -56,7 +56,7 @@ if (remove) {
         });
 
         // eslint-disable-next-line no-nested-ternary
-        (this.id === "remove-post") ? deleteHelper("/delete-posts", _siblings): (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings) :
+        (this.id === "remove-post") ? deleteHelper("/delete-posts", _siblings): (this.id === "remove-ipdevice") ? deleteHelper("/delete-ipdevice", _siblings) : (this.id === "remove-user") ? deleteHelper("/delete-users", _siblings) :
             deleteHelper("/delete-scripts", _siblings);
     };
 }

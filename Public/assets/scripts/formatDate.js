@@ -1,5 +1,4 @@
 module.exports = function(isodate) {
-    console.log(typeof isodate, isodate instanceof Date)
     const DateInstance = new Date(isodate);
     const year = DateInstance.getFullYear();
     const month = DateInstance.getMonth();

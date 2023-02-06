@@ -118,13 +118,10 @@ function getEditorImages() {
   //parse html
   const htmldoc = parseStringToHTML(editorData.html);
   //get images
-  const postimages = htmldoc.querySelectorAll("img");
+  const postimages = selectImagesWithConvertedImageURI(
+    Array.from(htmldoc.querySelectorAll("img"))
+  );
   //convert nodelist to array if images present else return empty array;
-  /*  const arraypostimages =
-    postimages.length === 0
-      ? []
-      : selectImagesWithBase64AsURL(Array.from(postimages));
-    */
   const arraypostimages = postimages.length === 0 ? [] : Array.from(postimages);
   return arraypostimages;
 }
@@ -211,14 +208,6 @@ const ArticleState = {
   setHTML: function (string) {
     //sanitize html string to remove unnecessary figcaption
     const htmldoc = parseStringToHTML(string);
-    const figcaptions = htmldoc.querySelectorAll("figcaption");
-    figcaptions.forEach((figcaption) => {
-      if (figcaption.textContent == "") {
-        figcaption.remove();
-      } else if (figcaption.textContent == "description") {
-        figcaption.remove();
-      }
-    });
     const sanitizedString = htmldoc.body.innerHTML;
     this.html = sanitizedString;
   },
@@ -265,25 +254,17 @@ ArticleState.saveFeatureImage = async function () {
 
 ArticleState.saveEditorImages = async function () {
   const postimages = getEditorImages();
-  const imagefiles = await Promise.all(postimages.map(async (imagefile) => {
-    const { src, alt } = imagefile;
-    return await createImageFileWithBufferFromImageConvertedURI(src, alt);
-  }));
+  const imagefiles = await Promise.all(
+    postimages.map(async (imagefile) => {
+      const { src, alt } = imagefile;
+      return await createImageFileWithBufferFromImageConvertedURI(src, alt);
+    })
+  );
 
   const fdPostImages = appendImageFileToFormData(imagefiles);
-  const width = window.editor.clientWidth;
+
   await sendRequest(`POST`, `/admin/images`, fdPostImages).then(
     (articleimages) => {
-      /*  const imageresources = JSON.parse(articleimages);
-            const allEditorImages = Array.from(document.querySelector("div [contenteditable=\"true\"]").getElementsByTagName("img"));
-            let editorimages = Array.from(selectImagesWithBase64AsURL(allEditorImages))
-            editorimages.forEach((x, index) => {
-                x.srcset = imageresources[index].srcset
-                x.src = imageresources[index].src;
-                x.alt = imageresources[index].alt
-               x.sizes = imageresources[index].sizes;
-            });
-*/
       const imageresources = JSON.parse(articleimages);
       const allEditorImages = Array.from(
         document
@@ -293,6 +274,7 @@ ArticleState.saveEditorImages = async function () {
       let editorimages = Array.from(
         selectImagesWithConvertedImageURI(allEditorImages)
       );
+      console.log(editorimages)
       //order of placing urls does not change.It's correct!.
       editorimages.forEach((x, index) => {
         // x.src = `/image/${imageresources[index].src}?w=${width}`;
@@ -321,7 +303,6 @@ ArticleState.updateArticle = async function () {
   this.setTitle(getEditorData().title);
   this.setHTML(window.pell.editorHTML());
   const id = window.location.href.split("/").pop().trim().toString();
-
   await sendRequest(`PUT`, `/update/${id}`, this.getArticleData())
     .then((updatedArticle) => {
       load.end();
@@ -359,8 +340,8 @@ async function updateArticle_() {
   const { feature_image, feature_image_alt } = getEditorData();
   if (
     postimages.length > 0 &&
-    feature_image.length > 0 &&
-    feature_image_alt.length > 0
+    feature_image.trim().length > 0 &&
+    feature_image_alt.length.trim() > 0
   ) {
     await ArticleState.saveFeatureImage();
     await ArticleState.saveEditorImages();

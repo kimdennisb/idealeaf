@@ -1,19 +1,22 @@
 /**
- * script to inject schema
+ * schema for scripts injection
  */
 
 const mongoose = require("mongoose");
 
-const scriptToInjectSchema = new mongoose.Schema({
+const scriptToInjectSchema = new mongoose.Schema(
+  {
     script: {
-        type: String,
-        required: true,
-        unique: true,
+      type: String,
+      required: true,
+      unique: true,
     },
     placement: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("scriptToInjectModel", scriptToInjectSchema);

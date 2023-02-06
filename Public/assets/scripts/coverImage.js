@@ -1,28 +1,31 @@
-const settingsicon = document.querySelector(".settingsicon");
-const articlesettings = document.querySelector(".article-settings");
-const editorinnersettings = document.querySelector(".editor-inner-settings");
+//
 
-settingsicon.onclick = function () {
-  articlesettings.classList.toggle("open");
-  editorinnersettings.classList.toggle("open");
-  this.classList.toggle("open");
+const addEventListener = function addEventListener(parent, type, listener) {
+  return parent.addEventListener(type, listener);
+};
+const queryElementByClassName = function queryElementByClassName(classname) {
+  return document.querySelector(`.${classname}`);
+};
+const queryElementByIdName = function queryElementByIdName(idname) {
+  return document.querySelector(`#${idname}`);
 };
 
-const articleimage = document.querySelector(".feature_image");
-const featureimage = document.querySelector(".coverimage");
-const imageinputtext = document.querySelector(".feature_image_input_text");
-const aria_label = document.querySelector(".feature_image_aria-label");
-const removefeatureimage = document.querySelector(".remove_feature_image");
-removefeatureimage.classList.add("close");
+const settingsicon = queryElementByClassName("settingsicon");
+const articlesettings = queryElementByClassName("article-settings");
+const editorinnersettings = queryElementByClassName("editor-inner-settings");
 
-/**
- * @description get element by classname
- * @param {String} classname
- * @returns DocumentElement
- */
-function queryElementByClassName(classname) {
-  return document.querySelector(`.${classname}`);
-}
+addEventListener(settingsicon, "click", function (e) {
+  articlesettings.classList.toggle("open");
+  this.classList.toggle("open");
+  editorinnersettings.classList.toggle("open");
+});
+
+const articleimage = queryElementByClassName("feature_image");
+const featureimage = queryElementByClassName("coverimage");
+const imageinputtext = queryElementByClassName("feature_image_input_text");
+const aria_label = queryElementByClassName("feature_image_aria-label");
+const removefeatureimage = queryElementByClassName("remove_feature_image");
+removefeatureimage.classList.add("close");
 
 //avoid cover image being hidden in the edit window
 if (featureimage.src.includes("/image") || featureimage.src.includes("blob")) {
@@ -31,9 +34,10 @@ if (featureimage.src.includes("/image") || featureimage.src.includes("blob")) {
   featureimage.classList.remove("hide");
 }
 
-document
-  .querySelector("#articleimageinput")
-  .addEventListener("change", async (e) => {
+addEventListener(
+  queryElementByIdName("articleimageinput"),
+  "change",
+  async (e) => {
     const image = e.target.files[0];
     const fd = new window.FormData();
     fd.append("articleimage", image);
@@ -46,15 +50,16 @@ document
     removefeatureimage.classList.remove("close");
     imageinputtext.classList.add("close");
     featureimage.classList.remove("hide");
-  });
+  }
+);
 
-removefeatureimage.onclick = function () {
+addEventListener(removefeatureimage, "click", function () {
   this.classList.add("close");
   imageinputtext.classList.remove("close");
   featureimage.classList.add("hide");
   featureimage.src = "";
   featureimage.alt = "";
-};
+});
 
 //convert image files to base64
 //returns object i.e {filename, promise of base64}.

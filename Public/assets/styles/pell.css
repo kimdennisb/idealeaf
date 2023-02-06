@@ -56,10 +56,12 @@ textarea::placeholder {
 
 .action-taskbar {
   /* float: right;*/
-  height: 32px;
+  height: 40px;
   margin-top: 20px;
   border-bottom: 1px solid gray;
   position: sticky;
+  background-color: #f2f5f7;
+  z-index: 99;
   top: var(--header-inner-height);
 }
 
@@ -117,7 +119,6 @@ textarea::placeholder {
 }
 
 .pell {
-  /*border: 1px solid rgba(10, 10, 10, 0.1);*/
   box-sizing: border-box;
   width: 100%;
   padding-bottom: 18px;
@@ -127,7 +128,6 @@ textarea::placeholder {
   box-sizing: border-box;
   height: 100%;
   outline: 0;
-  /*overflow-y: auto;*/
 }
 
 .pell-content:empty:before {
@@ -194,7 +194,6 @@ textarea::placeholder {
   justify-content: center;
   align-items: center;
   background-color: rgb(219, 215, 215);
-  /* margin: 0 76.5px 0 76.5px;*/
   margin: 0 auto;
 }
 
@@ -275,10 +274,17 @@ textarea::placeholder {
 mark {
   background-color: transparent;
 }
-
+figure.inner-cover {
+  position: absolute;
+  background: none;
+  padding: 0;
+}
+figure.inner-cover img {
+  width: 100%;
+  height: 100%;
+  opacity: 10;
+}
 figure {
-  /*border: 1px solid gray;
-  padding: 8px;*/
   background-color: aliceblue;
   background-size: cover;
   background-repeat: no-repeat;
@@ -287,6 +293,16 @@ figure {
   width: 100%;
   padding-bottom: 54.5455%;
   position: absolute;
+}
+figure[role="group"] .editImage::after {
+  content: url(/assets/icons/edit.svg);
+  display: inline-block;
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  bottom: 0;
+  right: 0;
+  vertical-align: middle;
 }
 .hide {
   display: none;
@@ -299,18 +315,78 @@ figcaption {
   top: calc(100%);
   width: 100%;
 }
-figcaption::before {
-  content: url(/assets/icons/description.svg);
-  display: inline-block;
-  vertical-align: middle;
+.editHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
-/* div[contenteditable='true'] img {
-                width: 100%;
-                height: 150px;
-                object-fit: contain;
-            }
-*/
+.nextImage {
+  background-image: url(/assets/icons/next.svg);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin: 2px;
+  border: 0.1px solid;
+  border-radius: 50%;
+  padding: 10px;
+}
+.previousImage,
+.backButton {
+  background-image: url(/assets/icons/previous.svg);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin: 2px;
+  border: 0.1px solid;
+  border-radius: 50%;
+  padding: 10px;
+}
+.saveEdits {
+  cursor: pointer;
+  height: 23px;
+  width: 48px;
+  border: none;
+  border-radius: 8px;
+  margin: 2px;
+  right: 0;
+  background-color: black;
+  color: white;
+}
+div.nextPreviousSaveContainer {
+  display: inherit;
+}
+.descriptorsContainer {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 0.5px solid;
+}
+.description,
+.altName {
+  cursor: pointer;
+}
+input.textbox {
+  border-radius: 5px;
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  height: 50px;
+  width: 95%;
+  border: 0.1px solid;
+  margin: 0 2.5% 0 2.5%;
+}
+.imagePreview {
+  height: 208px;
+  width: auto;
+  background-color: lightgrey;
+}
+.imagePreview img {
+  height: 100%;
+  width: 100%;
+  display: none;
+  object-fit: contain;
+}
 figure figure img {
   inset: 0;
   height: 100%;
@@ -325,11 +401,6 @@ figure figure img {
   margin: auto;
   margin-bottom: 1.5em;
 }
-
-/*figure img {
-                display: none;
-            }*/
-
 .prev,
 .next {
   cursor: pointer;

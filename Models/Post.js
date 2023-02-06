@@ -29,7 +29,7 @@ const postSchema = new mongoose.Schema({
     visits: { type: Number, required: true },
 }, { timestamps: true });
 
-// Sets the createdAt parameter equal to the current time
+// Sets the createdAt parameter equal to the current time 
 postSchema.pre("save", (next) => {
     const now = new Date();
     if (!this.date) {
@@ -54,31 +54,6 @@ postSchema.index({
 // mongoose-partial-full-search
 
 postSchema.statics = {
-    /*
-    searchPartial: function (q, callback) {
-      return this.find({
-        $or: [
-          { "title": new RegExp(q, "gi") },
-          { "plainTextBody": new RegExp(q, "gi") },
-        ],
-      }, callback);
-    },
-
-    searchFull: function (q, callback) {
-      return this.find({
-        $text: { $search: q, $caseSensitive: false },
-      }, callback);
-    },
-
-    search: function (q, callback) {
-    // eslint-disable-next-line consistent-return
-      this.searchFull(q, (err, data) => {
-        if (err) return callback(err, data);
-        if (!err && data.length) return callback(err, data);
-        if (!err && data.length === 0) return this.searchPartial(q, callback);
-      });
-    },
-    */
     fullTextSearch: function(q) {
         return this.find({ $text: { $search: q, $caseSensitive: false } }, { score: { $meta: "textScore" } })
             .sort({ score: { $meta: "textScore" } });
