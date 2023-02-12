@@ -18,7 +18,9 @@
   --drawer-color: #ffffff;
   --fullmoon-color: #ffffff;
   --drawer-links: #0c0c0c;
-  --accesstoggle-top-color: #3e3f3f;
+  --accesstoggle-top-color: none;
+  --accesstoggle-stroke-color:#0c0c0c;
+  --accesspopup-fill-color:#0c0c0c;
   --siteicon--color: #0c0c0c;
   --search-bar: #0c0c0c;
   --search-results: #0c0c0c;
@@ -40,6 +42,8 @@
   --drawer-color: #0c0c0c;
   --drawer-links: #ffffff;
   --accesstoggle-top-color: #ffffff;
+  --accesstoggle-stroke-color:none;
+  --accesspopup-fill-color:#ffffff;
   --siteicon--color: #ffffff;
   --search-bar: #ffffff;
   --search-results: #ffffff;
@@ -716,6 +720,7 @@ Login and Sign Up modal
 .signin-modal svg,
 .signup-modal svg {
   vertical-align: middle;
+  fill:var(--accesspopup-fill-color);
 }
 
 .signin-modal:hover,
@@ -1237,6 +1242,8 @@ th {
 
 .toggleAccess svg g {
   fill: var(--accesstoggle-top-color);
+  stroke: var(--accesstoggle-stroke-color);
+  stroke-width: 2;
 }
 
 svg.site_icon text {
