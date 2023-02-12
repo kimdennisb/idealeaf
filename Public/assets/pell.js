@@ -249,132 +249,208 @@
     var ext = filenameextension.split(".").pop();
     return [filename, ext];
   }
-  const editOverlay = function editOverlay(e) {
-    //parent edit div
-    const div = document.createElement("div");
-    div.contentEditable = false;
-    div.className = "editOverlay";
-    div.style.height = `${this.parentNode.clientHeight}px`;
-    div.style.width = `${this.parentNode.clientWidth}px`;
-    div.style.position = `absolute`;
-    div.style.zIndex = 99999;
-    div.style.backgroundColor = `ghostwhite`;
-    div.style.borderRadius = "18px";
 
-    //header edit div
-    const editHeader = createElement("div");
-    editHeader.className = "editHeader";
+  function showSlides(slides, nextButton, prevButton) {
+    let slideIndex = 0;
 
-    //Back button
-    const backButton = createElement("div");
-    backButton.className = "backButton";
+    const changeSlides = () => {
+      slides.forEach((slide) => {
+        slide.style.display = "none";
+        slide.dataset.show = "false";
+      });
+      slides[slideIndex].style.display = "block";
+      slides[slideIndex].dataset.show = "true";
+    };
 
-    //correct action text
-    const action = createElement("p");
-    action.textContent = "Edit description";
+    changeSlides(slideIndex);
 
-    //next/previous and save buttons for image editing
-    const nextImage = createElement("div");
-    nextImage.className = "nextImage";
-
-    const prevImage = createElement("div");
-    prevImage.className = "previousImage";
-
-    const saveEdits = createElement("button");
-    saveEdits.className = "saveEdits";
-    saveEdits.textContent = "Save";
-
-    //next,previous and save container
-    const nextPreviousSave = createElement("div");
-    nextPreviousSave.className = "nextPreviousSaveContainer";
-    nextPreviousSave.append(nextImage, prevImage, saveEdits);
-
-    editHeader.append(backButton, action, nextPreviousSave);
-
-    //what's being edited descriptors
-    const descriptors = createElement("div");
-    descriptors.className = "descriptorsContainer";
-
-    const description = createElement("p");
-    description.className = "description";
-    description.textContent = "Des";
-
-    const altName = createElement("p");
-    altName.className = "altName";
-    altName.textContent = "Alt";
-
-    descriptors.append(description, altName);
-
-    //image preview
-    const imagePreview = createElement("div");
-    imagePreview.className = "imagePreview";
-    const imagesToPreview = this.parentNode.querySelectorAll("figure img");
-
-    const imagesToPreviewCopy = Array.from(imagesToPreview).map(
-      (item, index) => {
-        item.className = `uniqueC-${index}`;
-        item.draggable = false;
-        return item.cloneNode();
-      }
-    );
-
-    imagePreview.append(...imagesToPreviewCopy);
-
-    //Description textbox
-    const textBox = createElement("input");
-    textBox.className = "textbox";
-
-    div.append(editHeader, descriptors, imagePreview, textBox);
-
-    this.parentNode.append(div);
-
-    //preview window slides
-    let slideIndex = 1;
-    showSlides(slideIndex);
-    function plusSlides(n) {
-      showSlides((slideIndex += n));
-    }
-
-    function showSlides(n) {
-      var i;
-      var slides = document.querySelectorAll(".imagePreview img");
-      if (n > slides.length) {
-        slideIndex = 1;
-      }
-      if (n < 1) {
-        slideIndex = slides.length;
-      }
-      for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-      }
-      slides[slideIndex - 1].style.display = "block";
-    }
-
-    //listen for clicks from image edit window
-    addEventListener(backButton, "click", (e) => div.remove());
-    addEventListener(nextImage, "click", (e) => plusSlides(1));
-    addEventListener(prevImage, "click", (e) => plusSlides(-1));
-    addEventListener(saveEdits, "click", (e) => {
-      const figCaption = this.parentNode
-        .querySelectorAll("figure")
-        [slideIndex - 1].querySelector("figCaption");
-      const image = this.parentNode
-        .querySelectorAll("figure")
-        [slideIndex - 1].querySelector("img");
-      action.textContent.includes(`description`)
-        ? (figCaption.textContent = textBox.value)
-        : (image.alt = textBox.value);
-      div.remove();
+    addEventListener(nextButton, "click", () => {
+      slideIndex++;
+      slides.length - 1 < slideIndex ? (slideIndex = 0) : null;
+      changeSlides(slideIndex);
     });
-    addEventListener(description, "click", (e) => {
-      textBox.value = "";
-      action.textContent = `Edit description`;
+
+    addEventListener(prevButton, "click", () => {
+      slideIndex--;
+      0 >= slideIndex ? (slideIndex = 0) : null;
+      changeSlides(slideIndex);
     });
-    addEventListener(altName, "click", (e) => {
-      textBox.value = "";
-      action.textContent = `Edit Alt`;
-    });
+  }
+
+  const editOverlay = function editOverlay(showSlides) {
+    return function (e) {
+      //parent edit div
+      const div = createElement("div");
+      div.contentEditable = false;
+      div.className = "editOverlay";
+      div.style.height = `${this.parentNode.clientHeight}px`;
+      div.style.width = `${this.parentNode.clientWidth}px`;
+      div.style.position = `absolute`;
+      div.style.zIndex = 99999;
+      div.style.backgroundColor = `ghostwhite`;
+      div.style.borderRadius = "18px";
+
+      //header edit div
+      const editHeader = createElement("div");
+      editHeader.className = "editHeader";
+
+      //Back button
+      const backButton = createElement("div");
+      backButton.className = "backButton";
+
+      //correct action text
+      const action = createElement("p");
+      action.textContent = "Edit description";
+
+      //next/previous and save buttons for image editing
+      const nextImage = createElement("div");
+      nextImage.className = "nextImage";
+
+      const prevImage = createElement("div");
+      prevImage.className = "previousImage";
+
+      const saveEdits = createElement("button");
+      saveEdits.className = "saveEdits";
+      saveEdits.textContent = "Save";
+
+      //next,previous and save container
+      const nextPreviousSave = createElement("div");
+      nextPreviousSave.className = "nextPreviousSaveContainer";
+      nextPreviousSave.append(nextImage, prevImage, saveEdits);
+
+      editHeader.append(backButton, action, nextPreviousSave);
+
+      //what's being edited descriptors
+      const descriptors = createElement("div");
+      descriptors.className = "descriptorsContainer";
+
+      const description = createElement("p");
+      description.className = "description";
+      description.textContent = "Des";
+
+      const altName = createElement("p");
+      altName.className = "altName";
+      altName.textContent = "Alt";
+
+      descriptors.append(description, altName);
+
+      //image preview
+      const imagePreview = createElement("div");
+      imagePreview.className = "imagePreview";
+      const imagesToPreview = this.parentNode.querySelectorAll("figure img");
+
+      const imagesToPreviewCopy = Array.from(imagesToPreview).map(
+        (item, index) => {
+          item.className = `uniqueC-${index}`;
+          item.dataset.show = "false";
+          item.draggable = false;
+          return item.cloneNode();
+        }
+      );
+
+      imagePreview.append(...imagesToPreviewCopy);
+
+      //Description textbox
+      const textBox = createElement("input");
+      textBox.className = "textbox";
+
+      div.append(editHeader, descriptors, imagePreview, textBox);
+
+      this.parentNode.append(div);
+
+      let slides = this.parentNode.querySelector(".imagePreview");
+      showSlides(
+        slides.querySelectorAll("img"),
+        slides.parentNode.querySelector(".nextImage"),
+        slides.parentNode.querySelector(".previousImage")
+      );
+
+      //listen for clicks from image edit window
+      addEventListener(backButton, "click", (e) => div.remove());
+      addEventListener(saveEdits, "click", (e) => {
+        const previewInShow = slides.querySelector("[data-show='true']");
+        const imagesInPreview = Array.from(slides.querySelectorAll("img"));
+        const index = imagesInPreview.indexOf(previewInShow);
+        const figCaption = this.parentNode
+          .querySelectorAll("figure")
+          [index].querySelector("figCaption");
+        const image = this.parentNode
+          .querySelectorAll("figure")
+          [index].querySelector("img");
+        action.textContent.includes(`description`)
+          ? (figCaption.textContent = textBox.value)
+          : (image.alt = textBox.value);
+        div.remove();
+      });
+      addEventListener(description, "click", (e) => {
+        textBox.value = "";
+        action.textContent = `Edit description`;
+      });
+      addEventListener(altName, "click", (e) => {
+        textBox.value = "";
+        action.textContent = `Edit Alt`;
+      });
+    };
   };
+
+  const deleteImageFromContentEditable =
+    function deleteImageFromContentEditable(e) {
+      function getSelectionElement() {
+        var selection = window.getSelection();
+        let container = selection.anchorNode;
+        if (container.nodeType !== 3) {
+          return container;
+        } else {
+          return container.parentNode;
+        }
+      }
+      let key = e.keyCode || e.charCode;
+      if (key == 8 || key == 46) {
+        const element = getSelectionElement();
+        const caretPosition = window.getSelection().getRangeAt(0).startOffset;
+        if (
+          caretPosition == 0 &&
+          element.previousSibling &&
+          element.previousSibling.tagName == "FIGURE" &&
+          element.tagName != "FIGURE"
+        ) {
+          //console.log(`amigos`);
+          element.previousSibling.remove();
+        } else if (
+          caretPosition != 0 &&
+          element.tagName == "FIGURE" &&
+          element.parentNode.tagName == "FIGURE"
+        ) {
+          //console.log(`howdy`);
+          element.parentNode.remove();
+        } else if (
+          caretPosition == 0 &&
+          element.tagName == "FIGURE" &&
+          element.previousSibling &&
+          element.previousSibling.parentNode == element.parentNode
+        ) {
+          //console.log(`not done`);
+          e.preventDefault();
+        } else if (
+          caretPosition == 0 &&
+          !element.previousSibling &&
+          !element.parentNode.previousSibling &&
+          element.tagName == "FIGURE"
+        ) {
+         // console.log(`damn types`);
+          e.preventDefault();
+        } else if (
+          caretPosition == 0 &&
+          !element.previousSibling &&
+          element.parentNode.previousSibling &&
+          element.parentNode.previousSibling.tagName == "FIGURE" &&
+          element.tagName == "FIGURE"
+        ) {
+          //console.log(`Actor`);
+          element.parentNode.previousSibling.remove();
+        }
+      }
+    };
 
   const initUploadImageInput = function initUploadImageInput(settings) {
     const contentEditable = settings.element.content;
@@ -389,15 +465,6 @@
       input.accept = "image/*";
       input.multiple = true;
       addEventListener(input, "change", async (e) => {
-        /* const keyboard = new KeyboardEvent("keydown", {
-          key: "Enter",
-          bubbles: true,
-          cancelable: true,
-          keyCode: 13,
-        });
-
-        contentEditable.dispatchEvent(keyboard);*/
-
         const images = Array.from(e.target.files);
         const imageEditorial = document.createElement("div");
         imageEditorial.setAttribute("class", "imageeditorial");
@@ -417,7 +484,6 @@
           let figCaption = document.createElement("figcaption");
           figCaption.contentEditable = false;
 
-          //span.textContent = "&nbsp";
           figure.style.backgroundImage = `url(${url})`;
           figure.setAttribute("class", `i-${i}`);
           figure.insertAdjacentHTML(
@@ -459,149 +525,71 @@
 
         editImage.forEach((edit) => {
           if (edit.getAttribute("listener") == "false") {
-            addEventListener(edit, "click", editOverlay);
+            addEventListener(edit, "click", editOverlay(showSlides));
             edit.setAttribute("listener", "true");
           }
         });
 
-        const figures = document.querySelectorAll(`.${randomAssig}`);
-        if (figures) {
-          figures.forEach((figure) => {
-            figure.addEventListener("click", (e) => {
-              if (!figure.nextSibling) {
-                //const zerowidthspace = `&#8203;`;
-                const p = document.createElement("p");
-                //  p.innerHTML = zerowidthspace;
-                //p.innerHTML = `<br>`;
-                p.insertAdjacentHTML("beforeend", `<br>`);
-                figure.parentNode.insertBefore(p, figure.nextSibling);
+        const figure = document.querySelector(`.${randomAssig}`);
 
-                //insert caret at the current position of zerowidthspace/ p tag with br tag
-                const selection = window.getSelection();
-                const range = document.createRange();
-                range.setStart(figure.nextSibling, 0);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              }
-            });
+        if (figure) {
+          /*  figures.forEach((figure) => {
+            console.log(figures)*/
+          figure.addEventListener("click", (e) => {
+            if (!figure.nextSibling) {
+              //const zerowidthspace = `&#8203;`;
+              const p = document.createElement("p");
+              //  p.innerHTML = zerowidthspace;
+              //p.innerHTML = `<br>`;
+              p.insertAdjacentHTML("beforeend", `<br>`);
+              figure.parentNode.insertBefore(p, figure.nextSibling);
 
-            //slide images to look cool
-            var slideIndex = 1;
-            showSlides(slideIndex, figure.querySelectorAll("figure"));
-
-            // next/previous controls
-            function plusSlides(n, rqwe) {
-              showSlides((slideIndex += n), rqwe);
+              //insert caret at the current position of zerowidthspace/ p tag with br tag
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.setStart(figure.nextSibling, 0);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
             }
-
-            const next = figure.querySelector("span[class='next']");
-            const prev = figure.querySelector("span[class='prev']");
-
-            next
-              ? addEventListener(next, "click", function (e) {
-                  const slides = figure.querySelectorAll("figure");
-                  plusSlides(1, slides);
-                })
-              : null;
-            prev
-              ? addEventListener(prev, "click", function (e) {
-                  const slides = this.parentNode.querySelectorAll("figure");
-                  plusSlides(-1, slides);
-                })
-              : null;
-
-            function showSlides(n, rqwe) {
-              let i;
-              //we ask for this set because we manipulate DOM directly
-              const slides = Array.from(rqwe);
-
-              //check both sides of -ve and +ve values with respect to number of slides and slideIndex.
-              n > slides.length ? (slideIndex = 1) : null;
-              n < 1 ? (slideIndex = slides.length) : null;
-
-              for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-                slides[slideIndex - 1].style.display = "block";
-              }
-            }
-
-            function getSelectionTextInfo(el) {
-              let atStart = false;
-              let atEnd = false;
-              let selRange, testRange;
-              if (window.getSelection) {
-                const sel = window.getSelection();
-                if (sel.rangeCount) {
-                  selRange = sel.getRangeAt(0);
-                  testRange = selRange.cloneRange();
-
-                  testRange.selectNodeContents(el);
-                  testRange.setEnd(
-                    selRange.startContainer,
-                    selRange.startOffset
-                  );
-                  atStart = testRange.toString() == "";
-
-                  testRange.selectNodeContents(el);
-                  testRange.setStart(selRange.endContainer, selRange.endOffset);
-                  atEnd = testRange.toString() == "";
-                }
-              } else if (
-                document.selection &&
-                document.selection.type != "Control"
-              ) {
-                selRange = document.selection.createRange();
-                testRange = selRange.duplicate();
-
-                testRange.moveToElementText(el);
-                testRange.setEndPoint("EndToStart", selRange);
-                atStart = testRange.toString() == "";
-
-                testRange.moveToElementText(el);
-                testRange.setEndPoint("StartToEnd", selRange);
-                atEnd = testRange.toString() == "";
-              }
-              return { atStart: atStart, atEnd: atEnd };
-            }
-
-            const figCaption = document.querySelector("figcaption");
-
-            const observer = new MutationObserver(function (mutations) {
-              mutations.forEach((mutation) => {
-                Array.from(mutation.removedNodes).forEach(function (node) {
-                  const tagName = node.tagName;
-                  tagName == "IMG" || "FIGCAPTION"
-                    ? mutation.target.parentNode.remove()
-                    : mutation.target.remove();
-                });
-              });
-            });
-
-            observer.observe(document.querySelector("[role='group'] figure"), {
-              childList: true,
-            });
-
-            addEventListener(contentEditable, "keydown", function (e) {
-              //disable "ENTER" key
-              if (
-                (e.keyIdentifier == "Enter" || e.keyCode == 13) &&
-                figCaption.contentEditable == "true"
-              ) {
-                e.preventDefault();
-              } else if (
-                e.keyCode == 8 &&
-                getSelectionTextInfo(figCaption).atStart &&
-                figCaption.contentEditable == "true"
-              ) {
-                e.preventDefault();
-              }
-            });
-
-            addEventListener(figCaption, "mouseleave", function (e) {
-              this.setAttribute("contenteditable", false);
-            });
           });
+
+          const slides = figure.querySelectorAll("figure");
+          const next = figure.querySelector("span[class='next']");
+          const prev = figure.querySelector("span[class='prev']");
+
+          if (next && prev) {
+            showSlides(slides, next, prev);
+          }
+
+          const figCaption = figure.querySelector("figcaption");
+
+          /* addEventListener(contentEditable, "keydown", function (e) {
+            //disable "ENTER" key
+            if (
+              (e.keyIdentifier == "Enter" || e.keyCode == 13) &&
+              figCaption.contentEditable == "true"
+            ) {
+              e.preventDefault();
+            } else if (
+              e.keyCode == 8 &&
+              getSelectionTextInfo(figCaption).atStart &&
+              figCaption.contentEditable == "true"
+            ) {
+              e.preventDefault();
+            }
+          });*/
+
+          addEventListener(
+            contentEditable,
+            "keydown",
+            deleteImageFromContentEditable
+          );
+
+          /* addEventListener(figCaption, "mouseleave", function (e) {
+            this.setAttribute("contenteditable", false);
+          });*/
+          /* });*/
         }
       });
       appendChild(settings.element, input);
@@ -731,7 +719,14 @@
     return document.querySelector("div [contenteditable='true']").innerHTML;
   };
 
-  const pell = { exec, init, HTMLContent };
+  const pell = {
+    exec,
+    init,
+    HTMLContent,
+    editOverlay,
+    showSlides,
+    deleteImageFromContentEditable,
+  };
 
   exports.exec = exec;
   exports.init = init;

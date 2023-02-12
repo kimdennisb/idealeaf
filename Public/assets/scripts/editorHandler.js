@@ -274,10 +274,8 @@ ArticleState.saveEditorImages = async function () {
       let editorimages = Array.from(
         selectImagesWithConvertedImageURI(allEditorImages)
       );
-      console.log(editorimages)
       //order of placing urls does not change.It's correct!.
       editorimages.forEach((x, index) => {
-        // x.src = `/image/${imageresources[index].src}?w=${width}`;
         x.src = `/image/${imageresources[index].src}`;
         x.alt = imageresources[index].alt;
       });
@@ -303,6 +301,7 @@ ArticleState.updateArticle = async function () {
   this.setTitle(getEditorData().title);
   this.setHTML(window.pell.editorHTML());
   const id = window.location.href.split("/").pop().trim().toString();
+  console.log(this.getArticleData());
   await sendRequest(`PUT`, `/update/${id}`, this.getArticleData())
     .then((updatedArticle) => {
       load.end();
@@ -318,8 +317,8 @@ async function saveArticle_() {
   const { feature_image, feature_image_alt } = getEditorData();
   if (
     postimages.length > 0 &&
-    feature_image.length > 0 &&
-    feature_image_alt.length > 0
+    feature_image.trim().length > 0 &&
+    feature_image_alt.trim().length > 0
   ) {
     await ArticleState.saveFeatureImage();
     await ArticleState.saveEditorImages();
@@ -349,7 +348,10 @@ async function updateArticle_() {
   } else if (postimages.length > 0) {
     await ArticleState.saveEditorImages();
     await ArticleState.updateArticle();
-  } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
+  } else if (
+    feature_image.trim().length > 0 &&
+    feature_image_alt.trim().length > 0
+  ) {
     await ArticleState.saveFeatureImage();
     await ArticleState.updateArticle();
   } else {
