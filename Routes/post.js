@@ -344,7 +344,7 @@ router.post(
 
 router.post(
   "/admin/images",
-  uploadImage.array("photo", 3),
+  uploadImage.array("photo",8),
   async (req, res, next) => {
     const accessIDS = await Promise.all(
       req.files.map(async (photo) => {

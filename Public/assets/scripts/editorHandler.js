@@ -63,17 +63,23 @@ const Base64Binary = {
   },
 };
 
+const returnElementFromClassName = (parent, classname) =>
+  parent.querySelector(`.${classname}`);
+
+const returnElementFromId = (parent, id) => parent.querySelector(`#${id}`);
+
 // get content and send to database
-const button = document.querySelector(".publish");
-const feature_image = document.querySelector(".coverimage");
-const feature_image_altName = document.querySelector(
-  ".feature_image_aria-label"
+const button = returnElementFromClassName(document, "publish");
+const feature_image = returnElementFromClassName(document, "coverimage");
+const feature_image_altName = returnElementFromClassName(
+  document,
+  "feature_image_aria-label"
 );
-const tags = document.querySelector(".tags");
+const tags = returnElementFromClassName(document, "tags");
 
 function getEditorData() {
   const article_html = window.pell.editorHTML();
-  const title = document.querySelector(".title");
+  const title = returnElementFromClassName(document, "title");
   const article_title = title.value || title.placeHeader;
   const article_feature_image = feature_image.getAttribute("src");
   const article_feature_image_alt = feature_image.alt;
@@ -100,7 +106,6 @@ function selectImagesWithConvertedImageURI(images) {
 }
 
 /**
- *
  * @param {String} string
  * @returns {HTMLDocument} HTMLDocument
  */
@@ -110,13 +115,12 @@ function parseStringToHTML(string) {
 }
 
 /**
- *
  * @returns {Array} Array imageFile(s)
  */
 function getEditorImages() {
-  const editorData = getEditorData();
+  const { html } = getEditorData();
   //parse html
-  const htmldoc = parseStringToHTML(editorData.html);
+  const htmldoc = parseStringToHTML(html);
   //get images
   const postimages = selectImagesWithConvertedImageURI(
     Array.from(htmldoc.querySelectorAll("img"))
@@ -178,7 +182,6 @@ async function createImageFileWithBufferFromImageConvertedURI(uri, alt) {
     });
 }
 /**
- *
  * @param {Array} imageFiles
  * @param imageFile
  * @returns FormData
@@ -223,14 +226,13 @@ const ArticleState = {
 };
 
 ArticleState.getArticleData = function () {
-  const data = {
+  return {
     title: this.title,
     html: this.html,
     feature_image: this.feature_image,
     feature_image_alt: this.feature_image_alt,
     article_tags: this.article_tags,
   };
-  return data;
 };
 
 ArticleState.saveFeatureImage = async function () {
@@ -241,14 +243,15 @@ ArticleState.saveFeatureImage = async function () {
   );
   const fdFeatureImage = appendImageFileToFormData(imagefile);
 
-  await sendRequest(`POST`, `/articleimage`, fdFeatureImage).then(
-    (featureimage) => {
+  await sendRequest(`POST`, `/articleimage`, fdFeatureImage)
+    .then((featureimage) => {
       const { src } = JSON.parse(featureimage);
       this.setFeatureImage(src);
       this.setFeatureImageAlt(feature_image_alt);
-    }
-  );
-
+    })
+    .catch((err) => {
+      load.error();
+    });
   return this;
 };
 
@@ -263,8 +266,8 @@ ArticleState.saveEditorImages = async function () {
 
   const fdPostImages = appendImageFileToFormData(imagefiles);
 
-  await sendRequest(`POST`, `/admin/images`, fdPostImages).then(
-    (articleimages) => {
+  await sendRequest(`POST`, `/admin/images`, fdPostImages)
+    .then((articleimages) => {
       const imageresources = JSON.parse(articleimages);
       const allEditorImages = Array.from(
         document
@@ -274,13 +277,16 @@ ArticleState.saveEditorImages = async function () {
       let editorimages = Array.from(
         selectImagesWithConvertedImageURI(allEditorImages)
       );
+
       //order of placing urls does not change.It's correct!.
       editorimages.forEach((x, index) => {
         x.src = `/image/${imageresources[index].src}`;
         x.alt = imageresources[index].alt;
       });
-    }
-  );
+    })
+    .catch((err) => {
+      load.error();
+    });
   return this;
 };
 
@@ -320,13 +326,19 @@ async function saveArticle_() {
     feature_image.trim().length > 0 &&
     feature_image_alt.trim().length > 0
   ) {
+    console.log(`1`);
     await ArticleState.saveFeatureImage();
     await ArticleState.saveEditorImages();
     await ArticleState.saveArticle();
   } else if (postimages.length > 0) {
+    console.log(`2`);
     await ArticleState.saveEditorImages();
     await ArticleState.saveArticle();
-  } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
+  } else if (
+    feature_image.trim().length > 0 &&
+    feature_image_alt.trim().length > 0
+  ) {
+    console.log(`3`);
     await ArticleState.saveFeatureImage();
     await ArticleState.saveArticle();
   } else {
