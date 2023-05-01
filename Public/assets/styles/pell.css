@@ -425,3 +425,18 @@ figure figure img {
 .next:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
+/*refresh loading bar*/
+.progress {
+  position: fixed;
+  z-index: 1;
+  top: var(--header-outer-height);
+  /*left: -6px;*/
+  width: 0;
+  height: 3px;
+  background-color: #28a444;
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  transition: width 1s ease-out
+}

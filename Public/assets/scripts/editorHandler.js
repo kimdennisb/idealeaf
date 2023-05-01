@@ -301,6 +301,7 @@ ArticleState.saveArticle = async function () {
   await sendRequest(`POST`, `/article`, this.getArticleData())
     .then((uploadedArticle) => {
       load.end();
+      load.reload();
     })
     .catch((err) => {
       load.error();
@@ -316,6 +317,7 @@ ArticleState.updateArticle = async function () {
   await sendRequest(`PUT`, `/update/${id}`, this.getArticleData())
     .then((updatedArticle) => {
       load.end();
+      load.reload();
     })
     .catch((err) => {
       load.error();
