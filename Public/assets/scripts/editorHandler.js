@@ -80,11 +80,12 @@ const tags = returnElementFromClassName(document, "tags");
 function getEditorData() {
   const article_html = window.pell.editorHTML();
   const title = returnElementFromClassName(document, "title");
-  const article_title = title.value || title.placeHeader;
+  const article_title = title.value || title.placeholder;
   const article_feature_image = feature_image.getAttribute("src");
   const article_feature_image_alt = feature_image.alt;
 
   const article_tags = tags.value;
+
   const data = {
     title: article_title,
     html: article_html,
@@ -92,6 +93,10 @@ function getEditorData() {
     feature_image_alt: article_feature_image_alt,
     article_tags,
   };
+
+  //trim whitespace at the end of property strings
+  Object.keys(data).forEach((k) => (data[k] = data[k].trim()));
+
   return data;
 }
 
@@ -323,22 +328,16 @@ async function saveArticle_() {
   const { feature_image, feature_image_alt } = getEditorData();
   if (
     postimages.length > 0 &&
-    feature_image.trim().length > 0 &&
-    feature_image_alt.trim().length > 0
+    feature_image.length > 0 &&
+    feature_image_alt.length > 0
   ) {
-    console.log(`1`);
     await ArticleState.saveFeatureImage();
     await ArticleState.saveEditorImages();
     await ArticleState.saveArticle();
   } else if (postimages.length > 0) {
-    console.log(`2`);
     await ArticleState.saveEditorImages();
     await ArticleState.saveArticle();
-  } else if (
-    feature_image.trim().length > 0 &&
-    feature_image_alt.trim().length > 0
-  ) {
-    console.log(`3`);
+  } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
     await ArticleState.saveFeatureImage();
     await ArticleState.saveArticle();
   } else {
@@ -351,8 +350,8 @@ async function updateArticle_() {
   const { feature_image, feature_image_alt } = getEditorData();
   if (
     postimages.length > 0 &&
-    feature_image.trim().length > 0 &&
-    feature_image_alt.length.trim() > 0
+    feature_image.length > 0 &&
+    feature_image_alt.length > 0
   ) {
     await ArticleState.saveFeatureImage();
     await ArticleState.saveEditorImages();
@@ -360,10 +359,7 @@ async function updateArticle_() {
   } else if (postimages.length > 0) {
     await ArticleState.saveEditorImages();
     await ArticleState.updateArticle();
-  } else if (
-    feature_image.trim().length > 0 &&
-    feature_image_alt.trim().length > 0
-  ) {
+  } else if (feature_image.length > 0 && feature_image_alt.length > 0) {
     await ArticleState.saveFeatureImage();
     await ArticleState.updateArticle();
   } else {
