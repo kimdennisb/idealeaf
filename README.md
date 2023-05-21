@@ -25,4 +25,4 @@ You need to have **Node js** and **MongoDB** installed
 4. npm run lint:ejs - Lint some ejs template
 
 ## Deploy
-Deploy on heroku and MongoDB
+Deploy on Heroku/Vercel and MongoDB
