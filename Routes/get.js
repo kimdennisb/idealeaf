@@ -179,7 +179,7 @@ router.get("/admin/edit/:id", (req, res, next) => {
     if (err) {
       next(err);
     }
-    const { title, html, feature_image } = data;
+    const { title, html, feature_image, feature_image_alt } = data;
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
@@ -196,16 +196,26 @@ router.get("/admin/edit/:id", (req, res, next) => {
       image.setAttribute("sizes", sizes);
     });
 
-    const parentFigure = document.querySelectorAll("[role='group'] figure");
-    parentFigure.forEach((figure) => figure.replaceWith(...figure.childNodes));
+    const parentFigure = document.querySelectorAll("[role='group']");
+    const siblingFigure = document.querySelectorAll("[role='group'] figure");
+
+    parentFigure.forEach((figure) =>
+      figure.setAttribute("differential", "old")
+    );
+
+    siblingFigure.forEach((figure) => {
+      figure.setAttribute("class", "inner-cover");
+      figure.removeAttribute("style");
+    });
 
     const serializedDoc = document.querySelector("body").innerHTML;
 
-   // let featureImage = (feature_image = "" ? "" : feature_image);
+    // let featureImage = (feature_image = "" ? "" : feature_image);
     let fineData = {
       title: title,
       html: serializedDoc,
-      featureimage: (feature_image || " "),
+      featureimage: feature_image || "",
+      featureimagealt: feature_image_alt,
     };
 
     res.render("editArticle.ejs", {
@@ -289,10 +299,10 @@ router.get(
       const document = dom.window.document;
 
       const images = Array.from(document.querySelectorAll("img"));
+
       images.forEach((image) => {
         const imageURL = image.src.split("?")[0];
-
-        const src = `${imageURL}?w=319`;
+        const src = `${hostName}${imageURL}?w=319`;
         const srcset = `${imageURL}?w=239 239w,${imageURL}?w=319 319w,${imageURL}?w=468 468w,${imageURL}?w=512 512w,${imageURL}?w=612 612w,${imageURL}?w=687 687w`;
         const sizes = `(min-width: 1460px) 612px, (min-width: 860px) calc(38.97vw + 51px), (min-width: 800px) 65vw, (min-width: 620px) 87.5vw, calc(88vw - 60px)`;
 
@@ -307,9 +317,7 @@ router.get(
       });
 
       const parentFigure = document.querySelectorAll("[role='group'] figure");
-      parentFigure.forEach((figure) =>
-        figure.replaceWith(...figure.childNodes)
-      );
+      parentFigure.forEach((figure) => figure.removeAttribute("style"));
 
       const serializedDoc = document.querySelector("body").innerHTML;
 
