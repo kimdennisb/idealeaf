@@ -55,10 +55,11 @@
                         <% if(!data[i].feature_image ) { %>
                             <% const date=new Date(data[i].createdAt) %>
                                 <%const year=date.getFullYear() %>
-                                    <%const month=date.getMonth() + 1 %>
+                                    <%const month=date.getMonth() %>
                                         <%const dt=date.getDate() %>
-                                            <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July"
-                        , "August" , "September" , "October" , "November" , "December" ]; %>
+                                            <% const monthNames=["January", "February" , "March" , "April" , "May"
+                                                , "June" , "July" , "August" , "September" , "October" , "November"
+                                                , "December" ]; %>
 
                                                 <div class="article_title onlytext">
                                                     <a href="article/<%= data[i]._id %>" target="_self">
@@ -73,20 +74,26 @@
                                                 <% } else { %>
                                                     <% const date=new Date(data[i].createdAt) %>
                                                         <%const year=date.getFullYear() %>
-                                                            <%const month=date.getMonth() + 1 %>
+                                                            <%const month=date.getMonth() %>
                                                                 <%const dt=date.getDate() %>
-                                                                    <% const monthNames=["January", "February" , "March" , "April" , "May" , "June"
-                                    , "July" , "August" , "September" , "October" , "November" , "December" ]; %>
+                                                                    <% const monthNames=["January", "February" , "March"
+                                                                        , "April" , "May" , "June" , "July" , "August"
+                                                                        , "September" , "October" , "November"
+                                                                        , "December" ]; %>
                                                                         <div class="article_title">
-                                                                            <a href="article/<%= data[i]._id %>" target="_self">
-                                        <img class="image" src="<%= data[i].feature_image %>" alt="<%= data[i].feature_image_alt %>" />
-                                        <h3>
-                                          <%= data[i].title%>
-                                        </h3>
-                                        <div class="date-published">
-                                          <%- dt + " " + monthNames[month] + " " + year %>
-                                        </div>
-                                      </a>
+                                                                            <a href="article/<%= data[i]._id %>"
+                                                                                target="_self">
+                                                                                <img class="image"
+                                                                                    src="<%= data[i].feature_image %>"
+                                                                                    alt="<%= data[i].feature_image_alt %>" />
+                                                                                <h3>
+                                                                                    <%= data[i].title%>
+                                                                                </h3>
+                                                                                <div class="date-published">
+                                                                                    <%- dt + " " + monthNames[month]
+                                                                                        + " " + year %>
+                                                                                </div>
+                                                                            </a>
                                                                         </div>
                                                                         <% } %>
                     </div>
@@ -97,7 +104,7 @@
 
     <!--Go by pages-->
     <div class="bottom-toolbar">
-        <a href="/page/1">MORE 
+        <a href="/page/1">MORE
             <img class="moreicon" src="/assets/icons/more.svg" alt="more" /></a>
     </div>
 
