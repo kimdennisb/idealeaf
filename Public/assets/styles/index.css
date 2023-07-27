@@ -22,6 +22,13 @@
   --accesstoggle-stroke-color: #0c0c0c;
   --accesspopup-fill-color: #0c0c0c;
   --siteicon--color: #0c0c0c;
+  --signin-signup-header-color: #0c0c0c;
+  --form-background: #ffffff;
+  --form-label-color: #24292e;
+  --form-border-color: #ddd;
+  --form-message-success-border-color: rgba(74, 194, 107, 0.4);
+  --form-message-success-background-gradient-color: #dafbe1;
+  --form-message-success-color: #0c0c0c;
   --search-bar: #0c0c0c;
   --search-results: #0c0c0c;
   --admin-overlay-color: #ffffff;
@@ -45,6 +52,12 @@
   --accesstoggle-stroke-color: #fff;
   --accesspopup-fill-color: #ffffff;
   --siteicon--color: #ffffff;
+  --signin-signup-header-color: #ffffff;
+  --form-background: #1d1f21;
+  --form-label-color: #ffffff;
+  --form-border-color: #312f2f;
+  --form-message-success-border-color: #ddd;
+  --form-message-success-background-gradient-color: #ffffff;
   --search-bar: #ffffff;
   --search-results: #ffffff;
   --admin-overlay-color: #0c0c0c;
@@ -58,7 +71,7 @@
 @media (prefers-color-scheme: dark) {
   /* defaults to dark theme */
   :root {
-    --header-outer-bg: #0c0c0c;
+    --header-outer-bg: #121212;
     --text-color: #eee;
     --background-color: #121212;
     --crescent-color: #0c0c0c;
@@ -67,7 +80,15 @@
     --drawer-color: #0c0c0c;
     --drawer-links: #ffffff;
     --accesstoggle-top-color: #ffffff;
+    --accesstoggle-stroke-color: #fff;
+    --accesspopup-fill-color: #ffffff;
     --siteicon--color: #ffffff;
+    --signin-signup-header-color: #ffffff;
+    --form-background: #1d1f21;
+    --form-label-color: #ffffff;
+    --form-border-color: #312f2f;
+    --form-message-success-border-color: #ddd;
+    --form-message-success-background-gradient-color: #ffffff;
     --search-bar: #ffffff;
     --search-results: #ffffff;
     --admin-overlay-color: #0c0c0c;
@@ -92,8 +113,17 @@
     --drawer-color: #ffffff;
     --fullmoon-color: #ffffff;
     --drawer-links: #0c0c0c;
-    --accesstoggle-top-color: #3e3f3f;
+    --accesstoggle-top-color: transparent;
+    --accesstoggle-stroke-color: #0c0c0c;
+    --accesspopup-fill-color: #0c0c0c;
     --siteicon--color: #0c0c0c;
+    --signin-signup-header-color: #0c0c0c;
+    --form-background: #ffffff;
+    --form-label-color: #24292e;
+    --form-border-color: #ddd;
+    --form-message-success-border-color: rgba(74, 194, 107, 0.4);
+    --form-message-success-background-gradient-color: #dafbe1;
+    --form-message-success-color: #0c0c0c;
     --search-bar: #0c0c0c;
     --search-results: #0c0c0c;
     --admin-overlay-color: #ffffff;
@@ -478,15 +508,15 @@ article view page
 }
 
 .header h1 {
-  color: #24292e;
+  color: var(--signin-signup-header-color);
   font-size: 24px;
   font-weight: 300;
   letter-spacing: -0.5px;
 }
 
 .form {
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--form-background);
+  border: 1px solid var(--form-border-color);
   border-radius: 4px;
   padding: 10px 15px;
   font-size: 15px;
@@ -495,13 +525,12 @@ article view page
 }
 
 .form label {
-  color: #24292e;
+  color: var(--form-label-color);
   font-size: 12px;
   font-weight: 600;
 }
 
 .form label[for="password"] span {
-  color: #0366d6;
   float: right;
 }
 
@@ -555,10 +584,17 @@ form label .message.errored {
 }
 
 form label .message.success {
-  border-color: rgba(74, 194, 107, 0.4);
-  background-image: linear-gradient(#dafbe1, #dafbe1);
+  border-color: var(--form-message-success-border-color);
+  background-image: linear-gradient(
+    var(--form-message-success-background-gradient-color),
+    var(var(--form-message-success-background-gradient-color))
+  );
 }
 
+.message.success .m-1,
+.message.success .m-2 {
+  color: #0c0c0c;
+}
 form label .message.errored::before,
 form label .message.success::before {
   position: absolute;
@@ -628,8 +664,10 @@ form label .message.success::after {
 }
 
 .message.errored .m-1,
-.message.errored .m-2 {
+.message.errored .m-2,
+.message.errored .m-3 {
   display: block;
+  color: #0c0c0c;
 }
 
 a {
@@ -682,6 +720,7 @@ a {
 
 form label span a {
   text-decoration: none;
+  color: currentColor;
 }
 
 /*
@@ -700,6 +739,7 @@ Login and Sign Up modal
   right: 2px;
   visibility: hidden;
   z-index: 99999;
+  background-color: var(--background-color);
 }
 
 .signin-signup-modal div {
@@ -726,7 +766,7 @@ Login and Sign Up modal
 
 .signin-modal:hover,
 .signup-modal:hover {
-  background-color: gainsboro;
+  background-color: rgba(182, 180, 180, 0.288);
   cursor: pointer;
 }
 
