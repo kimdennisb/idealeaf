@@ -694,7 +694,7 @@ a {
   background: #2db84c;
   border: 1px solid #28a444;
   border-radius: 2px;
-  color: #fff;
+  /*color: #fff;*/
   cursor: pointer;
   font-weight: 600;
 }
