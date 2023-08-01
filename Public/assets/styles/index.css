@@ -878,7 +878,7 @@ manage
   border: none;
   outline: none;
   font-size: 16px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--text-color);
   padding-bottom: 8px;
   min-width: 30px;
   text-align: left;
@@ -938,8 +938,11 @@ manage
   margin-left: auto;
   pointer-events: none;
   opacity: 0.3;
+  fill: var(--text-color);
 }
-
+.views {
+  fill: var(--text-color);
+}
 .edit,
 .remove,
 .new,
@@ -1225,7 +1228,7 @@ th {
   }
 
   tr:nth-child(odd) {
-    background: #ccc;
+    background: #5d5c5c;
   }
 
   td {
