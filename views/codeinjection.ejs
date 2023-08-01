@@ -7,7 +7,7 @@
 
     <meta name="theme-color" content="#4CAF50" />
 
-    <meta property="og:url" content="/admin/scripts" />
+    <meta property="og:url" content="/admin/codeinjection" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="<%- siteName %>" />
     <meta property="og:site_name" content="<%- siteName %>" />
@@ -21,11 +21,9 @@
     <meta name="twitter:description" content="<%- siteDescription %>" />
     <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
 
-    <script src="/assets/scripts/paginate.js"></script>
     <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
     <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
-
     <title>
         <%- siteName %> Admin
     </title>
@@ -39,7 +37,7 @@
                 <%- include("partials/admin/sidenavigation.ejs"); -%>
             </div>
 
-            <!--Top Toolbar-->
+            <!--Toolbar-->
             <div class="header-navigation">
                 <%- include("partials/toolbar.ejs"); -%>
             </div>
@@ -49,43 +47,25 @@
 </header>
 
 <body>
-
-    <div class="containerSearch">
-        <div class="searchContainer">
-            <i class="fa fa-search searchIcon"></i>
-            <input class="searchBox" type="search" name="search" placeholder="Search Scripts..." />
+    <div class="code injection">
+        <h1>Code Injection</h1>
+        <button class="save script">save</button>
+        <div class="site Header">
+            <h2>Site Header</h2>
+            <span>scripts here will be injected to the <code>{{ header }} </code> section</span>
+            <textarea class="headerscript"></textarea>
         </div>
-    </div>
-    <div class="body-content body-navigation">
-
-        <div class="control-section">
-            <table>
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="check-uncheckAll" /></th>
-                        <th class="url">URL</th>
-                        <th class="createdAt">Created At</th>
-                        <th class="remove">
-                            <svg class="remove" width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
-                  <title>Delete</title>
-                  <path
-                    d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z" />
-                </svg>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-
-            </table>
+        <div class="site Footer">
+            <h3>Site footer</h3>
+            <span>scripts here will be injected to the <code>{{ footer }} </code> section</span>
+            <textarea class="footerscript"></textarea>
         </div>
-        <div id="spinner" hidden></div>
-    </div>
-    <div class="pagination">
-        <div class="paginationtext-center"></div>
     </div>
 
 </body>
 <script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/sendRequests.js"></script>
+<script src="/assets/scripts/codeInjector.js"></script>
 <script src="/assets/scripts/update-deleteHelper.js"></script>
 <script src="/assets/scripts/lightDarkMode.js"></script>
 
