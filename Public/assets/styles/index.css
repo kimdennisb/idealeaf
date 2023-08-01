@@ -720,7 +720,7 @@ a {
 
 form label span a {
   text-decoration: none;
-  color: currentColor;
+  /*color: currentColor;*/
 }
 
 /*
