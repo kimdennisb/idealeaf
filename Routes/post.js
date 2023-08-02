@@ -38,10 +38,10 @@ router.post("/signup", async (req, res, next) => {
     if (error) {
       return next(error);
     }
-    //console.log(req.session);
+    ///console.log(req.session,`session`);
     // attach user id to req.session.userId object
     req.session.userId = UniqueUser._id;
-    // console.log(UniqueUser._id);
+    //console.log(UniqueUser._id,`userid`);
     // redirect to referer
     return res.redirect("back");
   });
@@ -87,29 +87,26 @@ router.post("/signup/check", (req, res, next) => {
 
 // sign in user
 router.post("/signin", (req, res, next) => {
-  if (req.body.email && req.body.password) {
-    userModel.authenticate(
-      req.body.email,
-      req.body.password,
-      (error, theUser) => {
-        if (error || !theUser) {
-          const err = new Error("Wrong email or password.");
-          err.status = 401;
-          return next(err);
-        }
-        req.session.userId = theUser._id;
-        // console.log(req.session, "user token session", theUser._id);
-        // set cookie
-        //res.cookie("loggedIn", Math.random() * 123456789);
-
-        // attach role to the session object;
-        req.session.role = theUser.role;
-
-        //redirect path
-        const redirect_to = req.session.redirect_to;
-        res.redirect(redirect_to);
+  const { email, password } = req.body;
+  if (email && password) {
+    userModel.authenticate(email, password, (error, theUser) => {
+      if (error || !theUser) {
+        const err = new Error("Wrong email or password.");
+        err.status = 401;
+        return next(err);
       }
-    );
+      req.session.userId = theUser._id;
+      // console.log(req.session, "user token session", theUser._id);
+      // set cookie
+      //res.cookie("loggedIn", Math.random() * 123456789);
+
+      // attach role to the session object;
+      req.session.role = theUser.role;
+
+      //redirect path
+      const redirect_to = req.session.redirect_to;
+      res.redirect(redirect_to);
+    });
   } else {
     const err = new Error("All fields required.");
     err.status = 400;
@@ -344,7 +341,7 @@ router.post(
 
 router.post(
   "/admin/images",
-  uploadImage.array("photo",8),
+  uploadImage.array("photo", 8),
   async (req, res, next) => {
     const accessIDS = await Promise.all(
       req.files.map(async (photo) => {
