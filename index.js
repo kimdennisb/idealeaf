@@ -1,10 +1,10 @@
+const config = require("config");
 const express = require("express");
+
 const app = express();
 const bodyParser = require("body-parser");
 const path = require("path");
-const fs = require("fs");
-const https = require("https");
-const config = require("config");
+//const config = require("config");
 const morgan = require("morgan");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
@@ -16,8 +16,8 @@ require("dotenv").config();
 
 // don't show the log when it is test
 if (config.util.getEnv("NODE_ENV") !== "test") {
-    // use morgan to log at command line
-    app.use(morgan("combined")); // 'combined' outputs the Apache style LOGs
+  // use morgan to log at command line
+  app.use(morgan("combined")); // 'combined' outputs the Apache style LOGs
 }
 
 const port = process.env.PORT || 80;
@@ -29,8 +29,15 @@ const update = require("./Routes/update");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "Public")));
-app.use(express.static(__dirname, { dotfiles: 'allow' }));
 app.use(express.static(__dirname, { dotfiles: "allow" }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 // making the static files available on /edit path
 //app.use("/edit", express.static(path.join(__dirname, "public")));
@@ -50,23 +57,33 @@ databaseConnection();
 const conn = databaseConnection();
 
 // use sessions for tracking logins
-app.use(session({
+app.use(
+  session({
     secret: "work hard",
     resave: true,
     saveUninitialized: false,
     store: new MongoStore({
-        mongooseConnection: conn,
+      mongooseConnection: conn,
     }),
-}));
+  })
+);
 
 // check if user has been authenticated
 app.use(
-    ["/admin/scripts", "/admin/posts", "/admin/users", "/admin/new", "/edit/:id", "/singlepost/:title"],
-    checkIfUserExists
+  [
+    "/admin/scripts",
+    "/admin/posts",
+    "/admin/users",
+    "/admin/ipDevice",
+    "/admin/new",
+    "/edit/:id",
+    "/singlepost/:title",
+  ],
+  checkIfUserExists
 );
 
 // check roles
-app.use(["/admin/posts", "/admin/users"], checkRolesExisted);
+app.use(["/admin/posts", "/admin/users", "/admin/ipDevice"], checkRolesExisted);
 
 // use routes
 app.use("/", get);
@@ -87,22 +104,22 @@ app.use((req, res, next) => {
 // error handler
 // define as the last app.use callback
 app.use((err, req, res, next) => {
-    res.status(err.status || 500);
-    // res.json(err.message);
-    //res.json(err.message);
+  res.status(err.status || 500);
+  // res.json(err.message);
+  //res.json(err.message);
 
-    if (err.status === 401) {
-        const email = req.body.email;
-        res.cookie("email", email, { expires: new Date(Date.now + 9000000) });
-        res.redirect("/session");
-    }
-    next();
+  if (err.status === 401) {
+    const email = req.body.email;
+    res.cookie("email", email, { expires: new Date(Date.now() + 9000000) });
+    res.redirect("/session");
+  }
+  next();
 });
 
 if (!module.parent) {
-    app.listen(port, () => {
-        console.log(`listening on the port ${port}`);
-    });
+  app.listen(port, () => {
+    console.log(`listening on the port ${port}`);
+  });
 }
 
 module.exports = app;
