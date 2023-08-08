@@ -943,6 +943,7 @@ manage
 .views {
   fill: var(--text-color);
 }
+
 .edit,
 .remove,
 .new,
@@ -1574,4 +1575,13 @@ figure[role="group"] figure:not(:first-child) {
 
 .switch__input:checked + .switch__slider::after {
   left: calc(100% - 22px - 3px);
+}
+
+/*edit overlay class*/
+.editOverlay {
+  position: absolute;
+  height: inherit;
+  width: inherit;
+  z-index: 99999;
+  background-color: ghostwhite;
 }

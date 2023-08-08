@@ -283,12 +283,6 @@
       const div = createElement("div");
       div.contentEditable = false;
       div.className = "editOverlay";
-      div.style.height = `${this.parentNode.clientHeight}px`;
-      div.style.width = `${this.parentNode.clientWidth}px`;
-      div.style.position = `absolute`;
-      div.style.zIndex = 99999;
-      div.style.backgroundColor = `ghostwhite`;
-      div.style.borderRadius = "18px";
 
       //header edit div
       const editHeader = createElement("div");
@@ -366,20 +360,29 @@
       );
 
       //listen for clicks from image edit window
+
+      //remove image edit window
       addEventListener(backButton, "click", (e) => div.remove());
+
       addEventListener(saveEdits, "click", (e) => {
+        //select image currently in view
         const previewInShow = slides.querySelector("[data-show='true']");
+        //select all images from preview window
         const imagesInPreview = Array.from(slides.querySelectorAll("img"));
+        //get index of image in view from total images in preview window
         const index = imagesInPreview.indexOf(previewInShow);
+        //get specific figcaption and image using index
         const figCaption = this.parentNode
           .querySelectorAll("figure")
           [index].querySelector("figCaption");
         const image = this.parentNode
           .querySelectorAll("figure")
           [index].querySelector("img");
+        //action in accordance with the current fragment(description/alt)
         action.textContent.includes(`description`)
           ? (figCaption.textContent = textBox.value)
           : (image.alt = textBox.value);
+        //remove after editing
         div.remove();
       });
       addEventListener(description, "click", (e) => {
@@ -397,13 +400,16 @@
     function deleteImageFromContentEditable(e) {
       function getSelectionElement() {
         var selection = window.getSelection();
+        //returns node in which selection begins
         let container = selection.anchorNode;
+        //1-<p> r <div>,2-attribute of an element,3-actual text inside and element or attribute
         if (container.nodeType !== 3) {
           return container;
         } else {
           return container.parentNode;
         }
       }
+      
       let key = e.keyCode || e.charCode;
       if (key == 8 || key == 46) {
         const element = getSelectionElement();
@@ -437,7 +443,7 @@
           !element.parentNode.previousSibling &&
           element.tagName == "FIGURE"
         ) {
-         // console.log(`damn types`);
+          // console.log(`damn types`);
           e.preventDefault();
         } else if (
           caretPosition == 0 &&
