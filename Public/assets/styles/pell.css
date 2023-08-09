@@ -368,9 +368,9 @@ div.nextPreviousSaveContainer {
 }
 input.textbox {
   border-radius: 5px;
-  position: absolute;
+  /*  position: absolute;
   display: flex;
-  bottom: 0;
+  bottom: 0;*/
   height: 50px;
   width: 95%;
   border: 0.1px solid;
@@ -438,5 +438,5 @@ figure figure img {
   -moz-border-radius: 1px;
   -webkit-border-radius: 1px;
   border-radius: 1px;
-  transition: width 1s ease-out
+  transition: width 1s ease-out;
 }
