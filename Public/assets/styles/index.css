@@ -65,7 +65,8 @@
   --admin-overlay-links-color: #ffffff;
   --change-pages-color: #ffffff;
   --editor-placeholder-color: #ffffff;
-  --figcaption-color: #0c0c0c;
+  --figcaption-color:#eee;
+  ;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,7 +97,7 @@
     --admin-overlay-links-color: #ffffff;
     --change-pages-color: #ffffff;
     --editor-placeholder-color: #ffffff;
-    --figcaption-color: #0c0c0c;
+    --figcaption-color: #eee;;
   }
 
   [data-mode="light"] {
