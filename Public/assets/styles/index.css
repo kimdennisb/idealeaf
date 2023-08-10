@@ -37,6 +37,7 @@
   --change-pages-color: #0c0c0c;
   --editor-placeholder-color: #0c0c0c;
   --figcaption-color: #0c0c0c;
+  --admin-svg-color: #0c0c0c;
 }
 
 [data-mode="dark"] {
@@ -65,8 +66,8 @@
   --admin-overlay-links-color: #ffffff;
   --change-pages-color: #ffffff;
   --editor-placeholder-color: #ffffff;
-  --figcaption-color:#eee;
-  ;
+  --figcaption-color: #eee;
+  --admin-svg-color: #eee;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -97,7 +98,8 @@
     --admin-overlay-links-color: #ffffff;
     --change-pages-color: #ffffff;
     --editor-placeholder-color: #ffffff;
-    --figcaption-color: #eee;;
+    --figcaption-color: #eee;
+    --admin-svg-color: #eee;
   }
 
   [data-mode="light"] {
@@ -133,6 +135,7 @@
     --change-pages-color: #0c0c0c;
     --editor-placeholder-color: #0c0c0c;
     --figcaption-color: #0c0c0c;
+    --admin-svg-color: #0c0c0c;
   }
 }
 
@@ -1007,7 +1010,7 @@ textarea {
 
 .save.script:hover {
   cursor: pointer;
-  background-color: rgb(245, 249, 252);
+ /* background-color: rgb(245, 249, 252);*/
   outline: none;
 }
 
@@ -1171,6 +1174,11 @@ summary:hover {
   display: inline-block;
   vertical-align: top;
   color: var(--admin-overlay-links-color);
+}
+
+#manage svg,
+#settings svg {
+  fill: var(--admin-svg-color);
 }
 
 @media screen and (max-height: 450px) {
