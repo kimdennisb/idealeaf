@@ -347,6 +347,7 @@
       //Description textbox
       const textBox = createElement("input");
       textBox.className = "textbox";
+      textBox.placeholder = "Description";
 
       div.append(editHeader, descriptors, imagePreview, textBox);
 
@@ -409,7 +410,7 @@
           return container.parentNode;
         }
       }
-      
+
       let key = e.keyCode || e.charCode;
       if (key == 8 || key == 46) {
         const element = getSelectionElement();

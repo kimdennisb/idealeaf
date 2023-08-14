@@ -1591,6 +1591,6 @@ figure[role="group"] figure:not(:first-child) {
   position: absolute;
   height: inherit;
   width: inherit;
-  z-index: 99999;
+  /*z-index: 99999;*/
   background-color: ghostwhite;
 }
