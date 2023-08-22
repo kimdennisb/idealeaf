@@ -7,57 +7,65 @@
 
 const mongoose = require("mongoose");
 
-const postSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     html: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     text: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     feature_image: {
-        type: String,
+      type: String,
     },
     feature_image_alt: {
-        type: String,
+      type: String,
     },
     visits: { type: Number, required: true },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-// Sets the createdAt parameter equal to the current time 
-postSchema.pre("save", (next) => {
-    const now = new Date();
-    if (!this.date) {
-        this.date = now;
-    }
-    next();
+// Sets the createdAt parameter equal to the current time
+PostSchema.pre("save", (next) => {
+  const now = new Date();
+  if (!this.date) {
+    this.date = now;
+  }
+  next();
 });
 
 // index postschema to enable text searching
-postSchema.index({
+PostSchema.index(
+  {
     // eslint-disable-next-line quotes
-    title: 'text',
+    title: "text",
     // eslint-disable-next-line quotes
-    plainTextBody: 'text',
-}, {
+    plainTextBody: "text",
+  },
+  {
     weights: {
-        title: 5,
-        plainTextBody: 3,
+      title: 5,
+      plainTextBody: 3,
     },
-});
+  }
+);
 
 // mongoose-partial-full-search
 
-postSchema.statics = {
-    fullTextSearch: function(q) {
-        return this.find({ $text: { $search: q, $caseSensitive: false } }, { score: { $meta: "textScore" } })
-            .sort({ score: { $meta: "textScore" } });
-    },
+PostSchema.statics = {
+  fullTextSearch: function (q) {
+    return this.find(
+      { $text: { $search: q, $caseSensitive: false } },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+  },
 };
 
-module.exports = mongoose.model("postmodel", postSchema);
+module.exports = mongoose.model("post", PostSchema);

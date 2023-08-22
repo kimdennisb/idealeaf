@@ -4,7 +4,7 @@
 
 const mongoose = require("mongoose");
 
-const scriptToInjectSchema = new mongoose.Schema(
+const ScriptToInjectSchema = new mongoose.Schema(
   {
     script: {
       type: String,
@@ -19,4 +19,4 @@ const scriptToInjectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("scriptToInjectModel", scriptToInjectSchema);
+module.exports = mongoose.model("ScriptToInject", ScriptToInjectSchema);

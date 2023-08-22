@@ -18,9 +18,9 @@ const cacheMiddleware = require("../Cache/cache");
 const postModel = require("../Models/Post");
 const databaseConnection = require("../Database/database");
 const ObjectID = mongodb.ObjectID;
-const scriptToInjectModel = require("../Models/scriptToInject");
+const scriptToInjectModel = require("../Models/ScriptToInject");
 const userModel = require("../Models/User");
-const ipDeviceModel = require("../Models/ipDevice");
+const ipDeviceModel = require("../Models/IpDevice");
 const cookieReader = require("../Middlewares/cookieReader");
 const softRedirects = require("../Middlewares/softRedirects");
 const formatDate = require("../Helpers/formatDate");
@@ -149,16 +149,6 @@ router.get("/forgot-password", (req, res) => {
 
 // new article(check if user is signed in before redirecting)
 router.get("/admin/new", (req, res, next) => {
-  /* userModel.findById(req.session.userId).exec((error, authorizedUser) => {
-    if (error) {
-      next(error);
-    }
-    if (authorizedUser === null) {
-      res.redirect("/signin");
-    } else {
-      res.render("writeArticle.ejs", { siteName, siteDescription });
-    }
-  });*/
   res.render("writeArticle.ejs", { siteName, siteDescription });
 });
 
