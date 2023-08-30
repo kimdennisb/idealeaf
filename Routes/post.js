@@ -372,17 +372,26 @@ router.post(
 // const _searchImageRegex = /<img\b(?=\s)(?=(?:[^>=]|='[^']*'|="[^"]*"|=[^'"][^\s>]*)*?\ssrc=['"]([^"]*)['"]?)(?:[^>=]|='[^']*'|="[^"]*"|=[^'"\s]*)*"\s?\/?>/;
 
 router.post("/article", (req, res, next) => {
+  const { title, html, feature_image, feature_image_alt } = req.body;
   const text = htmlToText(req.body.html);
   const article = {
-    title: req.body.title,
-    html: req.body.html,
+    title: title,
+    html: html,
     text: text,
-    feature_image: req.body.feature_image,
-    feature_image_alt: req.body.feature_image_alt,
+    feature_image: feature_image,
+    feature_image_alt: feature_image_alt,
     visits: 0,
   };
-  // eslint-disable-next-line new-cap
-  const post = new postModel(article);
+
+  //get id of model instance to generate a better title(returns id)
+  const post = new postModel();
+
+  const postProperties = {
+    ...article,
+    reference: `${title.split(" ").join("-")}-${post._id}`,
+  };
+
+  Object.assign(post, postProperties);
 
   post.save((err, item) => {
     if (err) {
