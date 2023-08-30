@@ -28,6 +28,10 @@ const PostSchema = new mongoose.Schema(
       type: String,
     },
     visits: { type: Number, required: true },
+    reference: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
