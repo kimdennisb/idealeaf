@@ -1,4 +1,6 @@
 const config = require("config");
+require("dotenv").config();
+
 const express = require("express");
 
 const app = express();
@@ -11,6 +13,8 @@ const MongoStore = require("connect-mongo")(session);
 const databaseConnection = require("./Database/database");
 const checkIfUserExists = require("./Middlewares/checkIfUserExists");
 const checkRolesExisted = require("./Middlewares/checkRolesExisted");
+const addSchemaVersionProperty = require("./Migrations/user");
+const addUrlProperty = require("./Migrations/post");
 
 require("dotenv").config();
 
@@ -79,7 +83,7 @@ app.use(
     "/edit/:id",
     "/singlepost/:title",
   ],
-  checkIfUserExists
+  [checkIfUserExists, addUrlProperty(app)]
 );
 
 // check roles
