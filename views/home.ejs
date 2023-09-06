@@ -62,7 +62,7 @@
                                                 , "December" ]; %>
 
                                                 <div class="article_title onlytext">
-                                                    <a href="article/<%= data[i]._id %>" target="_self">
+                                                    <a href="article/<%= data[i].reference %>" target="_self">
                                                         <h3>
                                                             <%= data[i].title%>
                                                         </h3>
@@ -81,7 +81,7 @@
                                                                         , "September" , "October" , "November"
                                                                         , "December" ]; %>
                                                                         <div class="article_title">
-                                                                            <a href="article/<%= data[i]._id %>"
+                                                                            <a href="article/<%= data[i].reference %>"
                                                                                 target="_self">
                                                                                 <img class="image"
                                                                                     src="<%= data[i].feature_image %>"

@@ -249,21 +249,21 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
 
 // view specific article
 router.get(
-  "/article/:IDOfTheArticle",
+  "/article/:referenceOfTheArticle",
   cacheMiddleware(30),
   ipDevice,
   (req, res, next) => {
-    const IDOfTheArticle = req.params.IDOfTheArticle;
+    const referenceOfTheArticle = req.params.referenceOfTheArticle;
 
     // handle views count by incrementing visitors count
-    const filter = { _id: IDOfTheArticle };
+    const filter = { reference: referenceOfTheArticle };
     const update = {
       $inc: {
         visits: 1,
       },
     };
 
-    postModel.findByIdAndUpdate(filter, update, (err, article) => {
+    postModel.findOneAndUpdate(filter, update, (err, article) => {
       if (err) {
         next(err);
       }
@@ -278,12 +278,13 @@ router.get(
         visits,
         createdAt,
         updatedAt,
+        reference,
       } = article;
 
       const hostName = req.headers.host;
       // eslint-disable-next-line camelcase
       const featureimage = feature_image;
-      const siteURL = `${hostName}/article/${IDOfTheArticle}`;
+      const siteURL = `${hostName}/article/${reference}`;
       const description = htmlToText(html, { wordWrap: 130, baseElement: "p" });
       const dom = new JSDOM(html);
       const document = dom.window.document;
@@ -327,6 +328,7 @@ router.get(
         updatedAtDate,
         siteName,
         visits,
+        reference,
       };
       // eslint-disable-next-line camelcase
       feature_image === ""
