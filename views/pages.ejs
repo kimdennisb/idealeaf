@@ -58,10 +58,11 @@
                                 <%const year=date.getFullYear() %>
                                     <%const month=date.getMonth() + 1 %>
                                         <%const dt=date.getDate() %>
-                                            <% const monthNames=["January", "February" , "March" , "April" , "May" , "June" , "July"
-                        , "August" , "September" , "October" , "November" , "December" ]; %>
+                                            <% const monthNames=["January", "February" , "March" , "April" , "May"
+                                                , "June" , "July" , "August" , "September" , "October" , "November"
+                                                , "December" ]; %>
                                                 <div class="article_title onlytext">
-                                                    <a href="/article/<%= data[i]._id %>" target="_self">
+                                                    <a href="/article/<%= data[i].reference %>" target="_self">
                                                         <h3>
                                                             <%= data[i].title%>
                                                         </h3>
@@ -75,18 +76,24 @@
                                                         <%const year=date.getFullYear() %>
                                                             <%const month=date.getMonth() + 1 %>
                                                                 <%const dt=date.getDate() %>
-                                                                    <% const monthNames=["January", "February" , "March" , "April" , "May" , "June"
-                                    , "July" , "August" , "September" , "October" , "November" , "December" ]; %>
+                                                                    <% const monthNames=["January", "February" , "March"
+                                                                        , "April" , "May" , "June" , "July" , "August"
+                                                                        , "September" , "October" , "November"
+                                                                        , "December" ]; %>
                                                                         <div class="article_title">
-                                                                            <a href="/article/<%= data[i]._id %>" target="_self">
-                                        <img class="image" src="<%= data[i].feature_image %>" alt="" />
-                                        <h3>
-                                          <%= data[i].title%>
-                                        </h3>
-                                        <div class="date-published">
-                                          <%- dt + " " + monthNames[month] + " " + year %>
-                                        </div>
-                                      </a>
+                                                                            <a href="/article/<%= data[i].reference %>"
+                                                                                target="_self">
+                                                                                <img class="image"
+                                                                                    src="<%= data[i].feature_image %>"
+                                                                                    alt="" />
+                                                                                <h3>
+                                                                                    <%= data[i].title%>
+                                                                                </h3>
+                                                                                <div class="date-published">
+                                                                                    <%- dt + " " + monthNames[month]
+                                                                                        + " " + year %>
+                                                                                </div>
+                                                                            </a>
                                                                         </div>
                                                                         <% } %>
                     </div>
@@ -101,52 +108,53 @@
             <div class="paginationtext-center">
                 <% if(current==1) { %>
                     <span class="disabled">
-            <a>First</a>
-          </span>
+                        <a>First</a>
+                    </span>
                     <%} else { %>
                         <span>
-              <a href="/page/1">First</a>
-            </span>
+                            <a href="/page/1">First</a>
+                        </span>
                         <%}%>
                             <% var i=(Number(current)> 5 ? Number(current) - 4 : 1) %>
                                 <% if(i !==1){ %>
                                     <span class="disabled">
-                    <a>...</a>
-                  </span>
+                                        <a>...</a>
+                                    </span>
                                     <%}%>
                                         <% for(; i <=(Number(current) + 4) && i <=pages;i++) { %>
                                             <% if(i==current) { %>
                                                 <span class="active">
-                          <a>
-                            <%= i %>
-                          </a>
-                        </span>
+                                                    <a>
+                                                        <%= i %>
+                                                    </a>
+                                                </span>
                                                 <%} else {%>
                                                     <span>
-                            <a href="/page/<%= i %>">
-                              <%= i %>
-                            </a>
-                          </span>
+                                                        <a href="/page/<%= i %>">
+                                                            <%= i %>
+                                                        </a>
+                                                    </span>
                                                     <%}%>
                                                         <% if(i==Number(current) + 4 && i < pages ) { %>
                                                             <span class="disabled">
-                                <a>...</a>
-                              </span>
+                                                                <a>...</a>
+                                                            </span>
                                                             <%}%>
                                                                 <%}%>
                                                                     <% if(current==pages) { %>
                                                                         <span class="disabled">
-                                      <a>Last</a>
-                                    </span>
+                                                                            <a>Last</a>
+                                                                        </span>
                                                                         <%} else {%>
                                                                             <span>
-                                        <a href="/page/<%= pages %>">Last</a>
-                                      </span>
+                                                                                <a href="/page/<%= pages %>">Last</a>
+                                                                            </span>
                                                                             <%}%>
             </div>
             <%}%>
     </div>
 </body>
 <script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/lightDarkMode.js"></script>
 
 </html>
