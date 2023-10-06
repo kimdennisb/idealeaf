@@ -14,8 +14,8 @@
   typeof exports === "object" && typeof module !== "undefined"
     ? factory(exports)
     : typeof define === "function" && define.amd
-    ? define(["exports"], factory)
-    : factory((global.pell = {}));
+      ? define(["exports"], factory)
+      : factory((global.pell = {}));
 })(this, (exports) => {
   // console.log(exports);
   // eslint-disable-next-line no-unused-vars
@@ -375,10 +375,10 @@
         //get specific figcaption and image using index
         const figCaption = this.parentNode
           .querySelectorAll("figure")
-          [index].querySelector("figCaption");
+        [index].querySelector("figCaption");
         const image = this.parentNode
           .querySelectorAll("figure")
-          [index].querySelector("img");
+        [index].querySelector("img");
         //action in accordance with the current fragment(description/alt)
         action.textContent.includes(`description`)
           ? (figCaption.textContent = textBox.value)
@@ -472,6 +472,7 @@
       input.accept = "image/*";
       input.multiple = true;
       addEventListener(input, "change", async (e) => {
+
         const images = Array.from(e.target.files);
         const imageEditorial = document.createElement("div");
         imageEditorial.setAttribute("class", "imageeditorial");
@@ -598,6 +599,8 @@
           });*/
           /* });*/
         }
+        //clear file input value
+        e.target.value = '';
       });
       appendChild(settings.element, input);
     }
@@ -624,11 +627,11 @@
     // console.log(Object.keys(defaultActions));
     const actions = settings.actions
       ? settings.actions.map((action) => {
-          if (typeof action === "string") return defaultActions[action];
-          if (defaultActions[action.name])
-            return { ...defaultActions[action.name], ...action };
-          return action;
-        })
+        if (typeof action === "string") return defaultActions[action];
+        if (defaultActions[action.name])
+          return { ...defaultActions[action.name], ...action };
+        return action;
+      })
       : Object.keys(defaultActions).map((action) => defaultActions[action]);
     // console.log(actions);
     // copy values and return the values
