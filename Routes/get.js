@@ -96,33 +96,33 @@ router.get("/data", (req, res, next) => {
 
   query === "posts"
     ? postModel.find({}, (err, data) => {
-        if (err) {
-          next(err);
-        }
-        res.json(data);
-      })
+      if (err) {
+        next(err);
+      }
+      res.json(data);
+    })
     : query === "users"
-    ? userModel.find({}, (err, data) => {
+      ? userModel.find({}, (err, data) => {
         if (err) {
           next(err);
         }
         res.json(data);
       })
-    : query === "scripts"
-    ? scriptToInjectModel.find({}, (err, data) => {
-        if (err) {
-          next(err);
-        }
-        res.json(data);
-      })
-    : query === "ipDevice"
-    ? ipDeviceModel.find({}, (err, data) => {
-        if (err) {
-          next(err);
-        }
-        res.json(data);
-      })
-    : null;
+      : query === "scripts"
+        ? scriptToInjectModel.find({}, (err, data) => {
+          if (err) {
+            next(err);
+          }
+          res.json(data);
+        })
+        : query === "ipDevice"
+          ? ipDeviceModel.find({}, (err, data) => {
+            if (err) {
+              next(err);
+            }
+            res.json(data);
+          })
+          : null;
 });
 
 // destroy session(deauthenticate user)
@@ -333,9 +333,9 @@ router.get(
       // eslint-disable-next-line camelcase
       feature_image === ""
         ? res.render("viewArticleWithoutOGImage", {
-            data: cleanArticle,
-            siteName,
-          })
+          data: cleanArticle,
+          siteName,
+        })
         : res.render("viewArticle", { data: cleanArticle, siteName });
     });
   }
@@ -392,13 +392,13 @@ router.get("/image/:imageID", (req, res, next) => {
   const width = Number(req.query.w) || 184;
 
   try {
-    let photoID = new ObjectID(imageID);
+    var photoID = new ObjectID(imageID);
   } catch (err) {
     const error = new Error(
       "Invalid ImageID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters"
     );
     error.status = 400;
-    // pass the error to the error handler
+    // pass the error to the error handler(400:Bad request)
     return next(error);
   }
 
@@ -406,7 +406,6 @@ router.get("/image/:imageID", (req, res, next) => {
     bucketName: "photos",
   });
 
-  const photoID = new ObjectID(imageID);
   const downloadStream = bucket.openDownloadStream(photoID);
 
   let buffer = [];
@@ -420,6 +419,7 @@ router.get("/image/:imageID", (req, res, next) => {
 
   downloadStream.on("end", async () => {
     const completeBuffer = Buffer.concat(buffer);
+
     await sharp(completeBuffer)
       .resize({
         width: width,
@@ -442,7 +442,7 @@ router.get("/image-asset/:photoID", cacheMiddleware(30), (req, res, next) => {
   // get images from req.params.photoID object
 
   try {
-    let photoID = new ObjectID(req.params.photoID);
+    var photoID = new ObjectID(req.params.photoID);
   } catch (err) {
     const error = new Error(
       "Invalid ImageID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters"
@@ -456,7 +456,6 @@ router.get("/image-asset/:photoID", cacheMiddleware(30), (req, res, next) => {
     bucketName: "photos",
   });
 
-  const photoID = new ObjectID(req.params.photoID);
   const downloadStream = bucket.openDownloadStream(photoID);
 
   downloadStream.on("data", (chunk) => {

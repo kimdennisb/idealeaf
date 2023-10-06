@@ -53,22 +53,22 @@ router.post("/signup/check", (req, res, next) => {
   const data = req.body.q;
   query === "username"
     ? //check username against rules
-      userModel.find({ username: data }, (err, theuser) => {
-        if (err) {
-          next(err);
-        }
+    userModel.find({ username: data }, (err, theuser) => {
+      if (err) {
+        next(err);
+      }
 
-        if (!usernameRegexConvention(data)) {
-          return res.status(200).json({ message: "InvalidUsername" });
-        }
+      if (!usernameRegexConvention(data)) {
+        return res.status(200).json({ message: "InvalidUsername" });
+      }
 
-        if (theuser.length === 0)
-          return res.status(200).json({ message: "200Username" });
-        if (theuser.length != 0)
-          return res.status(200).json({ message: "404Username" });
-      })
+      if (theuser.length === 0)
+        return res.status(200).json({ message: "200Username" });
+      if (theuser.length != 0)
+        return res.status(200).json({ message: "404Username" });
+    })
     : query === "email"
-    ? userModel.find({ email: data }, (err, theuser) => {
+      ? userModel.find({ email: data }, (err, theuser) => {
         if (err) {
           next(err);
         }
@@ -79,10 +79,10 @@ router.post("/signup/check", (req, res, next) => {
           return res.status(200).json({ message: "InvalidEmail" });
         }
       })
-    : query === "password"
-    ? //check password against rules
-      console.log(`/*do nothing for password */`)
-    : null;
+      : query === "password"
+        ? //check password against rules
+        console.log(`/*do nothing for password */`)
+        : null;
 });
 
 // sign in user
@@ -277,12 +277,15 @@ router.post(
       .catch((err) => {
         next(err);
       });
-    imageattributes.src = resizedimagehref;
+
+    Object.assign(imageattributes, { src: resizedimagehref })
 
     res.json(imageattributes);
   }
 );
 
+/**This endpoint is not used currently.
+ * Storing each resized image deamed to take more storage than storing a single image and resizing on the fly **/
 router.post(
   "/admin/photos",
   uploadImage.array("photo", 5),
@@ -298,15 +301,19 @@ router.post(
         const sizes = [239, 319, 468, 512, 612, 687];
         const imageattributes = {};
 
-        // enable alt images
-        imageattributes.alt = photo.originalname;
+        // alt
+        Object.assign(imageattributes, { alt: photo.originalname })
 
+        //resize a single image in all the sizes
+        //return a promise in which Promise.all() returns a single promise
+        //the single promise fulfills if all the input's promises fulfill
+        //it rejects when any of the input's promises rejects
         const resizedimagehrefs = await Promise.all(
           sizes.map(async (size) => {
-            let resizedimagehref = "";
+            //let resizedimagehref = "";
 
             //image width to height ratio is 16:9
-            await sharp(photo.buffer)
+            return await sharp(photo.buffer)
               .resize({
                 width: size,
                 height: Math.floor(size * 0.5625),
@@ -316,15 +323,13 @@ router.post(
               .then((buffer) => {
                 const photoName = `${photo.originalname}-${size}`;
                 const returnedURL = storeImage({ photoName, buffer });
-                resizedimagehref = `/image/${returnedURL} ${size}w`;
+                return `/image/${returnedURL} ${size}w`;
               })
               .catch((err) => {
                 next(err);
               });
-            return resizedimagehref;
           })
         );
-
         //build responsive images
         //const sizescondition = `(min-width:851px) 612px,(min-width:781px) and (max-width:850px) 561px,(min-width:601px) and (max-width:780px) 687px,(min-width:432px) and (max-width:600px) 468px,(min-width:341px) and (max-width:431px) 319px,238px`;
         const sizescondition = `(min-width: 1460px) 612px, (min-width: 860px) calc(38.97vw + 51px), (min-width: 800px) 65vw, (min-width: 620px) 87.5vw, calc(88vw - 60px)`;
@@ -354,14 +359,13 @@ router.post(
         const imageattributes = {};
 
         // alt
-        imageattributes.alt = photo.originalname;
+        Object.assign(imageattributes, { alt: photo.originalname })
 
-        const photoName = photo.originalname;
-        const buffer = photo.buffer;
-        const returnedURL = storeImage({ photoName, buffer });
+        const { originalname, buffer } = photo;
 
-        const _ = { src: returnedURL };
-        return { ...imageattributes, ..._ };
+        const returnedURL = storeImage({ originalname, buffer });
+
+        return { ...imageattributes, src: returnedURL };
       })
     );
     res.send(accessIDS);
@@ -373,7 +377,7 @@ router.post(
 
 router.post("/article", (req, res, next) => {
   const { title, html, feature_image, feature_image_alt } = req.body;
-  const text = htmlToText(req.body.html);
+  const text = htmlToText(html);
   const article = {
     title: title,
     html: html,
