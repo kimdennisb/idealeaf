@@ -82,16 +82,23 @@ function sendRequest(params) {
       arguments[3],
     ];
 
+    //if we POST something, XMLHttpRequest first uploads our data (the request body), then downloads the response
+    //Order is:onloadstart->onloadstartupload->onprogressupload->onloadupload->onloadedupload->onprogress->onload->onloaded
+
     //DOWNLOAD EVENTS
 
     //Called when an XMLHttpRequest transaction starts transferring data
     xhr.onloadstart = function () {
       //console.log(`Loaded ${xhr.status} ${xhr.response}`);
+      if (typeof body !== "undefined" && showProgressLoader === true) {
+        load.start();
+      }
     };
 
     //Request has completed whether successfully(after load) or unsuccessfully(after abort or error).
     xhr.onloadend = function (e) {
       //console.log(e.loaded, xhr.status);
+      console.log(`onloadend`)
       if (typeof body !== "undefined") {
         if (xhr.status === 0) {
           reject({
@@ -104,21 +111,23 @@ function sendRequest(params) {
       }
     };
 
-    //called periodically with information when an XMLHttpRequest before success completely
+    //called periodically with information when an XMLHttpRequest receives more data before success completely
     xhr.onprogress = function (e) {
+      console.log(`onprogress`)
       // console.log(`Received ${e.loaded} of ${e.total}`);
       if (e.lengthComputable) {
         // progressBar.max = e.total;
         // progressBar.value = e.loaded;
         // percentile.innerText = `${Math.floor((e.loaded / e.total) * 100)}%`;
         if (typeof body !== "undefined" && showProgressLoader === true) {
-          load.start();
+          // load.start();
         }
       }
     };
 
     //Called when the request encounters an error
     xhr.onerror = function (e) {
+      console.log(`onerror`)
       reject({
         status: this.status,
         statusText: xhr.statusText,
@@ -127,6 +136,7 @@ function sendRequest(params) {
 
     //Called when content is successfully fetched
     xhr.onload = function () {
+      console.log(`onload`)
       if (this.status >= 200 && this.status < 300) {
         resolve(xhr.responseText);
       } else {
@@ -140,12 +150,15 @@ function sendRequest(params) {
     //UPLOAD EVENTS(Register before send())
 
     xhr.upload.onloadstart = function () {
-      /*console.log(`Upload started`)*/
+      console.log(`onloadstart-upload`)
+
     };
     xhr.upload.onload = function () {
       /*console.log(`Upload completed`)*/
+      console.log(`onload-upload`)
     };
     xhr.upload.onloadend = function (e) {
+      console.log(`onloadend-upload`)
       /*console.log(`Upload completed for either error or success`)*/
     };
 
@@ -155,7 +168,7 @@ function sendRequest(params) {
         statusText: xhr.statusText,
       });
     };
-    xhr.upload.onprogress = function (e) {};
+    xhr.upload.onprogress = function (e) { console.log(`onprogress-upload`) };
 
     // we open xhr here(inside event) so that it can be used anytime on `click` event
     xhr.open(method, route, true);
