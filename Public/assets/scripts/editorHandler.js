@@ -106,7 +106,7 @@ function getEditorData() {
  */
 function selectImagesWithConvertedImageURI(images) {
   return images.filter((image) => {
-    return image.src.includes(`blob`);
+    return  image.src.includes(`blob`);
   });
 }
 
@@ -195,7 +195,7 @@ function appendImageFileToFormData(args) {
   const imageFiles = args;
   const formData = new window.FormData();
   if (Array.isArray(imageFiles)) {
-    imageFiles.forEach((image, index) => {
+    imageFiles.forEach((image) => {
       formData.append("photo", image);
     });
   } else {
