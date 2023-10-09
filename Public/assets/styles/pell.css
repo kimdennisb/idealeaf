@@ -126,8 +126,10 @@ textarea::placeholder {
 
 .pell-content {
   box-sizing: border-box;
-  height: 100%;
+  /*height: 100%;*/
   outline: 0;
+  height: 50vh;
+  overflow-y: auto;
 }
 
 .pell-content:empty:before {
@@ -274,16 +276,19 @@ textarea::placeholder {
 mark {
   background-color: transparent;
 }
+
 figure.inner-cover {
   position: absolute;
   background: none;
   padding: 0;
 }
+
 figure.inner-cover img {
   width: 100%;
   height: 100%;
   opacity: 10;
 }
+
 figure {
   background-color: aliceblue;
   background-size: cover;
@@ -293,7 +298,9 @@ figure {
   width: 100%;
   padding-bottom: 54.5455%;
   position: absolute;
+  cursor: pointer;
 }
+
 figure[role="group"] .editImage::after {
   content: url(/assets/icons/edit.svg);
   display: inline-block;
@@ -304,9 +311,11 @@ figure[role="group"] .editImage::after {
   right: 0;
   vertical-align: middle;
 }
+
 .hide {
   display: none;
 }
+
 figcaption {
   position: absolute;
   text-align: center;
@@ -315,14 +324,17 @@ figcaption {
   top: calc(100%);
   width: 100%;
 }
+
 .editHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .editHeader p {
   color: #0c0c0c;
 }
+
 .nextImage {
   background-image: url(/assets/icons/next.svg);
   background-repeat: no-repeat;
@@ -334,6 +346,7 @@ figcaption {
   border-radius: 50%;
   padding: 10px;
 }
+
 .previousImage,
 .backButton {
   background-image: url(/assets/icons/previous.svg);
@@ -346,6 +359,7 @@ figcaption {
   border-radius: 50%;
   padding: 10px;
 }
+
 .saveEdits {
   cursor: pointer;
   height: 23px;
@@ -357,42 +371,51 @@ figcaption {
   background-color: black;
   color: white;
 }
+
 div.nextPreviousSaveContainer {
   display: inherit;
 }
+
 .descriptorsContainer {
   display: flex;
   justify-content: space-around;
   border-bottom: 0.5px solid;
 }
+
 .descriptorsContainer p {
   color: #0c0c0c;
 }
+
 .description,
 .altName {
   cursor: pointer;
 }
+
 input.textbox {
-  border-radius: 5px;
+  border-radius: 0 0 5px 5px;
   /*  position: absolute;
   display: flex;
   bottom: 0;*/
   height: 30px;
   width: 100%;
-  border: 0.1px solid;
- /* margin: 0 2.5% 0 2.5%;*/
+  border: none;
+  /* margin: 0 2.5% 0 2.5%;*/
+  outline: none;
 }
+
 .imagePreview {
-  height: 208px;
+  height: 88%;
   width: auto;
   background-color: lightgrey;
 }
+
 .imagePreview img {
   height: 100%;
   width: 100%;
   display: none;
   object-fit: contain;
 }
+
 figure figure img {
   inset: 0;
   height: 100%;
@@ -407,6 +430,7 @@ figure figure img {
   margin: auto;
   margin-bottom: 1.5em;
 }
+
 .prev,
 .next {
   cursor: pointer;
@@ -445,4 +469,19 @@ figure figure img {
   -webkit-border-radius: 1px;
   border-radius: 1px;
   transition: width 1s ease-out;
+}
+
+/*Scroll Bar*/
+.pell-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pell-content::-webkit-scrollbar-track {
+  background: gray;
+}
+
+.pell-content::-webkit-scrollbar-thumb {
+  background-color: #d2d1ce;
+  border-radius: 20px;
+  border: 3px solid gray;
 }

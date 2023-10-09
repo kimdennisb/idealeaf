@@ -7,9 +7,7 @@
 :root {
   --header-outer-height: 60px;
   --header-inner-height: 40px;
-  --header-height-difference: calc(
-    var(--header-outer-height) - var(--header-inner-height)
-  );
+  --header-height-difference: calc(var(--header-outer-height) - var(--header-inner-height));
   --header-outer-bg: #fff;
   --header-inner-bg: #fff;
   --text-color: #222;
@@ -71,6 +69,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
+
   /* defaults to dark theme */
   :root {
     --header-outer-bg: #121212;
@@ -105,9 +104,7 @@
   [data-mode="light"] {
     --header-outer-height: 60px;
     --header-inner-height: 40px;
-    --header-height-difference: calc(
-      var(--header-outer-height) - var(--header-inner-height)
-    );
+    --header-height-difference: calc(var(--header-outer-height) - var(--header-inner-height));
     --header-outer-bg: #fff;
     --header-inner-bg: #fff;
     --text-color: #222;
@@ -148,6 +145,7 @@ h3,
 img {
   color: var(--text-color);
 }
+
 figure img {
   width: 100%;
 }
@@ -219,7 +217,7 @@ figure img {
   margin: 6px 2.5% 40px 0;
 }
 
-.single .post-meta > span {
+.single .post-meta>span {
   display: block;
   margin-bottom: 10px;
 }
@@ -230,6 +228,7 @@ figure img {
   position: relative;
   z-index: 5;
 }
+
 .post-content img {
   width: 100%;
   height: auto;
@@ -257,6 +256,7 @@ h6 {
 }
 
 @media (max-width: 600px) {
+
   .section-inner,
   .content {
     max-width: 100%;
@@ -280,14 +280,14 @@ h6 {
     padding-top: 12px;
   }
 
-  .single .post-meta > span {
+  .single .post-meta>span {
     display: inline-block;
     margin-bottom: 0;
     margin-right: 10px;
   }
 
   .post-content,
-  .post-inner > .post-content {
+  .post-inner>.post-content {
     font-size: 1em;
   }
 }
@@ -318,7 +318,7 @@ h6 {
   }
 
   .post-content,
-  .post-inner > .post-content {
+  .post-inner>.post-content {
     font-size: 1.1em;
   }
 }
@@ -367,6 +367,7 @@ div.open_icon svg {
 }
 
 @media (max-width: 850px) {
+
   .widget,
   .showwidget {
     float: none;
@@ -377,7 +378,7 @@ div.open_icon svg {
   }
 }
 
-.widget > * + * {
+.widget>*+* {
   margin-top: 1.25em;
 }
 
@@ -411,7 +412,7 @@ search element in admin dashboard
   font-size: small;
 }
 
-.article_title > a {
+.article_title>a {
   text-decoration: none;
   color: var(--search-results);
   display: block;
@@ -441,7 +442,7 @@ search element in admin dashboard
   margin: 8px;
 }
 
-section > div {
+section>div {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -589,16 +590,15 @@ form label .message.errored {
 
 form label .message.success {
   border-color: var(--form-message-success-border-color);
-  background-image: linear-gradient(
-    var(--form-message-success-background-gradient-color),
-    var(var(--form-message-success-background-gradient-color))
-  );
+  background-image: linear-gradient(var(--form-message-success-background-gradient-color),
+      var(var(--form-message-success-background-gradient-color)));
 }
 
 .message.success .m-1,
 .message.success .m-2 {
   color: #0c0c0c;
 }
+
 form label .message.errored::before,
 form label .message.success::before {
   position: absolute;
@@ -944,6 +944,7 @@ manage
   opacity: 0.3;
   fill: var(--text-color);
 }
+
 .views {
   fill: var(--text-color);
 }
@@ -963,7 +964,7 @@ manage
   position: relative;
 }
 
-.bottom-toolbar > a {
+.bottom-toolbar>a {
   text-decoration: none;
   position: relative;
   margin: 1em 1em 0 0;
@@ -971,7 +972,7 @@ manage
   color: #4caf50;
 }
 
-.bottom-toolbar > a > img {
+.bottom-toolbar>a>img {
   vertical-align: bottom;
 }
 
@@ -1010,7 +1011,7 @@ textarea {
 
 .save.script:hover {
   cursor: pointer;
- /* background-color: rgb(245, 249, 252);*/
+  /* background-color: rgb(245, 249, 252);*/
   outline: none;
 }
 
@@ -1051,7 +1052,7 @@ textarea {
   opacity: 0.5;
 }
 
-.Error > .button {
+.Error>.button {
   font-weight: 300;
   color: rgb(26, 23, 23);
   font-size: 1.2em;
@@ -1066,18 +1067,18 @@ textarea {
   transition: all 0.3s linear;
 }
 
-.Error > .button:hover {
+.Error>.button:hover {
   background-color: green;
   color: #fff;
 }
 
-.Error > p {
+.Error>p {
   font-size: 2em;
   text-align: center;
   font-weight: 100;
 }
 
-.Error > h1 {
+.Error>h1 {
   text-align: center;
   font-size: 5em;
   font-weight: 100;
@@ -1202,7 +1203,8 @@ th {
 }
 
 @media only screen and (max-width: 760px),
-  (min-device-width: 768px) and (max-device-width: 1024px) {
+(min-device-width: 768px) and (max-device-width: 1024px) {
+
   /* Force table to not be like tables anymore */
   table,
   thead,
@@ -1582,15 +1584,26 @@ figure[role="group"] figure:not(:first-child) {
   background-color: var(--fullmoon-color);
 }
 
-.switch__input:checked + .switch__slider::after {
+.switch__input:checked+.switch__slider::after {
   left: calc(100% - 22px - 3px);
 }
 
 /*edit overlay class*/
 .editOverlay {
-  position: absolute;
-  height: inherit;
-  width: inherit;
-  /*z-index: 99999;*/
+  position: fixed;
+  height: 80vh;
+  width: 59.84%;
+  z-index: 99999;
   background-color: ghostwhite;
+  top: 40px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+  border-radius: 16px;
+}
+
+@media (max-width: 850px) {
+  .editOverlay {
+    width: 100%;
+  }
 }
