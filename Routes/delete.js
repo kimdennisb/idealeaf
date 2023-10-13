@@ -11,10 +11,10 @@ const ipDeviceModel = require("../Models/IpDevice");
  * @param {String} schema - Model of the schema to delete from.
  * @param {Array} IDS - Array of unique ids
  */
-async function deleteItems(schema, IDS) {
+function deleteItems(schema, IDS, next) {
   const deletedItems = [];
   for (let i = 0; i < IDS.length; i++) {
-    await schema.findOneAndDelete({ _id: IDS[i] }, (err, result) => {
+    schema.findOneAndDelete({ _id: IDS[i] }, (err, result) => {
       if (err) {
         next(err);
       }
@@ -25,22 +25,21 @@ async function deleteItems(schema, IDS) {
 }
 
 // delete posts
-router.delete("/delete-posts", async (req, res, next) => {
+router.delete("/delete-posts", (req, res, next) => {
   // res.body.header is sent through fetch request
   // ids to delete
   const ids = req.body.id;
-  const deleteditems = await deleteItems(postModel, ids);
+  const deleteditems = deleteItems(postModel, ids, next);
   res
     .status(200)
     .json({ message: "Article(s) successfully deleted", deleteditems });
 });
 
 // delete users
-router.delete("/delete-users", async (req, res, next) => {
+router.delete("/delete-users", (req, res, next) => {
   // ids to delete
-  console.log(req.body);
   const users = req.body.id;
-  const deleteditems = await deleteItems(userModel, users);
+  const deleteditems = deleteItems(userModel, users, next);
   res
     .status(200)
     .json({ message: "User(s) successfully deleted", deleteditems });
@@ -50,7 +49,7 @@ router.delete("/delete-users", async (req, res, next) => {
 router.delete("/delete-scripts", async (req, res, next) => {
   // ids to delete
   const scripts = req.body.id;
-  const deleteditems = await deleteItems(scriptToInjectModel, scripts);
+  const deleteditems = await deleteItems(scriptToInjectModel, scripts, next);
   res
     .status(200)
     .json({ message: "Script(s) successfully deleted", deleteditems });

@@ -390,9 +390,16 @@ router.post("/article", (req, res, next) => {
   //get id of model instance to generate a better title(returns id)
   const post = new postModel();
 
+  //String().split() will break if value is undefined.I handled this with a try catch block
   const postProperties = {
     ...article,
-    reference: `${title.split(" ").join("-")}-${post._id}`,
+    reference: (function () {
+      try {
+        return `${title.split(" ").join("-")}-${post._id}`
+      } catch (error) {
+        next(error);
+      }
+    })()
   };
 
   Object.assign(post, postProperties);

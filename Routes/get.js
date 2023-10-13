@@ -518,7 +518,7 @@ router.get("/reset/:token", (req, res, next) => {
 // gets view for a single post
 router.get("/post/:id", cacheMiddleware(30), (req, res, next) => {
   const id = req.params.id;
-  postmodel.findById({ _id: id }, (err, post) => {
+  postModel.findById({ _id: id }, (err, post) => {
     if (err) return next(err);
     res.status(200).json(post);
   });

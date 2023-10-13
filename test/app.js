@@ -8,9 +8,12 @@ const mongoose = require("mongoose");
 const chai = require("chai");
 const config = require("config");
 const chaiHttp = require("chai-http");
-// eslint-disable-next-line import/no-self-import
+
 const server = require("../index");
 const TestPostModel = require("../Models/Post");
+const TestUserModel = require("../Models/User");
+const TestScriptModel = require("../Models/ScriptToInject");
+const { test } = require("mocha");
 
 const should = chai.should();
 
@@ -18,14 +21,7 @@ chai.use(chaiHttp);
 
 // parent block
 describe("Articles", () => {
-    // before each test we empty the database
-    beforeEach((done) => {
-        /* TestPostModel.remove({},(err)=>{
-            done();
-        }); */
-        console.log("Testing started");
-        done();
-    });
+
 
     const dummyArticle = {
         title: "Dummy title for testing",
@@ -37,17 +33,37 @@ describe("Articles", () => {
         visits: 0,
     };
 
+    let testArticle = new TestPostModel();
+
+    const postProperties = {
+        ...dummyArticle,
+        reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+    };
+
+    Object.assign(testArticle, postProperties);
+
+    // before each test we empty the database
+    beforeEach((done) => {
+        //Don`t delete database because we use a single post from the TestPostModel() instance.We will use this in PUt
+        /*TestPostModel.deleteMany({ title: postProperties.title }, (err) => {
+            done();
+        });*/
+        console.log("Testing Articles started");
+        done()
+    });
+
     /**
      * Test the GET route
      */
 
     describe("/GET articles", () => {
-        it("it should get all the articles", (done) => {
+        it("it should get all the articles in a certain page", (done) => {
+            const examplePage = 1;
             chai.request(server)
-                .get("/posts")
+                .get(`/posts/${examplePage}`)
                 .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.should.be.a("array");
+                    res.body.posts.should.be.a("array");
                     done();
                 });
         });
@@ -59,8 +75,8 @@ describe("Articles", () => {
 
     describe("/GET/:id article", () => {
         it("it should get an article by the given id", (done) => {
-            let Article = new TestPostModel(dummyArticle);
-            Article.save((err, article) => {
+
+            testArticle.save((err, article) => {
                 chai.request(server)
                     .get(`/post/${article.id}`)
                     .send(article)
@@ -84,16 +100,15 @@ describe("Articles", () => {
 
     describe("/POST article", () => {
         it("it should not post an article without some fields", (done) => {
-            const simulatedArticle = {};
+            let simulatedArticle = { html: "<p>This is a sample text</p>" };
             chai.request(server)
                 .post("/article")
                 .send(simulatedArticle)
                 .end((err, res) => {
                     res.body.should.be.a("object");
+                    res.body.should.have.property('errors');
                     res.body.errors.should.have.property("title");
-                    res.body.errors.should.have.property("html");
-                    res.body.errors.should.have.property("text");
-                    res.body.should.have.property("errors");
+                    res.body.errors.should.have.property("reference");
                     done();
                 });
         });
@@ -103,14 +118,15 @@ describe("Articles", () => {
         it("it should post an article with all then fields", (done) => {
             chai.request(server)
                 .post("/article")
-                .send(dummyArticle) // dummy is sent to the post /article route
+                .send(postProperties) // dummy is sent to the post /article route
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.item.should.be.a("object");
                     res.body.item.should.have.property("title");
                     res.body.item.should.have.property("html");
                     res.body.item.should.have.property("text");
-                    res.body.item.should.have.property("feature_image");
+                    res.body.item.should.have.property("visits");
+                    res.body.item.should.have.property("reference");
                     done();
                 });
         });
@@ -120,15 +136,17 @@ describe("Articles", () => {
      * Test  the /PUT/:id route
      */
     describe("/PUT/:id article", () => {
-        it("it should update an article given the id in fetch request", (done) => {
-            const article = new TestPostModel(dummyArticle);
-            article.save((err, article) => {
+        it("it should update an article given the id", (done) => {
+
+            testArticle.save((err, article) => {
+                console.log(err, `hii inatoka wapi`)
                 chai.request(server)
                     .put(`/update/${article.id}`)
-                    .send(dummyArticle)
+                    .send({ ...postProperties, title: "This is an updated title" })
                     .end((err, res) => {
                         res.should.have.status(200);
                         res.body.should.be.a("object");
+                        res.body.should.have.property("title").eql("This is an updated title");
                         done();
                     });
             });
@@ -138,51 +156,96 @@ describe("Articles", () => {
     /**
      * Test /DELETE/:id 
      */
-    /*
-        describe("/DELETE/:id article(s)", () => {
-            it("it should delete an article given the id in fetch request", (done) => {
-                const article = new TestPostModel(dummyArticle);
-                article.save((err, article) => {
-                    chai.request(server)
-                        .delete(`/delete-posts/`)
-                        .set("form")
-                        .send({ foo: 'bar' })
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            res.body.should.be.a("object");
-                            done();
-                        });
-                });
+
+    describe("/DELETE/:id article(s)", () => {
+        it("it should delete an article given the id", (done) => {
+            testArticle.save((err, article) => {
+                chai.request(server)
+                    .delete(`/delete-posts`)
+                    .send({ id: article.id })
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.should.be.a("object");
+                        res.body.should.have.property("message").eql("Article(s) successfully deleted");
+                        done();
+                    });
             });
         });
-
-        describe("/DELETE/:id user(s)", () => {
-            it("it should delete a user given the id in fetch request", (done) => {
-                const article = new TestPostModel(dummyArticle);
-                article.save((err, article) => {
-                    chai.request(server)
-                        .delete(`/delete-users/`)
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            res.body.should.be.a("object");
-                            done();
-                        });
-                });
-            });
-        });
-
-        describe("/DELETE/ script(s)", () => {
-            it("it should delete a script given the id in fetch request", (done) => {
-                const article = new TestPostModel(dummyArticle);
-                article.save((err, article) => {
-                    chai.request(server)
-                        .delete(`/delete-scripts`)
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            res.body.should.be.a("object");
-                            done();
-                        });
-                });
-            });
-        });*/
+    });
 });
+
+describe("Users", () => {
+
+    const dummyUser = {
+        username: "John Doe",
+        email: "johndoe@noreply.com",
+        password: "password"
+    }
+
+    const testUser = new TestUserModel();
+
+    Object.assign(testUser, dummyUser);
+
+    beforeEach((done) => {
+        TestUserModel.deleteMany({ username: dummyUser.username }, (err, deletedItem) => {
+            if (err) { console.log(err); }
+            console.log("Testing Users started");
+            done();
+        });
+
+    });
+
+    describe("/DELETE/:id user(s)", () => {
+        it("it should delete a user given the id", (done) => {
+            testUser.save((err, user) => {
+                chai.request(server)
+                    .delete(`/delete-users`)
+                    .send({ id: user.id })
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.should.be.a("object");
+                        res.body.should.have.property("message").eql("User(s) successfully deleted");
+                        done();
+                    });
+            });
+        });
+    });
+
+})
+
+describe("Scripts", () => {
+
+    const dummyScript = {
+        script: "<script src='index.js'></script>",
+        placement: "footer"
+    }
+
+    const testScript = new TestScriptModel();
+
+    Object.assign(testScript, dummyScript);
+
+    beforeEach((done) => {
+        TestScriptModel.deleteMany({ script: dummyScript.script }, (err, deletedItem) => {
+            if (err) { console.log(err); }
+        });
+        console.log("Testing Scripts started");
+        done();
+    });
+
+    describe("/DELETE/:id user(s)", () => {
+        it("it should delete a script given the id", (done) => {
+            testScript.save((err, script) => {
+                chai.request(server)
+                    .delete(`/delete-scripts`)
+                    .send({ id: script.id })
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.should.be.a("object");
+                        res.body.should.have.property("message").eql("Script(s) successfully deleted");
+                        done();
+                    });
+            });
+        });
+    });
+
+})
