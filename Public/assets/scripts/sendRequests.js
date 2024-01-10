@@ -98,7 +98,7 @@ function sendRequest(params) {
     //Request has completed whether successfully(after load) or unsuccessfully(after abort or error).
     xhr.onloadend = function (e) {
       //console.log(e.loaded, xhr.status);
-      console.log(`onloadend`)
+     // console.log(`onloadend`)
       if (typeof body !== "undefined") {
         if (xhr.status === 0) {
           reject({
@@ -113,7 +113,7 @@ function sendRequest(params) {
 
     //called periodically with information when an XMLHttpRequest receives more data before success completely
     xhr.onprogress = function (e) {
-      console.log(`onprogress`)
+      //console.log(`onprogress`)
       // console.log(`Received ${e.loaded} of ${e.total}`);
       if (e.lengthComputable) {
         // progressBar.max = e.total;
@@ -136,7 +136,7 @@ function sendRequest(params) {
 
     //Called when content is successfully fetched
     xhr.onload = function () {
-      console.log(`onload`)
+      //console.log(`onload`)
       if (this.status >= 200 && this.status < 300) {
         resolve(xhr.responseText);
       } else {
