@@ -492,6 +492,7 @@
           const filename = getFilenameAndExtension(images[i].name)[0];
 
           let figure = document.createElement("figure");
+          figure.contentEditable = false;
           let figCaption = document.createElement("figcaption");
           figCaption.contentEditable = false;
 
