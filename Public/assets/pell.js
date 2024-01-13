@@ -14,8 +14,8 @@
   typeof exports === "object" && typeof module !== "undefined"
     ? factory(exports)
     : typeof define === "function" && define.amd
-      ? define(["exports"], factory)
-      : factory((global.pell = {}));
+    ? define(["exports"], factory)
+    : factory((global.pell = {}));
 })(this, (exports) => {
   // console.log(exports);
   // eslint-disable-next-line no-unused-vars
@@ -253,7 +253,7 @@
   function showSlides(slides, nextButton, prevButton) {
     let slideIndex = 0;
 
-    const changeSlides = () => {
+    const changeSlides = (slideIndex) => {
       slides.forEach((slide) => {
         slide.style.display = "none";
         slide.dataset.show = "false";
@@ -375,10 +375,10 @@
         //get specific figcaption and image using index
         const figCaption = this.parentNode
           .querySelectorAll("figure")
-        [index].querySelector("figCaption");
+          [index].querySelector("figCaption");
         const image = this.parentNode
           .querySelectorAll("figure")
-        [index].querySelector("img");
+          [index].querySelector("img");
         //action in accordance with the current fragment(description/alt)
         action.textContent.includes(`description`)
           ? (figCaption.textContent = textBox.value)
@@ -403,7 +403,7 @@
         var selection = window.getSelection();
         //returns node in which selection begins
         let container = selection.anchorNode;
-        //1-<p> r <div>,2-attribute of an element,3-actual text inside and element or attribute
+        //1-<p> or <div>,2-attribute of an element,3-actual text inside an element or attribute
         if (container.nodeType !== 3) {
           return container;
         } else {
@@ -416,6 +416,7 @@
         const element = getSelectionElement();
         const caretPosition = window.getSelection().getRangeAt(0).startOffset;
         if (
+          /*After the figure */
           caretPosition == 0 &&
           element.previousSibling &&
           element.previousSibling.tagName == "FIGURE" &&
@@ -424,6 +425,7 @@
           //console.log(`amigos`);
           element.previousSibling.remove();
         } else if (
+          /*In between sibling figures */
           caretPosition != 0 &&
           element.tagName == "FIGURE" &&
           element.parentNode.tagName == "FIGURE"
@@ -439,6 +441,7 @@
           //console.log(`not done`);
           e.preventDefault();
         } else if (
+          /*At the start of the content editable */
           caretPosition == 0 &&
           !element.previousSibling &&
           !element.parentNode.previousSibling &&
@@ -447,6 +450,7 @@
           // console.log(`damn types`);
           e.preventDefault();
         } else if (
+          /*In between two parent figures following each other */
           caretPosition == 0 &&
           !element.previousSibling &&
           element.parentNode.previousSibling &&
@@ -472,7 +476,6 @@
       input.accept = "image/*";
       input.multiple = true;
       addEventListener(input, "change", async (e) => {
-
         const images = Array.from(e.target.files);
         const imageEditorial = document.createElement("div");
         imageEditorial.setAttribute("class", "imageeditorial");
@@ -600,7 +603,7 @@
           /* });*/
         }
         //clear file input value
-        e.target.value = '';
+        e.target.value = "";
       });
       appendChild(settings.element, input);
     }
@@ -627,11 +630,11 @@
     // console.log(Object.keys(defaultActions));
     const actions = settings.actions
       ? settings.actions.map((action) => {
-        if (typeof action === "string") return defaultActions[action];
-        if (defaultActions[action.name])
-          return { ...defaultActions[action.name], ...action };
-        return action;
-      })
+          if (typeof action === "string") return defaultActions[action];
+          if (defaultActions[action.name])
+            return { ...defaultActions[action.name], ...action };
+          return action;
+        })
       : Object.keys(defaultActions).map((action) => defaultActions[action]);
     // console.log(actions);
     // copy values and return the values
