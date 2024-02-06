@@ -14,8 +14,8 @@
   typeof exports === "object" && typeof module !== "undefined"
     ? factory(exports)
     : typeof define === "function" && define.amd
-    ? define(["exports"], factory)
-    : factory((global.pell = {}));
+      ? define(["exports"], factory)
+      : factory((global.pell = {}));
 })(this, (exports) => {
   // console.log(exports);
   // eslint-disable-next-line no-unused-vars
@@ -375,10 +375,10 @@
         //get specific figcaption and image using index
         const figCaption = this.parentNode
           .querySelectorAll("figure")
-          [index].querySelector("figCaption");
+        [index].querySelector("figCaption");
         const image = this.parentNode
           .querySelectorAll("figure")
-          [index].querySelector("img");
+        [index].querySelector("img");
         //action in accordance with the current fragment(description/alt)
         action.textContent.includes(`description`)
           ? (figCaption.textContent = textBox.value)
@@ -545,8 +545,6 @@
         const figure = document.querySelector(`.${randomAssig}`);
 
         if (figure) {
-          /*  figures.forEach((figure) => {
-            console.log(figures)*/
           figure.addEventListener("click", (e) => {
             if (!figure.nextSibling) {
               //const zerowidthspace = `&#8203;`;
@@ -574,41 +572,21 @@
             showSlides(slides, next, prev);
           }
 
-          const figCaption = figure.querySelector("figcaption");
-
-          /* addEventListener(contentEditable, "keydown", function (e) {
-            //disable "ENTER" key
-            if (
-              (e.keyIdentifier == "Enter" || e.keyCode == 13) &&
-              figCaption.contentEditable == "true"
-            ) {
-              e.preventDefault();
-            } else if (
-              e.keyCode == 8 &&
-              getSelectionTextInfo(figCaption).atStart &&
-              figCaption.contentEditable == "true"
-            ) {
-              e.preventDefault();
-            }
-          });*/
-
-          addEventListener(
-            contentEditable,
-            "keydown",
-            deleteImageFromContentEditable
-          );
-
-          /* addEventListener(figCaption, "mouseleave", function (e) {
-            this.setAttribute("contenteditable", false);
-          });*/
-          /* });*/
         }
-        //clear file input value
-        e.target.value = "";
+
       });
+
       appendChild(settings.element, input);
     }
+
+    addEventListener(
+      contentEditable,
+      "keydown",
+      deleteImageFromContentEditable
+    );
+
   };
+
 
   const defaultClasses = {
     actionbar: "pell-actionbar",
@@ -618,6 +596,7 @@
   };
 
   const init = function init(settings) {
+
     /*
           Object.keys(object) evaluates to the object data access points in an array form,i.e
            const name = {
@@ -627,16 +606,16 @@
   
           Object.keys(name) evaluates to  ["firstName","lastName"];
           */
-    // console.log(Object.keys(settings), settings);
-    // console.log(Object.keys(defaultActions));
+
     const actions = settings.actions
       ? settings.actions.map((action) => {
-          if (typeof action === "string") return defaultActions[action];
-          if (defaultActions[action.name])
-            return { ...defaultActions[action.name], ...action };
-          return action;
-        })
+        if (typeof action === "string") return defaultActions[action];
+        if (defaultActions[action.name])
+          return { ...defaultActions[action.name], ...action };
+        return action;
+      })
       : Object.keys(defaultActions).map((action) => defaultActions[action]);
+
     // console.log(actions);
     // copy values and return the values
     const classes = { ...defaultClasses, ...settings.classes };
@@ -673,7 +652,7 @@
     // listener for any input to the content-editable section
     content.oninput = function (_ref) {
       const { firstChild } = _ref.target;
-      // console.log(_ref.target.firstChild, firstChild.nodeType, content.innerHTML)
+      //console.log(_ref.target.firstChild, firstChild.nodeType, content.innerHTML)
 
       if (firstChild && firstChild.nodeType === 3)
         exec(formatBlock, `<${defaultParagraphSeparator}>`);
