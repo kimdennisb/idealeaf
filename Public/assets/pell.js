@@ -552,6 +552,7 @@
               //  p.innerHTML = zerowidthspace;
               //p.innerHTML = `<br>`;
               p.insertAdjacentHTML("beforeend", `<br>`);
+
               figure.parentNode.insertBefore(p, figure.nextSibling);
 
               //insert caret at the current position of zerowidthspace/ p tag with br tag
@@ -722,6 +723,7 @@
       return [cum_length[1], cum_length[0]];
     }
 
+
     content.onkeydown = function (event) {
 
       if (
@@ -734,6 +736,42 @@
         );
       }
 
+
+      const selection = window.getSelection();
+      const node = selection.anchorNode;
+      const tagName = node.tagName;
+      const anchorOffset = selection.anchorOffset;
+      const range = document.createRange();
+
+      if (event.key === "Enter" && tagName == "FIGURE" && anchorOffset == 0) {
+
+        //add an empty p tag before the parent figure
+        const p = document.createElement("p")
+        p.insertAdjacentHTML("beforeend", `<br>`);
+
+        content.insertBefore(p, node.parentNode);
+
+        //insert caret at the current position of zerowidthspace/ p tag with br tag
+        range.setStart(p, 0);
+        range.setEnd(p, 0)
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+      } else if (event.key === "Enter" && tagName == "FIGURE" && anchorOffset == 1) {
+        // node -child figure (figure-0), node.parentNode -parent figure (figure-role)
+
+        //add an empty p tag after the parent figurev
+        const p = document.createElement("p")
+        p.insertAdjacentHTML("beforeend", `<br>`);
+        content.insertBefore(p, node.parentNode.nextSibling);
+
+        //insert caret at the current position of zerowidthspace/ p tag with br tag
+        range.setStart(p, 0);
+        range.setEnd(p, 0);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+      }
     };
 
     appendChild(settings.element, content);
