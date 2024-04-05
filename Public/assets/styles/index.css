@@ -232,6 +232,7 @@ figure img {
 .post-content img {
   width: 100%;
   height: auto;
+  background: transparent url("https://i.gifer.com/JVX7.gif") center center no-repeat;
 }
 
 h1,
