@@ -13,8 +13,8 @@ const MongoStore = require("connect-mongo")(session);
 const databaseConnection = require("./Database/database");
 const checkIfUserExists = require("./Middlewares/checkIfUserExists");
 const checkRolesExisted = require("./Middlewares/checkRolesExisted");
-const addSchemaVersionProperty = require("./Migrations/user");
-const addUrlProperty = require("./Migrations/post");
+//const addSchemaVersionProperty = require("./Migrations/user");
+//const addUrlProperty = require("./Migrations/post");
 
 require("dotenv").config();
 
@@ -30,6 +30,9 @@ const get = require("./Routes/get");
 const remove = require("./Routes/delete");
 const post = require("./Routes/post");
 const update = require("./Routes/update");
+
+//Indicates the app is behind a front-facing proxy, and to use the X-Forwarded-* headers to determine the connection and the IP address of the client.
+app.enable("trust proxy");
 
 // serving static files
 app.use(express.static(path.join(__dirname, "Public")));
@@ -57,7 +60,7 @@ app.use(bodyParser.json());
 // database object
 databaseConnection();
 
-// get connecion object
+// get connection object
 const conn = databaseConnection();
 
 // use sessions for tracking logins
@@ -83,7 +86,7 @@ app.use(
     "/edit/:id",
     "/singlepost/:title",
   ],
-  [checkIfUserExists, addUrlProperty(app)]
+  [checkIfUserExists]
 );
 
 // check roles
