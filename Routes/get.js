@@ -282,6 +282,8 @@ router.get(
       } = article;
 
       const hostName = req.headers.host;
+      const protocol = req.protocol;
+
       // eslint-disable-next-line camelcase
       const featureimage = feature_image;
       const siteURL = `${hostName}/article/${reference}`;
@@ -293,8 +295,8 @@ router.get(
 
       images.forEach((image) => {
         const imageURL = image.src.split("?")[0];
-        const src = `${hostName}${imageURL}?w=319`;
-        const srcset = `${imageURL}?w=239 239w,${imageURL}?w=319 319w,${imageURL}?w=468 468w,${imageURL}?w=512 512w,${imageURL}?w=612 612w,${imageURL}?w=687 687w`;
+        const src = `${protocol}://${hostName}${imageURL}?w=319`;
+        const srcset = `${protocol}://${hostName}${imageURL}?w=239 239w,${protocol}://${hostName}${imageURL}?w=319 319w,${protocol}://${hostName}${imageURL}?w=468 468w,${protocol}://${hostName}${imageURL}?w=512 512w,${protocol}://${hostName}${imageURL}?w=612 612w,${protocol}://${hostName}${imageURL}?w=687 687w`;
         const sizes = `(min-width: 1460px) 612px, (min-width: 860px) calc(38.97vw + 51px), (min-width: 800px) 65vw, (min-width: 620px) 87.5vw, calc(88vw - 60px)`;
 
         image.setAttribute("src", src);
