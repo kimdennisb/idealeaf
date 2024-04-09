@@ -28,16 +28,31 @@
 </head>
 
 <body>
+    <header class="header-outer">
+        <div class="header-inner">
+            <div class="header-content responsive-wrapper">
 
+                <!--sidebar navbar-->
+                <div id="myNav" class="overlay">
+                    <%- include("partials/public/sidenavigation.ejs"); -%>
+                </div>
+
+                <!--Toolbar-->
+                <div class="header-navigation">
+                    <%- include("partials/toolbar.ejs"); -%>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="wrapper">
-        <header class="header">
+        <div class="header">
             <a href="#" class="logo">
                 <!--whatspost logo-->
             </a>
             <h1>Sign up to
                 <%- siteName %>
             </h1>
-        </header>
+        </div>
 
         <form class="form" method="POST" action="/signup">
             <label for="username">
@@ -64,7 +79,7 @@
             </label>
             <label for="password">
                 Confirm Password
-                <input class="field" type="password" name="passwordConf" id="password" autofocus="autofocus" required>
+                <input class="field" type="password" name="passwordConf" id="passwordConf" autofocus="autofocus" required>
                 <div class="message" id="m3" hidden>
                     <div class="m-3">
                     </div>
@@ -76,6 +91,7 @@
     </div>
 
 </body>
+<script src="/assets/scripts/sidebarHelper.js"></script>
 <script src="/assets/scripts/sendRequests.js"></script>
 <script src="/assets/scripts/usernameEmailPasswordCheck.js"></script>
 <script src="/assets/scripts/lightDarkMode.js"></script>
