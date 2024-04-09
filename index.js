@@ -90,7 +90,7 @@ app.use(
 );
 
 // check roles
-app.use(["/admin/posts", "/admin/users", "/admin/ipDevice"], checkRolesExisted);
+app.use(["/admin/new", "/admin/posts", "/admin/users", "/admin/ipDevice"], checkRolesExisted);
 
 // use routes
 app.use("/", get);
