@@ -103,12 +103,15 @@ if (manage || settings) {
   settings.addEventListener("click", controlSection, false);
 }
 
+//holds data in the /search window
 const widget = document.querySelector(".showwidget");
+
 const spinner = document.querySelector("#spinner");
+
+//holds data in the admin window (posts/scripts/users)
 const tbody = document.getElementsByTagName("tbody")[0];
 
 // construct URLSearchParams object instance from current URL querystring
-
 const queryParams = new URLSearchParams(window.location.search);
 
 // get value from search input on change
@@ -284,6 +287,9 @@ function buildTitles(paginationInstance) {
   createPageButtons(data.pages, paginationInstance);
 }
 
+//parameter argument is meant for search in the admin panel after whole data is fetched- filtering from the data.
+//else empty parameter means data is fetched inside the function - for the the /search window
+//function calls helper functions to build the UI-in this case building the titles and pagination
 async function performSearch(parameter) {
   if (widget) {
     widget.innerHTML = "";
