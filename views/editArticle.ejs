@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Edit</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="theme-color" content="#4CAF50" />
+
+    <meta property="og:url" content="/edit" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/styles/pell.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+    <script src="/assets/pell.js"></script>
+</head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="mySidenav" class="sidenav">
+                <%- include("partials/admin/sidenavigation.ejs"); -%>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<body>
+
+    <div class="page-wrap editor-settings">
+        <div class="editor-inner-settings">
+            <aside>
+                <div class="article-settings">
+                    <h3>Article settings</h3>
+                    <div class="feature_image">
+                        <div class="cover">
+                            <%if(data.featureimage){%>
+                                <img src=<%-data.featureimage-%> alt=<%-data.featureimagealt-%> class="coverimage hide"
+                                    >
+                                    <%} else {%>
+                                        <img src=" " alt=" " class="coverimage hide">
+                                        <%}%>
+                        </div>
+                        <label class="feature_image_input_text" for="articleimageinput">Upload article image</label>
+                        <input type="file" name="articleimageinput" id="articleimageinput" accept="image/*" />
+                        <svg class="remove_feature_image" width="15" height="15" viewBox="0 0 1792 1792"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <title>Delete</title>
+                            <path
+                                d="M704 1376v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm256 0v-704q0-14-9-23t-23-9h-64q-14 0-23 9t-9 23v704q0 14 9 23t23 9h64q14 0 23-9t9-23zm-544-992h448l-48-117q-7-9-17-11h-317q-10 2-17 11zm928 32v64q0 14-9 23t-23 9h-96v948q0 83-47 143.5t-113 60.5h-832q-66 0-113-58.5t-47-141.5v-952h-96q-14 0-23-9t-9-23v-64q0-14 9-23t23-9h309l70-167q15-37 54-63t79-26h320q40 0 79 26t54 63l70 167h309q14 0 23 9t9 23z">
+                            </path>
+                        </svg>
+                    </div>
+
+
+                    <label for="tag">
+                        Tags
+                        <input type="text" name="tags" class="tags" id="tag" />
+                    </label>
+                </div>
+            </aside>
+            <main id="main">
+
+                <div class="action-taskbar">
+                    <button class="settingsicon"></button>
+                    <button class="publish">
+                        <svg width="18" height="18" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                            <title>Publish</title>
+                            <path
+                                d="M1764 11q33 24 27 64l-256 1536q-5 29-32 45-14 8-31 8-11 0-24-5l-453-185-242 295q-18 23-49 23-13 0-22-4-19-7-30.5-23.5t-11.5-36.5v-349l864-1059-1069 925-395-162q-37-14-40-55-2-40 32-59l1664-960q15-9 32-9 20 0 36 11z" />
+                        </svg>
+                    </button>
+
+                </div>
+                <div class="editor-wrapper">
+                    <div id="editor" class="pell"></div>
+                </div>
+                <div style="margin-top: 20px;display: none;">
+                    <h3>HTML output:</h3>
+                    <pre id="html-output"></pre>
+                </div>
+                <div class="edittitle" style="display: none;">
+                    <%= data.title %>
+                </div>
+                <div class="edithtml" style="display: none;">
+                    <%= data.html %>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+</body>
+
+<script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/initializeEditor.js"></script>
+<script src="/assets/scripts/sendRequests.js"></script>
+<script src="/assets/scripts/editorHandler.js"></script>
+<script src="/assets/scripts/coverImage.js"></script>
+
+
+</html>

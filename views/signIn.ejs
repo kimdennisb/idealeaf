@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Sign In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <meta name="theme-color" content="#4CAF50" />
+
+    <meta property="og:url" content="/signin" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+</head>
+
+<body>
+    <header class="header-outer">
+        <div class="header-inner">
+            <div class="header-content responsive-wrapper">
+
+                <!--sidebar navbar-->
+                <div id="myNav" class="overlay">
+                    <%- include("partials/public/sidenavigation.ejs"); -%>
+                </div>
+
+                <!--Toolbar-->
+                <div class="header-navigation">
+                    <%- include("partials/toolbar.ejs"); -%>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="wrapper">
+        <div class="header">
+            <a href="#" class="logo">
+                <!--whatspost logo-->
+            </a>
+            <h1>Sign in to
+                <%- siteName %>
+            </h1>
+        </div>
+
+        <form class="form" method="POST" action="/signin">
+            <label for="user">
+                Email address
+                <input class="field" type="text" name="email" id="user" autofocus required>
+            </label>
+            <label for="password">
+                Password <span><a href="/forgot-password">Forgot password?</a></span>
+                <input class="field" type="password" name="password" id="password" required>
+            </label>
+
+            <input class="button" type="submit" value="Sign in">
+        </form>
+    </div>
+    </div>
+</body>
+<script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/lightDarkMode.js"></script>
+
+</html>

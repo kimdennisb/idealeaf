@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>
+        <%- siteName %>
+    </title>
+    <!-- General meta tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <meta name="theme-color" content="#4CAF50" />
+
+    <meta property="og:url" content="/page" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+</head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="myNav" class="overlay">
+                <%- include("partials/public/sidenavigation.ejs"); -%>
+            </div>
+
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body>
+    <main class="main">
+        <div class="main-content responsive-wrapper">
+            <section class="widget">
+                <% for(let i=0;i < data.length;i++) { %>
+                    <div>
+                        <% if(!data[i].feature_image ) { %>
+                            <% const date=new Date(data[i].createdAt) %>
+                                <%const year=date.getFullYear() %>
+                                    <%const month=date.getMonth() + 1 %>
+                                        <%const dt=date.getDate() %>
+                                            <% const monthNames=["January", "February" , "March" , "April" , "May"
+                                                , "June" , "July" , "August" , "September" , "October" , "November"
+                                                , "December" ]; %>
+                                                <div class="article_title onlytext">
+                                                    <a href="/article/<%= data[i].reference %>" target="_self">
+                                                        <h3>
+                                                            <%= data[i].title%>
+                                                        </h3>
+                                                        <div class="date-published">
+                                                            <%- dt + " " + monthNames[month] + " " + year %>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <% } else { %>
+                                                    <% const date=new Date(data[i].createdAt) %>
+                                                        <%const year=date.getFullYear() %>
+                                                            <%const month=date.getMonth() + 1 %>
+                                                                <%const dt=date.getDate() %>
+                                                                    <% const monthNames=["January", "February" , "March"
+                                                                        , "April" , "May" , "June" , "July" , "August"
+                                                                        , "September" , "October" , "November"
+                                                                        , "December" ]; %>
+                                                                        <div class="article_title">
+                                                                            <a href="/article/<%= data[i].reference %>"
+                                                                                target="_self">
+                                                                                <img class="image"
+                                                                                    src="<%= data[i].feature_image %>"
+                                                                                    alt="" />
+                                                                                <h3>
+                                                                                    <%= data[i].title%>
+                                                                                </h3>
+                                                                                <div class="date-published">
+                                                                                    <%- dt + " " + monthNames[month]
+                                                                                        + " " + year %>
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
+                                                                        <% } %>
+                    </div>
+                    <% } %>
+            </section>
+        </div>
+    </main>
+
+
+    <div class="bottom-toolbar">
+        <% if (pages> 0) { %>
+            <div class="paginationtext-center">
+                <% if(current==1) { %>
+                    <span class="disabled">
+                        <a>First</a>
+                    </span>
+                    <%} else { %>
+                        <span>
+                            <a href="/page/1">First</a>
+                        </span>
+                        <%}%>
+                            <% var i=(Number(current)> 5 ? Number(current) - 4 : 1) %>
+                                <% if(i !==1){ %>
+                                    <span class="disabled">
+                                        <a>...</a>
+                                    </span>
+                                    <%}%>
+                                        <% for(; i <=(Number(current) + 4) && i <=pages;i++) { %>
+                                            <% if(i==current) { %>
+                                                <span class="active">
+                                                    <a>
+                                                        <%= i %>
+                                                    </a>
+                                                </span>
+                                                <%} else {%>
+                                                    <span>
+                                                        <a href="/page/<%= i %>">
+                                                            <%= i %>
+                                                        </a>
+                                                    </span>
+                                                    <%}%>
+                                                        <% if(i==Number(current) + 4 && i < pages ) { %>
+                                                            <span class="disabled">
+                                                                <a>...</a>
+                                                            </span>
+                                                            <%}%>
+                                                                <%}%>
+                                                                    <% if(current==pages) { %>
+                                                                        <span class="disabled">
+                                                                            <a>Last</a>
+                                                                        </span>
+                                                                        <%} else {%>
+                                                                            <span>
+                                                                                <a href="/page/<%= pages %>">Last</a>
+                                                                            </span>
+                                                                            <%}%>
+            </div>
+            <%}%>
+    </div>
+</body>
+<script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/lightDarkMode.js"></script>
+
+</html>

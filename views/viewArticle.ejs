@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/header.ejs"); -%>
+</head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="myNav" class="overlay">
+                <%- include("partials/public/sidenavigation.ejs"); -%>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<body>
+    <div class="wrapper section-inner">
+        <main id="main" class="content">
+            <%- include("partials/section.ejs"); -%>
+        </main>
+    </div>
+</body>
+<script src="/assets/scripts/sendRequests.js"></script>
+<script src="/assets/scripts/injectedScripts.js"></script>
+<script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/lightDarkMode.js"></script>
+
+</html>
