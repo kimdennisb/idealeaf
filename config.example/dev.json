@@ -1,0 +1,6 @@
+{
+    "devDBHost": "Production Database",
+    "localDBHost": "mongodb://localhost/idealeaf",
+    "siteName": "idealeaf",
+    "description": "Description"
+}
