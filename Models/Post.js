@@ -72,4 +72,4 @@ PostSchema.statics = {
   },
 };
 
-module.exports = mongoose.model("postmodel", PostSchema);
+module.exports = mongoose.model("post", PostSchema);
