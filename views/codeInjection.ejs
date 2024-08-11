@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#4CAF50" />
+
+    <meta property="og:url" content="/admin/codeinjection" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="<%- siteName %>" />
+    <meta property="og:site_name" content="<%- siteName %>" />
+    <meta property="og:image" content="/assets/icons/rel_icon.png" />
+    <meta property="og:image:alt" content="<%- siteName %>" />
+    <meta name="description" content="<%- siteDescription %>" />
+
+    <!--Twitter meta tags-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@kimdennisb" />
+    <meta name="twitter:description" content="<%- siteDescription %>" />
+    <meta name="twitter:image" content="/assets/icons/rel_icon.png" />
+
+    <link href="/assets/styles/index.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/icons/rel_icon.png" />
+    <link rel="apple-touch-icon" href="/assets/icons/rel_icon.png" />
+    <title>
+        <%- siteName %> Admin
+    </title>
+</head>
+<header class="header-outer">
+    <div class="header-inner">
+        <div class="header-content responsive-wrapper">
+
+            <!--sidebar navbar-->
+            <div id="mySidenav" class="sidenav">
+                <%- include("partials/admin/sidenavigation.ejs"); -%>
+            </div>
+
+            <!--Toolbar-->
+            <div class="header-navigation">
+                <%- include("partials/toolbar.ejs"); -%>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<body>
+    <div class="code injection">
+        <h1>Code Injection</h1>
+        <button class="save script">save</button>
+        <div class="site Header">
+            <h2>Site Header</h2>
+            <span>scripts here will be injected to the <code>{{ header }} </code> section</span>
+            <textarea class="headerscript"></textarea>
+        </div>
+        <div class="site Footer">
+            <h3>Site footer</h3>
+            <span>scripts here will be injected to the <code>{{ footer }} </code> section</span>
+            <textarea class="footerscript"></textarea>
+        </div>
+    </div>
+
+</body>
+<script src="/assets/scripts/sidebarHelper.js"></script>
+<script src="/assets/scripts/sendRequests.js"></script>
+<script src="/assets/scripts/codeInjector.js"></script>
+<script src="/assets/scripts/update-deleteHelper.js"></script>
+<script src="/assets/scripts/lightDarkMode.js"></script>
+
+</html>
