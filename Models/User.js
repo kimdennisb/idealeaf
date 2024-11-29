@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
     },
     resetLink: {
-      data: String,
+      type: String,
       default: "",
     },
     role: {
