@@ -14,12 +14,6 @@ const Role = require("../Models/Role");
 
 //setUpRoles();
 
-// database options
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
-
 const databaseUrl = function () {
   const environment = config.util.getEnv("NODE_ENV").trim();
   if (environment === "local" || environment === "test") {
@@ -38,7 +32,7 @@ const databaseConnection = () => {
     return connectionInstance;
   }
   mongoose
-    .connect(url, options)
+    .connect(url)
     .then(() => {
       console.log(`Successfully connected to MongoDB`);
     })
