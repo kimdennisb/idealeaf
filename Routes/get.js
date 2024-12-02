@@ -53,32 +53,41 @@ router.get("/session", cookieReader, (req, res) => {
 // access user admin
 // GET route after registering
 router.get("/admin/posts", (req, res, next) => {
-  postModel.find({}, (err, data) => {
-    if (err) {
-      next(err);
-    }
+  // postModel.find({}, (err, data) => {
+  //   if (err) {
+  //     next(err);
+  //   }
+
+  // });
+  postModel.find({}).then((data) => {
     res.render("posts.ejs", { data: data, siteName, siteDescription });
-  });
+  }).catch(err => next(err));
 });
 
 // access list of users
 router.get("/admin/users", (req, res, next) => {
-  userModel.find({}, (err, data) => {
-    if (err) {
-      next(err);
-    }
+  // userModel.find({}, (err, data) => {
+  //   if (err) {
+  //     next(err);
+  //   }
+  //   res.render("users.ejs", { data: data, siteName, siteDescription });
+  // });
+  userModel.find({}).then((data) => {
     res.render("users.ejs", { data: data, siteName, siteDescription });
-  });
+  }).catch((err) => next(err));
 });
 
 // access list of scripts
 router.get("/admin/scripts", (req, res, next) => {
-  scriptToInjectModel.find({}, (err, data) => {
-    if (err) {
-      next(err);
-    }
+  // scriptToInjectModel.find({}, (err, data) => {
+  //   if (err) {
+  //     next(err);
+  //   }
+  //   res.render("scripts.ejs", { data: data, siteName, siteDescription });
+  // });
+  scriptToInjectModel.find({}).then((data) => {
     res.render("scripts.ejs", { data: data, siteName, siteDescription });
-  });
+  }).catch((err) => next(err));
 });
 
 // code injection page
@@ -95,33 +104,37 @@ router.get("/data", (req, res, next) => {
   let query = req.query.q;
 
   query === "posts"
-    ? postModel.find({}, (err, data) => {
-      if (err) {
-        next(err);
-      }
-      res.json(data);
-    })
+    ?//  postModel.find({}, (err, data) => {
+    //   if (err) {
+    //     next(err);
+    //   }
+    //   res.json(data);
+    // })
+    postModel.find({}).then((data) => res.json(data)).catch((err) => next(err))
     : query === "users"
-      ? userModel.find({}, (err, data) => {
-        if (err) {
-          next(err);
-        }
-        res.json(data);
-      })
+      ?// ? userModel.find({}, (err, data) => {
+      //   if (err) {
+      //     next(err);
+      //   }
+      //   res.json(data);
+      // })
+      userModel.find({}).then((data) => res.json(data)).catch((err) => next(err))
       : query === "scripts"
-        ? scriptToInjectModel.find({}, (err, data) => {
-          if (err) {
-            next(err);
-          }
-          res.json(data);
-        })
+        ?// ? scriptToInjectModel.find({}, (err, data) => {
+        //   if (err) {
+        //     next(err);
+        //   }
+        //   res.json(data);
+        // })
+        scriptToInjectModel.find({}).then((data) => res.json(data)).catch((err) => next(err))
         : query === "ipDevice"
-          ? ipDeviceModel.find({}, (err, data) => {
-            if (err) {
-              next(err);
-            }
-            res.json(data);
-          })
+          ?// ? ipDeviceModel.find({}, (err, data) => {
+          //   if (err) {
+          //     next(err);
+          //   }
+          //   res.json(data);
+          // })
+          ipDeviceModel.find({}).then((data) => res.json(data)).catch((err) => next(err))
           : null;
 });
 
@@ -154,21 +167,13 @@ router.get("/admin/new", (req, res, next) => {
 
 // get injected scripts
 router.get("/getinjectedscripts", (req, res, next) => {
-  scriptToInjectModel.find({}, (err, scripts) => {
-    //if (err) res.send(500, err);
-
-    if (err) next(err);
-    res.send(scripts);
-  });
+  scriptToInjectModel.find({}).then(scripts => res.send(scripts)).catch((err) => next(err));
 });
 
 // edit article
 router.get("/admin/edit/:id", (req, res, next) => {
   const id = req.params.id;
-  postModel.findOne({ _id: id }, (err, data) => {
-    if (err) {
-      next(err);
-    }
+  postModel.findOne({ _id: id }).then((data) => {
     const { title, html, feature_image, feature_image_alt } = data;
     const dom = new JSDOM(html);
     const document = dom.window.document;
@@ -213,7 +218,7 @@ router.get("/admin/edit/:id", (req, res, next) => {
       siteName,
       siteDescription,
     });
-  });
+  }).catch((err) => next(err));
 });
 
 // posts get route
@@ -228,11 +233,9 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
     .sort({ createdAt: -1 })
     .skip(perPage * page - perPage)
     .limit(perPage)
-    .exec((err, data) => {
-      if (err) return next(err);
-      // postmodel.count gets the number of entities stored
-      postModel.count().exec((error, count) => {
-        if (error) return next(error);
+    .then((data) => {
+      // postmodel.countDocuments gets the number of entities stored
+      postModel.countDocuments().then((count) => {
         const hostName = req.headers.host;
         const siteURL = `${hostName}/page/${page}`;
         res.render("pages.ejs", {
@@ -243,8 +246,13 @@ router.get("/page/:page", cacheMiddleware(30), (req, res, next) => {
           siteName,
           siteURL,
         });
-      });
-    });
+      }).catch((error) => {
+        return next(error);
+      })
+    })
+    .catch((error) => {
+      return next(error);
+    })
 });
 
 // view specific article
@@ -263,10 +271,7 @@ router.get(
       },
     };
 
-    postModel.findOneAndUpdate(filter, update, (err, article) => {
-      if (err) {
-        next(err);
-      }
+    postModel.findOneAndUpdate(filter, update).then((article) => {
 
       let {
         // eslint-disable-next-line camelcase
@@ -288,7 +293,7 @@ router.get(
       const featureimage = feature_image;
       const siteURL = `${hostName}/article/${reference}`;
       const description = htmlToText(html, { wordWrap: 130, baseElement: "p" });
-      const dom = new JSDOM(html);
+      const dom = new JSDOM(html, { resources: "usable", runScripts: "dangerously" });
       const document = dom.window.document;
 
       const images = Array.from(document.querySelectorAll("img"));
@@ -339,6 +344,8 @@ router.get(
           siteName,
         })
         : res.render("viewArticle", { data: cleanArticle, siteName });
+    }).catch((err) => {
+      console.log(err); next(err)
     });
   }
 );
@@ -352,12 +359,8 @@ router.get("/", cacheMiddleware(30), ipDevice, (req, res, next) => {
       // eslint-disable-next-line quote-props
       .sort({ createdAt: -1 })
       .limit(4)
-      .exec((err_, data) => {
-        if (err_) res.send(500, err_);
-        // eslint-disable-next-line no-unused-vars
-        postModel.count().exec((err, count) => {
-          if (err) return next(err);
-
+      .then((data) => {
+        postModel.countDocuments().then((count) => {
           const siteURL = req.headers.host;
           res.render("home.ejs", {
             data: data,
@@ -365,7 +368,14 @@ router.get("/", cacheMiddleware(30), ipDevice, (req, res, next) => {
             siteURL,
             siteName,
           });
+        }).catch((err_) => {
+          console.log(err_)
+          res.send(500, err_);
         });
+      })
+      .catch((err_) => {
+        console.log(err_)
+        res.send(500, err_);
       });
   }
 });
@@ -381,12 +391,7 @@ router.get("/search", (req, res) => {
 
 // get posts that have been searched
 router.get("/getsearch", (req, res, next) => {
-  postModel.fullTextSearch(req.query.s).exec((err, results) => {
-    if (err) {
-      next(err);
-    }
-    res.status(200).json(results);
-  });
+  postModel.fullTextSearch(req.query.s).then(results => res.status(200).json(results)).catch((err) => next(err));
 });
 
 router.get("/image/:imageID", (req, res, next) => {
@@ -431,6 +436,9 @@ router.get("/image/:imageID", (req, res, next) => {
       .toBuffer()
       .then((buffer) => {
         res.write(buffer);
+      })
+      .catch((err) => {
+        next(err);
       });
     res.end();
   });
@@ -482,19 +490,16 @@ router.get("/posts/:page", cacheMiddleware(30), (req, res, next) => {
     .sort({ createdAt: -1 })
     .skip(perPage * page - perPage)
     .limit(perPage)
-    .exec((err, posts) => {
-      if (err) return next(err);
-
-      postModel.count().exec((error, count) => {
-        if (error) return next(error);
-
+    .then((posts) => {
+      postModel.countDocuments().then((count) => {
         res.status(200).json({
           posts: posts,
           current: page,
           pages: Math.ceil(count / perPage),
-        });
-      });
-    });
+        }).catch((error) => next(error));
+      }).catch(err => next(err));
+    })
+
 });
 
 // verify reset password token
@@ -502,9 +507,7 @@ router.get("/reset/:token", (req, res, next) => {
   //console.log(req.params.token);
   const query = { resetLink: req.params.token };
 
-  user.findOne(query, (err, theuser) => {
-    if (err) next(err);
-
+  user.findOne(query).then((theuser) => {
     if (!theuser) {
       const error = new Error(
         "Password reset token is invalid or has expired."
@@ -513,17 +516,16 @@ router.get("/reset/:token", (req, res, next) => {
       return next(error);
     }
     res.render("newPassword.ejs", { siteName, siteDescription });
-  });
+  }).catch((err) => next(err));
 });
 
 /* route for fetch */
 // gets view for a single post
 router.get("/post/:id", cacheMiddleware(30), (req, res, next) => {
   const id = req.params.id;
-  postModel.findById({ _id: id }, (err, post) => {
-    if (err) return next(err);
+  postModel.findById({ _id: id }).then((post) => {
     res.status(200).json(post);
-  });
+  }).catch((err) => next(err));
 });
 
 // handle a 404 page(needs to be the last)

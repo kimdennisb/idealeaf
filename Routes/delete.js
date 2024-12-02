@@ -14,12 +14,9 @@ const ipDeviceModel = require("../Models/IpDevice");
 function deleteItems(schema, IDS, next) {
   const deletedItems = [];
   for (let i = 0; i < IDS.length; i++) {
-    schema.findOneAndDelete({ _id: IDS[i] }, (err, result) => {
-      if (err) {
-        next(err);
-      }
+    schema.findOneAndDelete({ _id: IDS[i] }).then((result) => {
       deletedItems.push(result);
-    });
+    }).catch((err) => next(err))
   }
   return deletedItems;
 }
@@ -46,20 +43,20 @@ router.delete("/delete-users", (req, res, next) => {
 });
 
 // delete scripts
-router.delete("/delete-scripts", async (req, res, next) => {
+router.delete("/delete-scripts", (req, res, next) => {
   // ids to delete
   const scripts = req.body.id;
-  const deleteditems = await deleteItems(scriptToInjectModel, scripts, next);
+  const deleteditems = deleteItems(scriptToInjectModel, scripts, next);
   res
     .status(200)
     .json({ message: "Script(s) successfully deleted", deleteditems });
 });
 
 // delete ipDevice
-router.delete("/delete-ipdevice", async (req, res, next) => {
+router.delete("/delete-ipdevice", (req, res, next) => {
   // ids to delete
   const scripts = req.body.id;
-  const deleteditems = await deleteItems(ipDeviceModel, scripts);
+  const deleteditems = deleteItems(ipDeviceModel, scripts);
   res
     .status(200)
     .json({ message: "Script(s) successfully deleted", deleteditems });

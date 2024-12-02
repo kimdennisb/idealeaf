@@ -2,7 +2,8 @@ const requestIp = require("request-ip");
 const platform = require("platform");
 const ipDevice = require("../Models/IpDevice");
 
-module.exports = function(req, res, next) {
+module.exports = function (req, res, next) {
+
     const clientIp = requestIp.getClientIp(req);
     const filter = { ipaddress: clientIp }
     const update = {
@@ -12,10 +13,9 @@ module.exports = function(req, res, next) {
         }
     }
 
-    ipDevice.findOneAndUpdate(filter, update, { new: true, upsert: true }, (err, results) => {
-        if (err) {
-            next(err);
-        }
-    })
+    ipDevice.findOneAndUpdate(filter, update, { new: true, upsert: true }).then((results) => {
+        // console.log(results)
+    }).catch((err) => next(err))
+
     next();
 };

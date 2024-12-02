@@ -34,17 +34,14 @@ const usernameRegexConvention = require("../Helpers/userNameConvention");
 router.post("/signup", async (req, res, next) => {
   const userData = await applyRole(req);
 
-  userModel.create(userData, (error, UniqueUser) => {
-    if (error) {
-      return next(error);
-    }
+  userModel.create(userData).then((UniqueUser) => {
     ///console.log(req.session,`session`);
     // attach user id to req.session.userId object
     req.session.userId = UniqueUser._id;
     //console.log(UniqueUser._id,`userid`);
     // redirect to referer
     return res.redirect("back");
-  });
+  }).catch((error) => next(error))
 });
 
 // check signup username,email and password
@@ -53,10 +50,7 @@ router.post("/signup/check", (req, res, next) => {
   const data = req.body.q;
   query === "username"
     ? //check username against rules
-    userModel.find({ username: data }, (err, theuser) => {
-      if (err) {
-        next(err);
-      }
+    userModel.find({ username: data }).then((theuser) => {
 
       if (!usernameRegexConvention(data)) {
         return res.status(200).json({ message: "InvalidUsername" });
@@ -66,19 +60,16 @@ router.post("/signup/check", (req, res, next) => {
         return res.status(200).json({ message: "200Username" });
       if (theuser.length != 0)
         return res.status(200).json({ message: "404Username" });
-    })
+    }).catch((err) => next(err))
     : query === "email"
-      ? userModel.find({ email: data }, (err, theuser) => {
-        if (err) {
-          next(err);
-        }
+      ? userModel.find({ email: data }).then((theuser) => {
 
         if (theuser.length === 0 && validator.validate(data)) {
           return res.status(200).json({ message: "200Email" });
         } else {
           return res.status(200).json({ message: "InvalidEmail" });
         }
-      })
+      }).catch((err) => next(err))
       : query === "password"
         ? //check password against rules
         console.log(`/*do nothing for password */`)
@@ -204,7 +195,7 @@ router.post("/reset/:token", (req, res, next) => {
 
   // find user with this token
   // eslint-disable-next-line no-unused-vars
-  userModel.findOne(query, (err, theuser) => {
+  userModel.findOne(query).then((theuser) => {
     if (!theuser) {
       res.json({ message: "Password reset token is invalid or has expired." });
     }
@@ -228,7 +219,7 @@ router.post("/reset/:token", (req, res, next) => {
         res.json({ message: `Password reset successfully` });
       });
     });
-  });
+  }).catch((err) => next(err));
 });
 
 /**
@@ -404,14 +395,12 @@ router.post("/article", (req, res, next) => {
 
   Object.assign(post, postProperties);
 
-  post.save((err, item) => {
-    if (err) {
-      next(err);
-      res.json(err);
-    } else {
-      // if no errors,send it back to client
-      res.status(200).json({ item: item });
-    }
+  post.save().then((item) => {
+    // if no errors,send it back to client
+    res.status(200).json({ item: item });
+  }).catch((error) => {
+    next(error);
+    res.json(error);
   });
 });
 
@@ -423,12 +412,9 @@ router.post("/injectcode", (req, res, next) => {
     });
 
     if (script.script.length > 1) {
-      scriptToInject.save((err, item) => {
-        if (err) {
-          next(err);
-        } else {
-        }
-      });
+      scriptToInject.save((item) => {
+
+      }).catch((err) => next(err))
     } else {
       return null;
     }

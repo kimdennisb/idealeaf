@@ -7,11 +7,9 @@ const checkIfUserExists = (req, res, next) => {
 
     //req.session.referer = req.headers.referer || "/";
     // console.log(req.session.referer);
+
     User.findById(req.session.userId)
-        .exec(async(error, authorizedUser) => {
-            if (error) {
-                next(error);
-            }
+        .then((authorizedUser) => {
             if (authorizedUser === null) {
                 //soft redirects
                 const redirect_to = req.originalUrl;
@@ -25,7 +23,10 @@ const checkIfUserExists = (req, res, next) => {
 
                 next();
             }
+        }).catch((error) => {
+            next(error);
         });
+
 };
 
 module.exports = checkIfUserExists;

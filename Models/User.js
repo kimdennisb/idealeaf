@@ -50,10 +50,7 @@ const UserSchema = new mongoose.Schema(
 // authenticate user input against database
 UserSchema.statics.authenticate = function (email, password, callback) {
   // eslint-disable-next-line no-use-before-define
-  User.findOne({ email: email }).exec((err, user) => {
-    if (err) {
-      return callback(err);
-    }
+  User.findOne({ email: email }).then((user) => {
     if (!user) {
       const error = new Error("User not found.");
       error.status = 401;
@@ -65,6 +62,8 @@ UserSchema.statics.authenticate = function (email, password, callback) {
       }
       return callback();
     });
+  }).catch((err) => {
+    return callback(err);
   });
 };
 

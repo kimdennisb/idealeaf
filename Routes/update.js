@@ -21,12 +21,9 @@ router.put("/update/:id", (req, res, next) => {
         }
     }
 
-    postModel.findOneAndUpdate(filter, update, { new: true, upsert: true }, (err, doc) => {
-        if (err) {
-            next(err);
-        }
+    postModel.findOneAndUpdate(filter, update, { new: true, upsert: true }).then((doc) => {
         res.status(200).json(doc);
-    })
+    }).catch((err) => next(err))
 });
 
 //update number of posts per page in the front page
@@ -41,15 +38,12 @@ router.put("/postsperpage/update", cookieReader, (req, res, next) => {
         }
     }
 
-    userModel.findOneAndUpdate(filter, update, { new: true, upsert: true }, (err, doc) => {
-        if (err) {
-            next(err);
-        }
+    userModel.findOneAndUpdate(filter, update, { new: true, upsert: true }).then((doc) => {s
         res.clearCookie("numberOfPostsInFrontPage");
         res.cookie("numberOfPostsInFrontPage", numberOfPostsInFrontPage, { maxAge: 900000 });
         res.status(200).json(doc);
 
-    })
+    }).catch((err) => next(err));
 });
 
 module.exports = router;
