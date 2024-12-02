@@ -33,21 +33,26 @@ describe("Articles", () => {
         visits: 0,
     };
 
-    let testArticle = new TestPostModel();
-
-    const postProperties = {
-        ...dummyArticle,
-        reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
-    };
-
-    Object.assign(testArticle, postProperties);
-
     // before each test we empty the database
     beforeEach((done) => {
         //Don`t delete database because we use a single post from the TestPostModel() instance.We will use this in PUt
         /*TestPostModel.deleteMany({ title: postProperties.title }, (err) => {
             done();
         });*/
+
+        let testArticle = new TestPostModel();
+
+        const postProperties = {
+            ...dummyArticle,
+            reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+        };
+
+        Object.assign(testArticle, postProperties);
+        TestPostModel.deleteMany({}).then((deletedItems) => {
+
+        }).catch((err) => {
+            console.log(err);
+        })
         console.log("Testing Articles started");
         done()
     });
@@ -76,7 +81,16 @@ describe("Articles", () => {
     describe("/GET/:id article", () => {
         it("it should get an article by the given id", (done) => {
 
-            testArticle.save((err, article) => {
+            let testArticle = new TestPostModel();
+
+            const postProperties = {
+                ...dummyArticle,
+                reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+            };
+
+            Object.assign(testArticle, postProperties);
+
+            testArticle.save().then((article) => {
                 chai.request(server)
                     .get(`/post/${article.id}`)
                     .send(article)
@@ -90,6 +104,8 @@ describe("Articles", () => {
                         res.body.should.have.property("_id").eql(article.id);
                         done();
                     });
+            }).catch((error) => {
+                console.log(error);
             });
         });
     });
@@ -116,6 +132,16 @@ describe("Articles", () => {
 
     describe("/POST article", () => {
         it("it should post an article with all then fields", (done) => {
+
+            let testArticle = new TestPostModel();
+
+            const postProperties = {
+                ...dummyArticle,
+                reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+            };
+
+            Object.assign(testArticle, postProperties);
+
             chai.request(server)
                 .post("/article")
                 .send(postProperties) // dummy is sent to the post /article route
@@ -138,8 +164,16 @@ describe("Articles", () => {
     describe("/PUT/:id article", () => {
         it("it should update an article given the id", (done) => {
 
-            testArticle.save((err, article) => {
-                console.log(err, `hii inatoka wapi`)
+            let testArticle = new TestPostModel();
+
+            const postProperties = {
+                ...dummyArticle,
+                reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+            };
+
+            Object.assign(testArticle, postProperties);
+
+            testArticle.save().then((article) => {
                 chai.request(server)
                     .put(`/update/${article.id}`)
                     .send({ ...postProperties, title: "This is an updated title" })
@@ -149,6 +183,8 @@ describe("Articles", () => {
                         res.body.should.have.property("title").eql("This is an updated title");
                         done();
                     });
+            }).catch((error) => {
+                console.log(error);
             });
         });
     });
@@ -159,7 +195,17 @@ describe("Articles", () => {
 
     describe("/DELETE/:id article(s)", () => {
         it("it should delete an article given the id", (done) => {
-            testArticle.save((err, article) => {
+
+            let testArticle = new TestPostModel();
+
+            const postProperties = {
+                ...dummyArticle,
+                reference: `${dummyArticle.title.split(" ").join("-")}-${testArticle._id}`,
+            };
+
+            Object.assign(testArticle, postProperties);
+
+            testArticle.save().then((article) => {
                 chai.request(server)
                     .delete(`/delete-posts`)
                     .send({ id: article.id })
@@ -169,6 +215,8 @@ describe("Articles", () => {
                         res.body.should.have.property("message").eql("Article(s) successfully deleted");
                         done();
                     });
+            }).catch((error) => {
+                console.log(error);
             });
         });
     });
@@ -187,17 +235,18 @@ describe("Users", () => {
     Object.assign(testUser, dummyUser);
 
     beforeEach((done) => {
-        TestUserModel.deleteMany({ username: dummyUser.username }, (err, deletedItem) => {
-            if (err) { console.log(err); }
+        TestUserModel.deleteMany({ username: dummyUser.username }).then((deletedItem) => {
             console.log("Testing Users started");
             done();
+        }).catch((error) => {
+            console.log(error);
         });
 
     });
 
     describe("/DELETE/:id user(s)", () => {
         it("it should delete a user given the id", (done) => {
-            testUser.save((err, user) => {
+            testUser.save().then((user) => {
                 chai.request(server)
                     .delete(`/delete-users`)
                     .send({ id: user.id })
@@ -207,6 +256,8 @@ describe("Users", () => {
                         res.body.should.have.property("message").eql("User(s) successfully deleted");
                         done();
                     });
+            }).catch((error) => {
+                console.log(error);
             });
         });
     });
@@ -225,16 +276,17 @@ describe("Scripts", () => {
     Object.assign(testScript, dummyScript);
 
     beforeEach((done) => {
-        TestScriptModel.deleteMany({ script: dummyScript.script }, (err, deletedItem) => {
-            if (err) { console.log(err); }
+        TestScriptModel.deleteMany({ script: dummyScript.script }).then((deletedItem) => {
+            console.log("Testing Scripts started");
+            done();
+        }).catch((error) => {
+            console.log(error)
         });
-        console.log("Testing Scripts started");
-        done();
     });
 
     describe("/DELETE/:id user(s)", () => {
         it("it should delete a script given the id", (done) => {
-            testScript.save((err, script) => {
+            testScript.save().then((script) => {
                 chai.request(server)
                     .delete(`/delete-scripts`)
                     .send({ id: script.id })
@@ -244,6 +296,8 @@ describe("Scripts", () => {
                         res.body.should.have.property("message").eql("Script(s) successfully deleted");
                         done();
                     });
+            }).catch((error) => {
+                console.log(error)
             });
         });
     });
