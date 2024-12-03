@@ -9,8 +9,8 @@ const path = require("path");
 //const config = require("config");
 const morgan = require("morgan");
 const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-const databaseConnection = require("./Database/database");
+const MongoStore = require("connect-mongo");
+const { databaseConnection, URL } = require("./Database/database");
 const checkIfUserExists = require("./Middlewares/checkIfUserExists");
 const checkRolesExisted = require("./Middlewares/checkRolesExisted");
 //const addSchemaVersionProperty = require("./Migrations/user");
@@ -69,8 +69,8 @@ app.use(
     secret: "work hard",
     resave: true,
     saveUninitialized: false,
-    store: new MongoStore({
-      mongooseConnection: conn,
+    store: MongoStore.create({
+      mongoUrl: URL,
     }),
   })
 );

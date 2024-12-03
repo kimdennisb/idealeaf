@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Readable } = require("stream");
-const databaseConnection = require("../Database/database");
+const {databaseConnection} = require("../Database/database");
 
 // call database function
 const conn = databaseConnection();

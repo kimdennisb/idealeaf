@@ -23,7 +23,7 @@ const databaseUrl = function () {
   }
 };
 
-const url = databaseUrl();
+const URL = databaseUrl();
 let connectionInstance;
 
 const databaseConnection = () => {
@@ -32,7 +32,7 @@ const databaseConnection = () => {
     return connectionInstance;
   }
   mongoose
-    .connect(url)
+    .connect(URL)
     .then(() => {
       console.log(`Successfully connected to MongoDB`);
     })
@@ -77,4 +77,4 @@ function setUpRoles() {
   });
 }
 
-module.exports = databaseConnection;
+module.exports = { databaseConnection, URL };
