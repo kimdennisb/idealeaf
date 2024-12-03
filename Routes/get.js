@@ -6,7 +6,7 @@
 const express = require("express");
 const mongodb = require("mongodb");
 const router = express.Router();
-const mongoose = require("mongoose");
+const { mongoose, Types } = require("mongoose");
 const sharp = require("sharp");
 const { htmlToText } = require("html-to-text");
 const jsdom = require("jsdom");
@@ -399,7 +399,7 @@ router.get("/image/:imageID", (req, res, next) => {
   const width = Number(req.query.w) || 184;
 
   try {
-    var photoID = new ObjectID(imageID);
+    var photoID = new Types.ObjectId(imageID);
   } catch (err) {
     const error = new Error(
       "Invalid ImageID in URL parameter. Must be a single String of 12 bytes or a string of 24 hex characters"
@@ -420,7 +420,8 @@ router.get("/image/:imageID", (req, res, next) => {
     buffer.push(chunk);
   });
 
-  downloadStream.on("error", () => {
+  downloadStream.on("error", (err) => {
+    console.log(err);
     res.sendStatus(404);
   });
 
