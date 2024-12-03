@@ -8,14 +8,17 @@ const applyRole = async (req) => {
   //shallow clone credentials
   const credentials = { ...req.body };
 
-  await User.estimatedDocumentCount((err, count) => {
-    if (!err && count === 0) {
+  try {
+    const count = await User.estimatedDocumentCount();
+    if (count === 0) {
       Object.assign(credentials, { role: "Admin" });
     } else {
       Object.assign(credentials, { role: "User" });
     }
-  });
-  return credentials;
+  } catch (error) {
+    console.log(error);
+  }
+  return credentials
 };
 
 module.exports = applyRole;
